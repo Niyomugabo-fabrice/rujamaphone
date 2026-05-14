@@ -18,7 +18,7 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-border shadow-sm">
+    <header className="sticky top-0 z-50 bg-[#a00] border-b border-border shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           <Link to="/" className="flex items-center space-x-2">
@@ -26,7 +26,7 @@ export function Header() {
               <span
   className="text-[#f5f0df] text-4xl"
   style={{
-    fontFamily: "'Pacifico', cursive",
+    fontFamily: "sans-serif",
     textShadow: "2px 2px 6px rgba(0,0,0,0.25)",
     lineHeight: 1,
   }}
