@@ -42,8 +42,8 @@ export function Header() {
             </div>
 
             <div className="hidden sm:block">
-              <h1 className="text-xl font-bold text-white">
-                Rujama Phones
+              <h1 className="text-xl font-bold text-white" style={{ fontFamily: 'sans-serif' }}>
+                Rujama Phones Shop
               </h1>
 
               <p className="text-xs text-gray-200">
