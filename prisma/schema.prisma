@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+ 
+}
+
+// ==========================================
+// SHARED SYSTEM ENUMS
+// ==========================================
+
+enum Condition {
+  NEW
+  USED
+}
+
+enum StorageCapacity {
+  GB64
+  GB128
+  GB256
+  GB512
+  TB1
+}
+
+enum SmartphoneBrand {
+  APPLE
+  SAMSUNG
+  GOOGLE
+  XIAOMI
+  ONEPLUS
+}
+
+enum SpeakerBrand {
+  JBL
+  SONY
+  BOSE
+  APPLE
+  ANKER
+}
+
+enum AccessoryBrand {
+  APPLE
+  SAMSUNG
+  ANKER
+  BASEUS
+  GENERIC
+}
+
+// ==========================================
+// CORE HARDWARE PRODUCT MODELS
+// ==========================================
+
+model Smartphone {
+  id          String          @id @default(uuid())
+  name        String
+  price       Int             // Value mapped in RWF
+  image       String[]        // Native array of image strings
+  description String?
+  rating      Float           @default(0)
+  reviews     Int             @default(0)
+  
+  // Specific Required Hardware Fields
+  storage     StorageCapacity
+  condition   Condition
+  brand       SmartphoneBrand
+
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([brand])
+  @@index([price])
+}
+
+model Speaker {
+  id          String        @id @default(uuid())
+  name        String
+  price       Int           // Value mapped in RWF
+  image       String[]
+  description String?
+  rating      Float         @default(0)
+  reviews     Int           @default(0)
+  
+  // Specific Required Hardware Fields (No Storage!)
+  condition   Condition
+  brand       SpeakerBrand
+  batteryLife String?       // Optional performance metric specific to sound hardware
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([brand])
+  @@index([price])
+}
+
+model Accessory {
+  id          String         @id @default(uuid())
+  name        String
+  price       Int            // Value mapped in RWF
+  image       String[]
+  description String?
+  rating      Float          @default(0)
+  reviews     Int            @default(0)
+  
+  // Specific Required Fields (Clean of storage rules)
+  condition   Condition
+  brand       AccessoryBrand
+  type        String         // e.g., "Cable", "Case", "Charger", "Screen Protector"
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([brand])
+  @@index([price])
+}
