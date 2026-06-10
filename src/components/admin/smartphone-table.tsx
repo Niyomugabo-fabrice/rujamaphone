@@ -6,9 +6,9 @@ import { Edit3, Trash2, Smartphone, AlertTriangle, Eye, X, Layers, Image, Trash,
 interface SmartphoneTableProps {
   data: any[];
   onRefresh: () => void;
+  onViewProduct: (product: any) => void;
 }
-
-export default function SmartphoneTable({ data, onRefresh }: SmartphoneTableProps) {
+export default function SmartphoneTable({ data, onRefresh ,onViewProduct,}: SmartphoneTableProps) {
   const [editingItem, setEditingItem] = useState<any | null>(null);
   const [viewingItem, setViewingItem] = useState<any | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
