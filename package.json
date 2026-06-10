@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    git 
+    
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
