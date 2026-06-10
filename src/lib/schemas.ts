@@ -1,9 +1,9 @@
 import { z } from "zod";
-import {
-  Condition,
-  StorageCapacity,
-  SmartphoneBrand,
-} from "@prisma/client";
+import { 
+  Condition, 
+  StorageCapacity, 
+  SmartphoneBrand 
+} from "../../prisma/generated/client";
 
 export const productSchema = z.object({
   name: z.string().min(2, "Product name must be at least 2 characters long"),
