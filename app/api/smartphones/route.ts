@@ -8,13 +8,68 @@ import type {
   Condition,
 } from "@/types/smartphone";
 
-// READ: Fetch all smartphones
-export async function GET() {
+// READ: Fetch smartphones with pagination, search, and filtering
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const page = Math.max(Number(searchParams.get("page") || "1"), 1);
+    const limit = Math.max(Number(searchParams.get("limit") || "10"), 1);
+    const search = searchParams.get("search")?.trim() || "";
+    const brand = searchParams.get("brand")?.trim() || "";
+    const condition = searchParams.get("condition")?.trim() || "";
+    const storage = searchParams.get("storage")?.trim() || "";
+    const minPrice = Number(searchParams.get("minPrice") || "0");
+    const maxPrice = Number(searchParams.get("maxPrice") || "0");
+
+    const filters: any = { AND: [] };
+
+    if (search) {
+      filters.AND.push({
+        OR: [
+          { name: { contains: search, mode: "insensitive" } },
+          { brand: { contains: search, mode: "insensitive" } },
+        ],
+      });
+    }
+
+    if (brand) {
+      filters.AND.push({ brand });
+    }
+    if (condition) {
+      filters.AND.push({ condition });
+    }
+    if (storage) {
+      filters.AND.push({ storage });
+    }
+    if (minPrice > 0) {
+      filters.AND.push({ price: { gte: minPrice } });
+    }
+    if (maxPrice > 0) {
+      filters.AND.push({ price: { lte: maxPrice } });
+    }
+
+    const where = filters.AND.length > 0 ? { AND: filters.AND } : undefined;
+
+    const total = await prisma.smartphone.count({ where });
+    const totalPages = Math.max(Math.ceil(total / limit), 1);
+    const offset = (page - 1) * limit;
+
     const smartphones = await prisma.smartphone.findMany({
+      where,
       orderBy: { createdAt: "desc" },
+      skip: offset,
+      take: limit,
     });
-    return NextResponse.json(smartphones, { status: 200 });
+
+    return NextResponse.json(
+      {
+        data: smartphones,
+        total,
+        page,
+        totalPages,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("GET_SMARTPHONES_ERROR:", error);
     return NextResponse.json(

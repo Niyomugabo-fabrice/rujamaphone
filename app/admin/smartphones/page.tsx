@@ -29,8 +29,8 @@ export default function SmartphonesPage() {
     setIsLoading(true);
     try {
       const res = await fetch("/api/smartphones");
-      const data = await res.json();
-      setItemsData(Array.isArray(data) ? data : data.items || []);
+      const payload = await res.json();
+      setItemsData(Array.isArray(payload) ? payload : payload.data || []);
     } catch (err) {
       console.error("Failed to load smartphones:", err);
       triggerNotification("error", "Failed to retrieve live item catalog streams.");
@@ -296,7 +296,7 @@ export default function SmartphonesPage() {
                   className="bg-gradient-to-r from-[#A60316] to-[#D90429] hover:from-[#D90429] hover:to-[#FB718A] text-white px-5 py-2.5 text-xs font-bold rounded-xl shadow-sm transition-all disabled:opacity-50 flex items-center gap-2"
                 >
                   {isSubmitting && <RefreshCw className="w-3 h-3 animate-spin" />}
-                  {isSubmitting ? "Deploying Assets..." : "Commit Asset"}
+                  {isSubmitting ? "Deploying Assets..." : "save"}
                 </button>
               </div>
             </form>
