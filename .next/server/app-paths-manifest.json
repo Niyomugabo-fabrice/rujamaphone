@@ -1,6 +1,6 @@
 {
-  "/api/smartphones/route": "app/api/smartphones/route.js",
-  "/api/smartphones/[id]/route": "app/api/smartphones/[id]/route.js",
+  "/api/speakers/route": "app/api/speakers/route.js",
+  "/api/speakers/[id]/route": "app/api/speakers/[id]/route.js",
   "/admin/smartphones/page": "app/admin/smartphones/page.js",
   "/admin/speakers/page": "app/admin/speakers/page.js"
 }
