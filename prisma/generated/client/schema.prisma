@@ -7,7 +7,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  
 }
 
 // ==========================================
@@ -56,63 +55,63 @@ enum AccessoryBrand {
 // ==========================================
 
 model Smartphone {
-  id          String          @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
-  price       Int             // Value mapped in RWF
-  image       String[]        // Native array of image strings
+  price       Int // Value mapped in RWF
+  image       String[] // Native array of image strings
   description String?
-  rating      Float           @default(0)
-  reviews     Int             @default(0)
-  
-  // Specific Required Hardware Fields
-  storage     StorageCapacity
-  condition   Condition
-  brand       SmartphoneBrand
+  rating      Float    @default(0)
+  reviews     Int      @default(0)
 
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  // Specific Required Hardware Fields
+  storage   StorageCapacity
+  condition Condition
+  brand     SmartphoneBrand
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([brand])
   @@index([price])
 }
 
 model Speaker {
-  id          String        @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
-  price       Int           // Value mapped in RWF
+  price       Int // Value mapped in RWF
   image       String[]
   description String?
-  rating      Float         @default(0)
-  reviews     Int           @default(0)
-  
+  rating      Float    @default(0)
+  reviews     Int      @default(0)
+
   // Specific Required Hardware Fields (No Storage!)
   condition   Condition
   brand       SpeakerBrand
-  batteryLife String?       // Optional performance metric specific to sound hardware
+  batteryLife String? // Optional performance metric specific to sound hardware
 
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([brand])
   @@index([price])
 }
 
 model Accessory {
-  id          String         @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
-  price       Int            // Value mapped in RWF
+  price       Int // Value mapped in RWF
   image       String[]
   description String?
-  rating      Float          @default(0)
-  reviews     Int            @default(0)
-  
-  // Specific Required Fields (Clean of storage rules)
-  condition   Condition
-  brand       AccessoryBrand
-  type        String         // e.g., "Cable", "Case", "Charger", "Screen Protector"
+  rating      Float    @default(0)
+  reviews     Int      @default(0)
 
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  // Specific Required Fields (Clean of storage rules)
+  condition Condition
+  brand     AccessoryBrand
+  type      String // e.g., "Cable", "Case", "Charger", "Screen Protector"
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([brand])
   @@index([price])

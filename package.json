@@ -4,8 +4,9 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    
     "dev": "next dev",
+    
+    "postinstall": "prisma generate --schema=prisma/schema.prisma",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
