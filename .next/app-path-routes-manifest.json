@@ -1,16 +1,16 @@
 {
-  "/api/smartphones/route": "/api/smartphones",
   "/_not-found/page": "/_not-found",
+  "/api/smartphones/route": "/api/smartphones",
   "/api/smartphones/[id]/route": "/api/smartphones/[id]",
   "/about/page": "/about",
   "/cart/page": "/cart",
   "/contact/page": "/contact",
   "/products/[id]/page": "/products/[id]",
   "/products/page": "/products",
-  "/(store)/upgrade/page": "/upgrade",
-  "/(store)/page": "/",
   "/admin/accessories/page": "/admin/accessories",
-  "/admin/page": "/admin",
+  "/(store)/page": "/",
+  "/(store)/upgrade/page": "/upgrade",
   "/admin/smartphones/page": "/admin/smartphones",
-  "/admin/speakers/page": "/admin/speakers"
+  "/admin/speakers/page": "/admin/speakers",
+  "/admin/page": "/admin"
 }
