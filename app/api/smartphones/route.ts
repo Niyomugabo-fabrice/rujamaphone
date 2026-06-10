@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import prisma from "@/lib/prisma";
-import { SmartphoneBrand, StorageCapacity, Condition } from "@prisma/client";
+
+import type {
+  SmartphoneBrand,
+  StorageCapacity,
+  Condition,
+} from "@/types/smartphone";
 
 // READ: Fetch all smartphones
 export async function GET() {
@@ -22,13 +27,7 @@ export async function GET() {
 // CREATE: Process smartphone creation entry with assets
 export async function POST(request: Request) {
   try {
-    // 1. CLG: Inspect environment variables immediately during request execution
-    // console.log("--- DEBUG: CLOUDINARY CONFIG CHECK ---");
-    // console.log("CLOUDINARY_CLOUD_NAME:", process.env.CLOUDINARY_CLOUD_NAME);
-    // console.log("CLOUDINARY_API_KEY EXIST?:", !!process.env.CLOUDINARY_API_KEY);
-    // console.log("CLOUDINARY_API_SECRET EXIST?:", !!process.env.CLOUDINARY_API_SECRET);
-
-    // Explicitly enforce/re-apply the configuration inside the request scope
+    
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
       api_key: process.env.CLOUDINARY_API_KEY,
@@ -46,9 +45,7 @@ export async function POST(request: Request) {
     const condition = formData.get("condition") as Condition;
     const files = formData.getAll("images") as File[];
 
-    // console.log("--- DEBUG: INCOMING FORM DATA ---");
-    // console.log({ name, priceRaw, brand, storage, condition, description });
-    // console.log(`Images Attached count: ${files.length}`);
+   
 
     if (!name || !priceRaw || !brand || !storage || !condition) {
       return NextResponse.json(
@@ -82,13 +79,11 @@ export async function POST(request: Request) {
         });
 
         if (uploadResult?.secure_url) {
-          // console.log("Cloudinary Upload Success URL:", uploadResult.secure_url);
           uploadedImageUrls.push(uploadResult.secure_url);
         }
       }
     }
 
-    // console.log("Final compiled image array for database persistence:", uploadedImageUrls);
 
     // Persist new records inside your Postgres instance
     const newSmartphone = await prisma.smartphone.create({
