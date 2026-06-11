@@ -1,9 +1,4 @@
 {
-  "/api/smartphones/route": "app/api/smartphones/route.js",
-  "/api/smartphones/[id]/route": "app/api/smartphones/[id]/route.js",
-  "/api/products/[id]/route": "app/api/products/[id]/route.js",
-  "/api/products/route": "app/api/products/route.js",
-  "/products/page": "app/products/page.js",
-  "/products/[id]/page": "app/products/[id]/page.js",
+  "/(store)/page": "app/(store)/page.js",
   "/admin/smartphones/page": "app/admin/smartphones/page.js"
 }

@@ -6,6 +6,8 @@ import { Edit3, Trash2, Smartphone, AlertTriangle, Eye, X, Layers, Image, Trash,
 interface SmartphoneTableProps {
   data: any[];
   onViewProduct: (product: any) => void;
+  
+
 }
 export default function SmartphoneTable({ data, onViewProduct }: SmartphoneTableProps) {
   const [editingItem, setEditingItem] = useState<any | null>(null);

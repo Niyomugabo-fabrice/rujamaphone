@@ -43,7 +43,9 @@ export function ProductCard({ product }: ProductCardProps) {
     }).format(price);
   };
 
-  const images = product.image || [];
+  const images = Array.isArray(product.image) 
+  ? product.image 
+  : (product.image ? [product.image] : []);
   const currentImage = images[currentImageIndex] || "/placeholder.jpg";
 
   return (

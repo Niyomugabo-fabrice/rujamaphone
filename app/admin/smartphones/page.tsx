@@ -146,7 +146,7 @@ export default function SmartphonesPage() {
       ) : (
         <SmartphoneTable 
           data={itemsData} 
-          onRefresh={fetchSmartphones} 
+          // onRefresh={fetchSmartphones} 
           onViewProduct={(product: any) => setSelectedProduct(product)} 
         />
       )}

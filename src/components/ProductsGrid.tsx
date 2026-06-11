@@ -74,10 +74,13 @@ export default function ProductsGrid({ initialCategory }: ProductsGridProps) {
     fetchProducts();
   };
 
-  const handleFilterChange = (newFilters: ProductFilters) => {
-    setFilters(newFilters);
-    setPage(1);
-  };
+ const handleFilterChange = <K extends keyof ProductFilters>(key: K, value: ProductFilters[K]) => {
+  setFilters((prev) => ({
+    ...prev,
+    [key]: value,
+  }));
+  setPage(1);
+};
 
   const handleFilterRemove = (key: keyof ProductFilters) => {
     const newFilters = { ...filters };
@@ -212,7 +215,7 @@ export default function ProductsGrid({ initialCategory }: ProductsGridProps) {
                         name="category"
                         value={cat}
                         checked={filters.category === cat}
-                        onChange={(e) => handleFilterChange("category", e.target.value)}
+                        onChange={(e) => handleFilterChange("minPrice", Number(e.target.value))}
                         className="w-4 h-4 text-red-600"
                       />
                       <span className="capitalize">{cat.toLowerCase()}</span>

@@ -9,6 +9,9 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'Rujama Phones Shop',
   description: 'Best Phones Shop in Kigali',
+  icons :{
+    icon:'./images/logo.jpeg'
+  }
 };
 
 export default function RootLayout({
