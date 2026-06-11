@@ -106,7 +106,7 @@ const handleAddToCart = (e: React.MouseEvent) => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="w-16 h-16 border-4 border-red-600 border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-gray-600">Loading product details...</p>
+          <p className="text-gray-600">Rujama Shop...</p>
         </div>
       </div>
     );
