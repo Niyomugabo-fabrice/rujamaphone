@@ -1,6 +1,9 @@
 {
-  "/api/speakers/route": "app/api/speakers/route.js",
-  "/api/speakers/[id]/route": "app/api/speakers/[id]/route.js",
-  "/admin/smartphones/page": "app/admin/smartphones/page.js",
-  "/admin/speakers/page": "app/admin/speakers/page.js"
+  "/api/smartphones/route": "app/api/smartphones/route.js",
+  "/api/smartphones/[id]/route": "app/api/smartphones/[id]/route.js",
+  "/api/products/[id]/route": "app/api/products/[id]/route.js",
+  "/api/products/route": "app/api/products/route.js",
+  "/products/page": "app/products/page.js",
+  "/products/[id]/page": "app/products/[id]/page.js",
+  "/admin/smartphones/page": "app/admin/smartphones/page.js"
 }
