@@ -18,20 +18,32 @@ export default function FilterDrawer({
   filters,
   onFiltersChange,
   category,
-}: FilterDrawerProps) {
+}: FilterDrawerProps & { onApply: () => void }) {
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     category: true,
     brand: true,
     price: true,
     condition: true,
+    storage: true,
+    batteryLife: true,
+    type: true,
   });
 
   const toggleSection = (section: string) => {
-    setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
+    setExpandedSections((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
   };
 
-  const handleFilterChange = (key: keyof ProductFilters, value: string | number) => {
-    onFiltersChange({ ...filters, [key]: value });
+  const handleFilterChange = (
+    key: keyof ProductFilters,
+    value: string | number | undefined,
+  ) => {
+onFiltersChange({
+  ...filters,
+  [key]: value === "" ? undefined : value,
+});
   };
 
   const handleClearFilters = () => {
@@ -68,62 +80,123 @@ export default function FilterDrawer({
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {/* Category Filter */}
+  <div className="border-b pb-4">
+  <button
+    onClick={() => toggleSection("price")}
+    className="flex items-center justify-between w-full py-2"
+  >
+    <span className="font-medium">Price Range</span>
+    {expandedSections.price ? (
+      <ChevronUp className="w-4 h-4" />
+    ) : (
+      <ChevronDown className="w-4 h-4" />
+    )}
+  </button>
+
+  {expandedSections.price && (
+    <div className="mt-4 space-y-4">
+
+      {/* labels like your image */}
+      <div className="flex justify-between text-sm text-gray-600">
+        <span>RF {filters.minPrice ?? 0}</span>
+        <span>RF {filters.maxPrice ?? 1500000}</span>
+      </div>
+
+      {/* slider container */}
+      <div className="relative w-full">
+
+        {/* track background */}
+        <div className="h-1 bg-gray-200 rounded-full" />
+
+        {/* MIN slider */}
+        <input
+          type="range"
+          min={0}
+          max={1500000}
+          step={10000}
+          value={filters.minPrice ?? 0}
+          onChange={(e) =>
+            handleFilterChange(
+              "minPrice",
+              Math.min(Number(e.target.value), filters.maxPrice ?? 1500000)
+            )
+          }
+          className="absolute top-0 w-full appearance-none bg-transparent pointer-events-auto accent-red-600"
+        />
+
+        {/* MAX slider */}
+        <input
+          type="range"
+          min={0}
+          max={1500000}
+          step={10000}
+          value={filters.maxPrice ?? 1500000}
+          onChange={(e) =>
+            handleFilterChange(
+              "maxPrice",
+              Math.max(Number(e.target.value), filters.minPrice ?? 0)
+            )
+          }
+          className="absolute top-0 w-full appearance-none bg-transparent pointer-events-auto accent-red-600"
+        />
+      </div>
+    </div>
+  )}
+</div>
+
+          {/* Category */}
           <div className="border-b pb-4">
             <button
               onClick={() => toggleSection("category")}
               className="flex items-center justify-between w-full py-2"
             >
               <span className="font-medium">Category</span>
-              {expandedSections.category ? (
-                <ChevronUp className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
+              {expandedSections.category ? <ChevronUp /> : <ChevronDown />}
             </button>
+
             {expandedSections.category && (
               <div className="space-y-2 mt-2">
-                {["SMARTPHONE", "SPEAKER", "ACCESSORY"].map((cat) => (
-                  <label key={cat} className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="category"
-                      value={cat}
-                      checked={filters.category === cat}
-                      onChange={(e) => handleFilterChange("category", e.target.value)}
-                      className="w-4 h-4 text-red-600"
-                    />
-                    <span className="capitalize">{cat.toLowerCase()}</span>
-                  </label>
-                ))}
+              {["SMARTPHONE", "SPEAKER", "ACCESSORY"].map((cat) => (
+                <label key={cat} className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="category"
+                    value={cat}
+                    checked={filters.category === cat}
+                    onChange={(e) =>
+                      handleFilterChange("category", e.target.value as ProductCategory)
+                    }
+                    className="w-4 h-4 text-red-600"
+                  />
+                  <span className="capitalize">{cat.toLowerCase()}</span>
+                </label>
+              ))}
               </div>
             )}
           </div>
 
-          {/* Brand Filter */}
+          {/* Brand */}
           <div className="border-b pb-4">
             <button
               onClick={() => toggleSection("brand")}
               className="flex items-center justify-between w-full py-2"
             >
               <span className="font-medium">Brand</span>
-              {expandedSections.brand ? (
-                <ChevronUp className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
+              {expandedSections.brand ? <ChevronUp /> : <ChevronDown />}
             </button>
+
             {expandedSections.brand && (
               <div className="space-y-2 mt-2">
                 {getBrandsForCategory(category).map((brand) => (
-                  <label key={brand} className="flex items-center gap-2 cursor-pointer">
+                  <label key={brand} className="flex items-center gap-2">
                     <input
                       type="radio"
                       name="brand"
                       value={brand}
                       checked={filters.brand === brand}
-                      onChange={(e) => handleFilterChange("brand", e.target.value)}
-                      className="w-4 h-4 text-red-600"
+                      onChange={(e) =>
+                        handleFilterChange("brand", e.target.value)
+                      }
                     />
                     <span>{brand}</span>
                   </label>
@@ -132,30 +205,28 @@ export default function FilterDrawer({
             )}
           </div>
 
-          {/* Condition Filter */}
+          {/* Condition */}
           <div className="border-b pb-4">
             <button
               onClick={() => toggleSection("condition")}
               className="flex items-center justify-between w-full py-2"
             >
               <span className="font-medium">Condition</span>
-              {expandedSections.condition ? (
-                <ChevronUp className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
+              {expandedSections.condition ? <ChevronUp /> : <ChevronDown />}
             </button>
+
             {expandedSections.condition && (
               <div className="space-y-2 mt-2">
                 {["NEW", "USED"].map((cond) => (
-                  <label key={cond} className="flex items-center gap-2 cursor-pointer">
+                  <label key={cond} className="flex items-center gap-2">
                     <input
                       type="radio"
                       name="condition"
                       value={cond}
                       checked={filters.condition === cond}
-                      onChange={(e) => handleFilterChange("condition", e.target.value)}
-                      className="w-4 h-4 text-red-600"
+                      onChange={(e) =>
+                        handleFilterChange("condition", e.target.value)
+                      }
                     />
                     <span>{cond}</span>
                   </label>
@@ -164,72 +235,34 @@ export default function FilterDrawer({
             )}
           </div>
 
-          {/* Price Range Filter */}
-          <div className="border-b pb-4">
-            <button
-              onClick={() => toggleSection("price")}
-              className="flex items-center justify-between w-full py-2"
-            >
-              <span className="font-medium">Price Range</span>
-              {expandedSections.price ? (
-                <ChevronUp className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
-            </button>
-            {expandedSections.price && (
-              <div className="space-y-3 mt-2">
-                <div>
-                  <label className="text-sm text-gray-600">Min Price (RWF)</label>
-                  <input
-                    type="number"
-                    value={filters.minPrice || ""}
-                    onChange={(e) => handleFilterChange("minPrice", Number(e.target.value))}
-                    className="w-full mt-1 px-3 py-2 border rounded-lg"
-                    placeholder="0"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm text-gray-600">Max Price (RWF)</label>
-                  <input
-                    type="number"
-                    value={filters.maxPrice || ""}
-                    onChange={(e) => handleFilterChange("maxPrice", Number(e.target.value))}
-                    className="w-full mt-1 px-3 py-2 border rounded-lg"
-                    placeholder="1000000"
-                  />
-                </div>
-              </div>
-            )}
-          </div>
+          {/* Price */}
 
-          {/* Category-specific filters */}
+
+          {/* Smartphone */}
           {category === "SMARTPHONE" && (
             <div className="border-b pb-4">
               <button
                 onClick={() => toggleSection("storage")}
                 className="flex items-center justify-between w-full py-2"
               >
-                <span className="font-medium">Storage</span>
-                {expandedSections.storage ? (
-                  <ChevronUp className="w-4 h-4" />
-                ) : (
-                  <ChevronDown className="w-4 h-4" />
-                )}
+                <span>Storage</span>
+                {expandedSections.storage ? <ChevronUp /> : <ChevronDown />}
               </button>
+
               {expandedSections.storage && (
                 <div className="space-y-2 mt-2">
-                  {["GB64", "GB128", "GB256", "GB512", "TB1"].map((storage) => (
-                    <label key={storage} className="flex items-center gap-2 cursor-pointer">
+                  {["64GB", "128GB", "256GB", "512GB"].map((s) => (
+                    <label key={s} className="flex items-center gap-2">
                       <input
                         type="radio"
                         name="storage"
-                        value={storage}
-                        checked={filters.storage === storage}
-                        onChange={(e) => handleFilterChange("storage", e.target.value)}
-                        className="w-4 h-4 text-red-600"
+                        value={s}
+                        checked={filters.storage === s}
+                        onChange={(e) =>
+                          handleFilterChange("storage", e.target.value)
+                        }
                       />
-                      <span>{storage}</span>
+                      <span>{s}</span>
                     </label>
                   ))}
                 </div>
@@ -237,63 +270,57 @@ export default function FilterDrawer({
             </div>
           )}
 
+          {/* Speaker */}
           {category === "SPEAKER" && (
             <div className="border-b pb-4">
               <button
                 onClick={() => toggleSection("batteryLife")}
                 className="flex items-center justify-between w-full py-2"
               >
-                <span className="font-medium">Battery Life</span>
-                {expandedSections.batteryLife ? (
-                  <ChevronUp className="w-4 h-4" />
-                ) : (
-                  <ChevronDown className="w-4 h-4" />
-                )}
+                <span>Battery Life</span>
+                {expandedSections.batteryLife ? <ChevronUp /> : <ChevronDown />}
               </button>
+
               {expandedSections.batteryLife && (
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    value={filters.batteryLife || ""}
-                    onChange={(e) => handleFilterChange("batteryLife", e.target.value)}
-                    className="w-full px-3 py-2 border rounded-lg"
-                    placeholder="e.g., 12 hours"
-                  />
-                </div>
+                <input
+                  type="text"
+                  placeholder="e.g. 12 hours"
+                  value={filters.batteryLife || ""}
+                  onChange={(e) =>
+                    handleFilterChange("batteryLife", e.target.value)
+                  }
+                />
               )}
             </div>
           )}
 
+          {/* Accessory */}
           {category === "ACCESSORY" && (
             <div className="border-b pb-4">
               <button
                 onClick={() => toggleSection("type")}
                 className="flex items-center justify-between w-full py-2"
               >
-                <span className="font-medium">Type</span>
-                {expandedSections.type ? (
-                  <ChevronUp className="w-4 h-4" />
-                ) : (
-                  <ChevronDown className="w-4 h-4" />
-                )}
+                <span>Type</span>
+                {expandedSections.type ? <ChevronUp /> : <ChevronDown />}
               </button>
+
               {expandedSections.type && (
                 <div className="space-y-2 mt-2">
-                  {["Cable", "Case", "Charger", "Screen Protector", "Headphones", "Other"].map(
-                    (type) => (
-                      <label key={type} className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="type"
-                          value={type}
-                          checked={filters.type === type}
-                          onChange={(e) => handleFilterChange("type", e.target.value)}
-                          className="w-4 h-4 text-red-600"
-                        />
-                        <span>{type}</span>
-                      </label>
-                    )
-                  )}
+                  {["Cable", "Case", "Charger"].map((t) => (
+                    <label key={t} className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name="type"
+                        value={t}
+                        checked={filters.type === t}
+                        onChange={(e) =>
+                          handleFilterChange("type", e.target.value)
+                        }
+                      />
+                      <span>{t}</span>
+                    </label>
+                  ))}
                 </div>
               )}
             </div>
@@ -302,17 +329,11 @@ export default function FilterDrawer({
 
         {/* Footer */}
         <div className="flex gap-3 p-4 border-t bg-gray-50">
-          <button
-            onClick={handleClearFilters}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            Clear All
+          <button onClick={handleClearFilters} className="flex-1">
+            Clear
           </button>
-          <button
-            onClick={handleApplyFilters}
-            className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-          >
-            Apply Filters
+          <button onClick={handleApplyFilters} className="flex-1 bg-red-600 text-white">
+            Apply
           </button>
         </div>
       </div>
@@ -323,24 +344,12 @@ export default function FilterDrawer({
 function getBrandsForCategory(category?: ProductCategory): string[] {
   switch (category) {
     case "SMARTPHONE":
-      return ["APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS"];
+      return ["APPLE", "SAMSUNG", "XIAOMI"];
     case "SPEAKER":
-      return ["JBL", "SONY", "BOSE", "APPLE", "ANKER"];
+      return ["JBL", "SONY", "BOSE"];
     case "ACCESSORY":
-      return ["APPLE", "SAMSUNG", "ANKER", "BASEUS", "GENERIC"];
+      return ["ANKER", "BASEUS"];
     default:
-      return [
-        "APPLE",
-        "SAMSUNG",
-        "GOOGLE",
-        "XIAOMI",
-        "ONEPLUS",
-        "JBL",
-        "SONY",
-        "BOSE",
-        "ANKER",
-        "BASEUS",
-        "GENERIC",
-      ];
+      return ["APPLE", "SAMSUNG", "JBL", "SONY", "ANKER"];
   }
 }

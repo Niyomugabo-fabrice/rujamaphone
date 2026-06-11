@@ -19,10 +19,13 @@ export default function ProductsGrid({ initialCategory }: ProductsGridProps) {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
-
   const [filters, setFilters] = useState<ProductFilters>({
-    category: initialCategory,
-  });
+  category: initialCategory,
+});
+
+const [tempFilters, setTempFilters] = useState<ProductFilters>({
+  category: initialCategory,
+});
 
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("createdAt-desc");
@@ -67,12 +70,17 @@ export default function ProductsGrid({ initialCategory }: ProductsGridProps) {
       setIsLoading(false);
     }
   };
+const handleMobileFiltersChange = (newFilters: ProductFilters) => {
+  setTempFilters(newFilters); // ONLY TEMP
+};
+
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setPage(1);
     fetchProducts();
   };
+
 
  const handleFilterChange = <K extends keyof ProductFilters>(key: K, value: ProductFilters[K]) => {
   setFilters((prev) => ({
@@ -141,16 +149,7 @@ export default function ProductsGrid({ initialCategory }: ProductsGridProps) {
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
             {/* Search Bar */}
-            <form onSubmit={handleSearch} className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products..."
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-              />
-            </form>
+           
             {/* Sort Dropdown */}
             <div className="relative">
               <select
@@ -215,8 +214,9 @@ export default function ProductsGrid({ initialCategory }: ProductsGridProps) {
                         name="category"
                         value={cat}
                         checked={filters.category === cat}
-                        // onChange={(e) => handleFilterChange("category", e.target.value)}
-                        onChange={(e) => handleFilterChange("minPrice", Number(e.target.value))}
+                       onChange={(e) =>
+                            handleFilterChange("category", e.target.value as ProductCategory)
+                          }
                         className="w-4 h-4 text-red-600"
                       />
                       <span className="capitalize">{cat.toLowerCase()}</span>
@@ -416,12 +416,16 @@ export default function ProductsGrid({ initialCategory }: ProductsGridProps) {
       </div>
 
       {/* Mobile Filter Drawer */}
-      <FilterDrawer
+     <FilterDrawer
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
         filters={filters}
-        onFiltersChange={handleFilterChange}
+        onFiltersChange={handleMobileFiltersChange}
         category={filters.category}
+        onApply={() => {
+    setFilters(tempFilters);   // APPLY HERE
+    setPage(1);
+  }}
       />
     </div>
   );

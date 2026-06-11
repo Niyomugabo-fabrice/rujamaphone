@@ -25,7 +25,7 @@ export function ProductCard({ product }: ProductCardProps) {
     }).format(price);
   };
 
-  return (
+  return ( 
     <Link
       href={`/products/${product.id}`}
       className="group bg-white rounded-lg border border-border overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"

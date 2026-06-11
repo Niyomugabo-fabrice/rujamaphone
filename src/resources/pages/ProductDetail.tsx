@@ -8,6 +8,9 @@ import { Star, ShoppingCart, MessageCircle, ArrowLeft, Check, Share2, ZoomIn, X 
 import { ProductCard } from "@/components/ProductCard";
 import type { Product } from "@/types/product";
 import { toast } from "sonner";
+import { useCart } from "@/context/CartContext";
+
+
 
 export function ProductDetail() {
   const { id } = useParams();
@@ -56,12 +59,22 @@ export function ProductDetail() {
       console.error("Failed to fetch related products:", error);
     }
   };
+const { addToCart } = useCart();
 
-  const handleAddToCart = () => {
-    if (product) {
-      toast.success(`${product.name} added to cart!`);
-    }
-  };
+const handleAddToCart = (e: React.MouseEvent) => {
+  e.preventDefault();
+
+  if (!product) return;
+
+  addToCart(product);
+  toast.success(`${product.name} added to cart!`);
+};
+
+  // const handleAddToCart = () => {
+  //   if (product) {
+  //     toast.success(`${product.name} added to cart!`);
+  //   }
+  // };
 
   const handleShare = async () => {
     if (navigator.share && product) {
