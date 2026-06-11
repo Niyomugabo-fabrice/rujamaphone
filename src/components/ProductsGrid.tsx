@@ -215,6 +215,7 @@ export default function ProductsGrid({ initialCategory }: ProductsGridProps) {
                         name="category"
                         value={cat}
                         checked={filters.category === cat}
+                        // onChange={(e) => handleFilterChange("category", e.target.value)}
                         onChange={(e) => handleFilterChange("minPrice", Number(e.target.value))}
                         className="w-4 h-4 text-red-600"
                       />

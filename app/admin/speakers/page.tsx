@@ -290,7 +290,7 @@ export default function SpeakersPage() {
                   className="bg-gradient-to-r from-[#A60316] to-[#D90429] hover:from-[#D90429] hover:to-[#FB718A] text-white px-5 py-2.5 text-xs font-bold rounded-xl shadow-sm transition-all disabled:opacity-50 flex items-center gap-2"
                 >
                   {isSubmitting && <RefreshCw className="w-3 h-3 animate-spin" />}
-                  {isSubmitting ? "Deploying Assets..." : "Save"}
+                  {isSubmitting ? "Savving..." : "+ Add"}
                 </button>
               </div>
             </form>
