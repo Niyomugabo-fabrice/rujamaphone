@@ -1348,9 +1348,6 @@ video {
 .min-w-\[var\(--radix-select-trigger-width\)\] {
   min-width: var(--radix-select-trigger-width);
 }
-.min-w-\[120px\] {
-  min-width: 120px;
-}
 .max-w-4xl {
   max-width: 56rem;
 }
@@ -3424,10 +3421,6 @@ video {
 
 .focus\:border-primary:focus {
   border-color: var(--primary);
-}
-
-.focus\:border-transparent:focus {
-  border-color: transparent;
 }
 
 .focus\:border-white:focus {

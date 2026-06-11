@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: 'Rujama Phones Shop',
   description: 'Best Phones Shop in Kigali',
   icons :{
-    icon:'./images/logo.jpeg'
+    icon:'/image/logo.jpeg'
   }
 };
 

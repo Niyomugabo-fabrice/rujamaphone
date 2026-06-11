@@ -6,12 +6,14 @@ import { ProductCard } from "@/components/ProductCard";
 import FilterDrawer from "@/components/FilterDrawer";
 import FilterChips from "@/components/FilterChips";
 import type { Product, ProductFilters, ProductCategory } from "@/types/product";
+import { useSearchParams } from "next/navigation";
 
 interface ProductsGridProps {
   initialCategory?: ProductCategory;
 }
 
 export default function ProductsGrid({ initialCategory }: ProductsGridProps) {
+  const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -36,9 +38,18 @@ const [tempFilters, setTempFilters] = useState<ProductFilters>({
     }
   }, [initialCategory]);
 
+   useEffect(() => {
+    const query = searchParams.get("search");
+    if (query) {
+      setSearchQuery(query);
+    }
+  }, [searchParams]);
+
   useEffect(() => {
     fetchProducts();
-  }, [page, filters, sortBy]);
+  }, [page, filters, sortBy,searchQuery]);
+
+ 
 
   const fetchProducts = async () => {
     setIsLoading(true);

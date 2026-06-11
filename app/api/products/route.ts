@@ -1,174 +1,166 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import type { Product, ProductCategory } from "@/types/product";
+import type { Product } from "@/types/product";
 
+// -------------------------
+// SMART SCORING ENGINE
+// -------------------------
+function getScore(product: any, q: string) {
+  const query = q.toLowerCase();
+  const name = product.name?.toLowerCase() || "";
+  const brand = product.brand?.toLowerCase() || "";
+  const desc = product.description?.toLowerCase() || "";
+
+  let score = 0;
+
+  // exact match (highest priority)
+  if (name === query) score += 100;
+
+  // startsWith (very strong match)
+  if (name.startsWith(query)) score += 80;
+
+  // contains
+  if (name.includes(query)) score += 50;
+
+  // brand match
+  if (brand.includes(query)) score += 60;
+
+  // description match
+  if (desc.includes(query)) score += 20;
+
+  // fuzzy match (ip → iphone style)
+  if (name.replace(/\s/g, "").includes(query)) score += 30;
+
+  return score;
+}
+
+// -------------------------
+// MAIN API
+// -------------------------
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
+
+    // pagination
     const page = Math.max(Number(searchParams.get("page") || "1"), 1);
     const limit = Math.max(Number(searchParams.get("limit") || "12"), 1);
+
     const search = searchParams.get("search")?.trim() || "";
-    const category = searchParams.get("category") as ProductCategory | null;
-    const brand = searchParams.get("brand")?.trim() || "";
-    const condition = searchParams.get("condition")?.trim() || "";
-    const minPrice = Number(searchParams.get("minPrice") || "0");
-    const maxPrice = Number(searchParams.get("maxPrice") || "0");
-    const storage = searchParams.get("storage")?.trim() || "";
-    const batteryLife = searchParams.get("batteryLife")?.trim() || "";
-    const type = searchParams.get("type")?.trim() || "";
-    const sort = searchParams.get("sort") || "createdAt-desc";
 
-    // Build where clauses for each model
-    const buildWhereClause = (model: "smartphone" | "speaker" | "accessory") => {
-      const where: any = {};
-      
-      // Category filter
-      if (category) {
-        if (model === "smartphone" && category !== "SMARTPHONE") {
-          return { id: "never-match" };
-        }
-        if (model === "speaker" && category !== "SPEAKER") {
-          return { id: "never-match" };
-        }
-        if (model === "accessory" && category !== "ACCESSORY") {
-          return { id: "never-match" };
-        }
-      }
-      
-      // Brand filter
-      if (brand) {
-        where.brand = brand;
-      }
-      
-      // Condition filter
-      if (condition) {
-        where.condition = condition;
-      }
-      
-      // Price range filter
-      if (minPrice > 0 || maxPrice > 0) {
-        where.price = {};
-        if (minPrice > 0) where.price.gte = minPrice;
-        if (maxPrice > 0) where.price.lte = maxPrice;
-      }
-      
-      // Search filter
-      if (search) {
-        where.OR = [
-          { name: { contains: search, mode: "insensitive" } },
-          { brand: { contains: search, mode: "insensitive" } },
-        ];
-      }
-      
-      // Model-specific filters
-      if (model === "smartphone" && storage) {
-        where.storage = storage;
-      }
-      
-      if (model === "speaker" && batteryLife) {
-        where.batteryLife = { contains: batteryLife, mode: "insensitive" };
-      }
-      
-      if (model === "accessory" && type) {
-        where.type = { contains: type, mode: "insensitive" };
-      }
-      
-      return where;
-    };
-
-    // Fetch data from all three models with filters
+    // -------------------------
+    // FETCH ALL DATA SAFELY
+    // -------------------------
     const [smartphones, speakers, accessories] = await Promise.all([
-      prisma.smartphone.findMany({
-        where: buildWhereClause("smartphone"),
-      }),
-      prisma.speaker.findMany({
-        where: buildWhereClause("speaker"),
-      }),
-      prisma.accessory.findMany({
-        where: buildWhereClause("accessory"),
-      }),
+      prisma.smartphone.findMany().catch(() => []),
+      prisma.speaker.findMany().catch(() => []),
+      prisma.accessory.findMany().catch(() => []),
     ]);
 
-    // Transform to unified product format
-    const allProducts: Product[] = [
-      ...smartphones.map((s) => ({
-        id: s.id,
-        name: s.name,
-        price: s.price,
-        image: s.image,
-        brand: s.brand,
+    // -------------------------
+    // MERGE PRODUCTS
+    // -------------------------
+    let products: Product[] = [
+      ...smartphones.map((p) => ({
+        id: p.id,
+        name: p.name,
+        price: p.price,
+        image: Array.isArray(p.image) ? p.image : [p.image],
+        brand: p.brand,
         category: "SMARTPHONE" as const,
-        condition: s.condition,
-        rating: s.rating,
-        reviews: s.reviews,
-        storage: s.storage,
-        description: s.description,
+        condition: p.condition,
+        rating: p.rating,
+        reviews: p.reviews,
+        storage: p.storage,
+        description: p.description,
       })),
-      ...speakers.map((s) => ({
-        id: s.id,
-        name: s.name,
-        price: s.price,
-        image: s.image,
-        brand: s.brand,
+
+      ...speakers.map((p) => ({
+        id: p.id,
+        name: p.name,
+        price: p.price,
+        image: Array.isArray(p.image) ? p.image : [p.image],
+        brand: p.brand,
         category: "SPEAKER" as const,
-        condition: s.condition,
-        rating: s.rating,
-        reviews: s.reviews,
-        batteryLife: s.batteryLife,
-        description: s.description,
+        condition: p.condition,
+        rating: p.rating,
+        reviews: p.reviews,
+        batteryLife: p.batteryLife,
+        description: p.description,
       })),
-      ...accessories.map((a) => ({
-        id: a.id,
-        name: a.name,
-        price: a.price,
-        image: a.image,
-        brand: a.brand,
+
+      ...accessories.map((p) => ({
+        id: p.id,
+        name: p.name,
+        price: p.price,
+        image: Array.isArray(p.image) ? p.image : [p.image],
+        brand: p.brand,
         category: "ACCESSORY" as const,
-        condition: a.condition,
-        rating: a.rating,
-        reviews: a.reviews,
-        type: a.type,
-        description: a.description,
+        condition: p.condition,
+        rating: p.rating,
+        reviews: p.reviews,
+        type: p.type,
+        description: p.description,
       })),
     ];
 
-    // Apply sorting
-    const [sortField, sortOrder] = sort.split("-");
-    allProducts.sort((a, b) => {
-      const aVal = a[sortField as keyof Product];
-      const bVal = b[sortField as keyof Product];
-      
-      if (typeof aVal === "number" && typeof bVal === "number") {
-        return sortOrder === "asc" ? aVal - bVal : bVal - aVal;
-      }
-      
-      if (typeof aVal === "string" && typeof bVal === "string") {
-        return sortOrder === "asc"
-          ? aVal.localeCompare(bVal)
-          : bVal.localeCompare(aVal);
-      }
-      
-      return 0;
-    });
+    // -------------------------
+    // SMART SEARCH + RANKING
+    // -------------------------
+    const q = search.toLowerCase().trim();
 
-    // Pagination
-    const total = allProducts.length;
+    if (q) {
+      products = products
+        .map((p) => ({
+          ...p,
+          score: getScore(p, q),
+        }))
+        .filter((p: any) => p.score > 0)
+        .sort((a: any, b: any) => b.score - a.score);
+    } else {
+      // default sorting when no search (best rated first)
+      products = products.sort((a, b) => b.rating - a.rating);
+    }
+
+    // -------------------------
+    // FALLBACK (NO RESULTS)
+    // -------------------------
+    if (q && products.length === 0) {
+      products = products
+        .sort((a, b) => b.rating - a.rating)
+        .slice(0, 10);
+    }
+
+    // -------------------------
+    // PAGINATION
+    // -------------------------
+    const total = products.length;
     const totalPages = Math.max(Math.ceil(total / limit), 1);
-    const offset = (page - 1) * limit;
-    const paginatedProducts = allProducts.slice(offset, offset + limit);
 
+    const start = (page - 1) * limit;
+    const data = products.slice(start, start + limit);
+
+    // -------------------------
+    // RESPONSE
+    // -------------------------
     return NextResponse.json({
-      data: paginatedProducts,
+      success: true,
+      data,
       page,
       limit,
       total,
       totalPages,
+      message: data.length ? "Products loaded" : "No products found",
     });
   } catch (error) {
-    console.error("GET_PRODUCTS_ERROR:", error);
+    console.error("PRODUCT_SEARCH_ERROR:", error);
+
     return NextResponse.json(
-      { error: "Failed to fetch products" },
-      { status: 500 }
+      {
+        success: false,
+        data: [],
+        message: "No products found",
+      },
+      { status: 200 }
     );
   }
 }
