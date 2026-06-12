@@ -4,13 +4,11 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Star, ShoppingCart, MessageCircle, ArrowLeft, Check, Share2, ZoomIn, X } from "lucide-react";
+import { Star, ShoppingCart, MessageCircle, ArrowLeft, Share2, ZoomIn, X } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
 import type { Product } from "@/types/product";
 import { toast } from "sonner";
 import { useCart } from "@/context/CartContext";
-
-
 
 export function ProductDetail() {
   const { id } = useParams();
@@ -31,6 +29,12 @@ export function ProductDetail() {
       fetchRelatedProducts();
     }
   }, [product]);
+
+  useEffect(() => {
+    if (product?.image) {
+      setSelectedImage(0);
+    }
+  }, [product?.id]);
 
   const fetchProduct = async () => {
     try {
@@ -59,22 +63,15 @@ export function ProductDetail() {
       console.error("Failed to fetch related products:", error);
     }
   };
-const { addToCart } = useCart();
 
-const handleAddToCart = (e: React.MouseEvent) => {
-  e.preventDefault();
+  const { addToCart } = useCart();
 
-  if (!product) return;
-
-  addToCart(product);
-  toast.success(`${product.name} added to cart!`);
-};
-
-  // const handleAddToCart = () => {
-  //   if (product) {
-  //     toast.success(`${product.name} added to cart!`);
-  //   }
-  // };
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!product) return;
+    addToCart(product);
+    toast.success(`${product.name} added to cart!`);
+  };
 
   const handleShare = async () => {
     if (navigator.share && product) {
@@ -125,7 +122,13 @@ const handleAddToCart = (e: React.MouseEvent) => {
     );
   }
 
-  const images = product.image || ["/placeholder.jpg"];
+  const images = Array.isArray(product?.image)
+    ? product.image.filter(Boolean)
+    : typeof product?.image === "string"
+      ? [product.image]
+      : ["/placeholder.jpg"];
+
+  const currentImage = images[selectedImage] || images[0];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -143,15 +146,16 @@ const handleAddToCart = (e: React.MouseEvent) => {
             {/* Image Gallery */}
             <div>
               <div
-                className="aspect-square bg-gray-100 rounded-xl overflow-hidden mb-4 relative cursor-zoom-in"
+                className="relative aspect-square bg-gray-100 rounded-xl overflow-hidden mb-4 cursor-zoom-in"
                 onClick={() => setIsZoomOpen(true)}
               >
                 <Image
-                  src={images[selectedImage] || "/placeholder.jpg"}
+                  key={`${images[selectedImage]}-${selectedImage}`}
+                  src={currentImage}
                   alt={product.name}
                   fill
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                  sizes="(max-width: 768px) 100vw, 50vw"
+                  priority
+                  className="object-contain hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute bottom-4 right-4 p-2 bg-white/90 backdrop-blur-sm rounded-full opacity-0 hover:opacity-100 transition-opacity">
                   <ZoomIn className="w-5 h-5 text-gray-700" />
@@ -163,7 +167,7 @@ const handleAddToCart = (e: React.MouseEvent) => {
                     <button
                       key={index}
                       onClick={() => setSelectedImage(index)}
-                      className={`aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 transition-all ${
+                      className={`relative aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 transition-all ${
                         selectedImage === index ? "border-red-600" : "border-transparent hover:border-gray-300"
                       }`}
                     >
@@ -223,7 +227,7 @@ const handleAddToCart = (e: React.MouseEvent) => {
                 </div>
               </div>
 
-              {/* Dynamic Specifications */}
+              {/* Specifications */}
               <div className="border-t border-b border-gray-200 py-6 space-y-3">
                 <h3 className="font-bold text-gray-900 mb-4">Specifications</h3>
                 <div className="grid grid-cols-2 gap-4">
@@ -245,12 +249,6 @@ const handleAddToCart = (e: React.MouseEvent) => {
                     <div className="flex flex-col">
                       <span className="text-sm text-gray-500">Battery Life</span>
                       <span className="font-medium text-gray-900">{product.batteryLife}</span>
-                    </div>
-                  )}
-                  {product.type && (
-                    <div className="flex flex-col">
-                      <span className="text-sm text-gray-500">Type</span>
-                      <span className="font-medium text-gray-900">{product.type}</span>
                     </div>
                   )}
                 </div>
@@ -317,13 +315,13 @@ const handleAddToCart = (e: React.MouseEvent) => {
             >
               <X className="w-6 h-6" />
             </button>
-            <div className="aspect-square bg-gray-100 rounded-xl overflow-hidden">
+            <div className="relative aspect-square bg-gray-100 rounded-xl overflow-hidden">
               <Image
                 src={images[selectedImage] || "/placeholder.jpg"}
                 alt={product.name}
                 fill
                 className="object-contain"
-                sizes="(max-width: 1200px) 100vw"
+                sizes="90vw"
               />
             </div>
           </div>

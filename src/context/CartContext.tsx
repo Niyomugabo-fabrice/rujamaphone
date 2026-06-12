@@ -1,7 +1,7 @@
-"use client"
+"use client";
+
 import { createContext, useContext, useState, ReactNode } from 'react';
 import type { Product } from "@/types/product";
-
 
 export interface CartItem extends Omit<Product, "image"> {
   image: string; // single image for cart UI
@@ -23,33 +23,38 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
 
- const addToCart = (product: Product) => {
-  setCart(prevCart => {
-    const existingItem = prevCart.find(item => item.id === product.id);
+  const addToCart = (product: Product) => {
+    setCart(prevCart => {
+      // We use String() conversion to ensure we are comparing values, 
+      // not memory references or mismatched types (e.g., "1" vs 1)
+      const targetId = String(product.id);
+      const existingItem = prevCart.find(item => String(item.id) === targetId);
 
-    if (existingItem) {
-      return prevCart.map(item =>
-        item.id === product.id
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      );
-    }
+      if (existingItem) {
+        return prevCart.map(item =>
+          String(item.id) === targetId
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
 
-    return [
-      ...prevCart,
-      {
-        ...product,
-        image: Array.isArray(product.image)
-        ? product.image[0]
-        : product.image || "", 
-        quantity: 1,
-      },
-    ];
-  });
-};
+      // If no match, add the new item
+      return [
+        ...prevCart,
+        {
+          ...product,
+          // Ensure we extract a single string for the image
+          image: Array.isArray(product.image) 
+            ? (product.image[0] || "") 
+            : (product.image || ""), 
+          quantity: 1,
+        },
+      ];
+    });
+  };
 
   const removeFromCart = (productId: string) => {
-    setCart(prevCart => prevCart.filter(item => item.id !== productId));
+    setCart(prevCart => prevCart.filter(item => String(item.id) !== String(productId)));
   };
 
   const updateQuantity = (productId: string, quantity: number) => {
@@ -59,7 +64,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
     setCart(prevCart =>
       prevCart.map(item =>
-        item.id === productId ? { ...item, quantity } : item
+        String(item.id) === String(productId) ? { ...item, quantity } : item
       )
     );
   };
