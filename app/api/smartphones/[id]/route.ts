@@ -1,40 +1,41 @@
 export const runtime = "nodejs";
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { checkAuth } from "@/lib/auth-check";
+import { handleApiError } from "@/lib/util/errorhandle";
 
 // GET: Single item
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params;
+  try {
+    await checkAuth();
+    const { id } = await params;
 
-  // console.log("GET params id:", id);
+    const item = await prisma.smartphone.findUnique({
+      where: { id },
+    });
 
-  const item = await prisma.smartphone.findUnique({
-    where: { id },
-  });
-
-  // console.log("GET result:", item);
-
-  return item
-    ? NextResponse.json(item)
-    : NextResponse.json({ error: "Not found" }, { status: 404 });
+    return item
+      ? NextResponse.json(item)
+      : NextResponse.json({ error: "Item not found" }, { status: 404 });
+  } catch (error: any) {
+    return handleApiError(error);
+  }
 }
 
-
-
+// PATCH: Update item
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    await checkAuth();
     const { id } = await params;
     const body = await request.json();
 
-    // console.log("PATCH BODY:", body);
-
-    // ✅ whitelist only valid Prisma fields
+    // Whitelist only valid fields
     const data = {
       name: body.name,
       brand: body.brand,
@@ -52,12 +53,7 @@ export async function PATCH(
 
     return NextResponse.json(updated);
   } catch (error: any) {
-    // console.log("PATCH ERROR:", error);
-
-    return NextResponse.json(
-      { error: error.message },
-      { status: 500 }
-    );
+    return handleApiError(error);
   }
 }
 
@@ -67,25 +63,15 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    await checkAuth();
     const { id } = await params;
-
-    // console.log("DELETE params id:", id);
 
     await prisma.smartphone.delete({
       where: { id },
     });
 
-    // console.log("DELETE success for id:", id);
-
-    return NextResponse.json({
-      message: "Deleted",
-    });
-  } catch (error) {
-    // console.log("DELETE error:", error);
-
-    return NextResponse.json(
-      { error: "Failed to delete" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Deleted successfully" });
+  } catch (error: any) {
+    return handleApiError(error);
   }
 }

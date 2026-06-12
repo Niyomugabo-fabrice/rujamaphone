@@ -64,7 +64,7 @@ export default function SmartphoneTable({ data, onViewProduct }: SmartphoneTable
     setIsLoading(true);
     try {
       const queryString = buildQueryString();
-      const response = await fetch(`/api/smartphones?${queryString}`);
+      const response = await fetch(`/api/smartphones?${queryString}`, {credentials: "include"});
       const payload = await response.json();
 
       if (!response.ok) {
@@ -117,7 +117,8 @@ export default function SmartphoneTable({ data, onViewProduct }: SmartphoneTable
       const remainingImages = (viewingItem.image || []).filter((url: string) => url !== imgUrl);
       const response = await fetch(`/api/smartphones/${viewingItem.id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        // headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ image: remainingImages }),
       });
 
@@ -152,7 +153,8 @@ export default function SmartphoneTable({ data, onViewProduct }: SmartphoneTable
 
       const response = await fetch(`/api/smartphones/${viewingItem.id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        // headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ image: remainingImages }),
       });
 
@@ -246,7 +248,8 @@ const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
       const response = await fetch(`/api/smartphones/${editingItem.id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        // headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(payload),
       });
 
@@ -283,7 +286,11 @@ const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     if (!deletingId) return;
     setIsSubmitting(true);
     try {
-      const response = await fetch(`/api/smartphones?id=${deletingId}`, { method: "DELETE" });
+      const response = await fetch(`/api/smartphones?id=${deletingId}`, { 
+        method: "DELETE",
+        credentials: "include",
+      
+      });
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Failed to delete asset");
@@ -849,7 +856,7 @@ const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                 onClick={handleDeleteSubmit} 
                 className="flex-1 bg-[#D90429] hover:bg-[#A60316] text-white px-4 py-2.5 text-xs font-bold rounded-xl transition-colors shadow-sm"
               >
-                Purge Record
+                Delete Record
               </button>
             </div>
           </div>

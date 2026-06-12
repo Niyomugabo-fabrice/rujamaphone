@@ -60,7 +60,7 @@ export default function SpeakerTable({ data, onViewProduct }: SpeakerTableProps)
     setIsLoading(true);
     try {
       const queryString = buildQueryString();
-      const response = await fetch(`/api/speakers?${queryString}`);
+      const response = await fetch(`/api/speakers?${queryString}`,{credentials: "include"});
       const payload = await response.json();
 
       if (!response.ok) {
@@ -106,6 +106,7 @@ export default function SpeakerTable({ data, onViewProduct }: SpeakerTableProps)
     try {
       const response = await fetch(`/api/speakers?id=${deletingId}`, {
         method: "DELETE",
+        credentials: "include",
       });
 
       if (response.ok) {
@@ -165,6 +166,7 @@ export default function SpeakerTable({ data, onViewProduct }: SpeakerTableProps)
       const response = await fetch(`/api/speakers/${editingItem.id}`, {
         method: "PATCH",
         body: formData,
+        credentials: "include",
       });
 
       if (response.ok) {
@@ -190,7 +192,9 @@ export default function SpeakerTable({ data, onViewProduct }: SpeakerTableProps)
 
       const response = await fetch(`/api/speakers/${viewingItem.id}`, {
         method: "PATCH",
+
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           ...viewingItem,
           image: updatedImages,

@@ -62,7 +62,9 @@ export default function AccessoryTable({ data, onViewProduct }: AccessoryTablePr
     setIsLoading(true);
     try {
       const queryString = buildQueryString();
-      const response = await fetch(`/api/accessories?${queryString}`);
+      const response = await fetch(`/api/accessories?${queryString}`,
+        {credentials: "include"}
+      );
       const payload = await response.json();
 
       if (!response.ok) {
@@ -108,6 +110,7 @@ export default function AccessoryTable({ data, onViewProduct }: AccessoryTablePr
     try {
       const response = await fetch(`/api/accessories?id=${deletingId}`, {
         method: "DELETE",
+        credentials: "include",
       });
 
       if (response.ok) {
@@ -167,6 +170,7 @@ export default function AccessoryTable({ data, onViewProduct }: AccessoryTablePr
       const response = await fetch(`/api/accessories/${editingItem.id}`, {
         method: "PATCH",
         body: formData,
+        credentials: "include",
       });
 
       if (response.ok) {
@@ -192,7 +196,8 @@ export default function AccessoryTable({ data, onViewProduct }: AccessoryTablePr
 
       const response = await fetch(`/api/accessories/${viewingItem.id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        // headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           ...viewingItem,
           image: updatedImages,

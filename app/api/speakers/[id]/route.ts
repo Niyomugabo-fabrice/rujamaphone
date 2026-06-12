@@ -2,6 +2,8 @@ export const runtime = "nodejs";
 import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import prisma from "@/lib/prisma";
+import { checkAuth } from "@/lib/auth-check";
+import { handleApiError } from "@/lib/util/errorhandle";
 
 import type {
   SpeakerBrand,
@@ -13,22 +15,29 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params;
+  try {
+    await checkAuth();
+    const { id } = await params;
 
-  const item = await prisma.speaker.findUnique({
-    where: { id },
-  });
+    const item = await prisma.speaker.findUnique({
+      where: { id },
+    });
 
-  return item
-    ? NextResponse.json(item)
-    : NextResponse.json({ error: "Not found" }, { status: 404 });
+    return item
+      ? NextResponse.json(item)
+      : NextResponse.json({ error: "Speaker not found" }, { status: 404 });
+  } catch (error: any) {
+    return handleApiError(error);
+  }
 }
 
+// PATCH: Update item with file handling
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    await checkAuth();
     const { id } = await params;
     const formData = await request.formData();
     
@@ -44,10 +53,10 @@ export async function PATCH(
     const batteryLife = formData.get("batteryLife") as string | null;
     const description = formData.get("description") as string | null;
     const priceRaw = formData.get("price") as string;
-    const existingImages = JSON.parse(formData.get("existingImages") as string) || "[]";
+    const existingImages = JSON.parse((formData.get("existingImages") as string) || "[]");
     const files = formData.getAll("images") as File[];
 
-    // Upload new images to Cloudinary
+    // Upload new images
     const uploadedImageUrls: string[] = [];
     for (const file of files) {
       if (file.size > 0) {
@@ -57,47 +66,32 @@ export async function PATCH(
         const uploadResult = await new Promise<any>((resolve, reject) => {
           cloudinary.uploader.upload_stream(
             { folder: "rujamaphone/speakers" },
-            (error, result) => {
-              if (error) {
-                console.error("Cloudinary stream pipe crash details:", error);
-                reject(error);
-              } else {
-                resolve(result);
-              }
-            }
+            (error, result) => (error ? reject(error) : resolve(result))
           ).end(buffer);
         });
 
-        if (uploadResult?.secure_url) {
-          uploadedImageUrls.push(uploadResult.secure_url);
-        }
+        if (uploadResult?.secure_url) uploadedImageUrls.push(uploadResult.secure_url);
       }
     }
 
-    // Combine existing images with newly uploaded ones
     const finalImages = [...existingImages, ...uploadedImageUrls];
-
-    const data = {
-      name,
-      brand,
-      condition,
-      batteryLife,
-      description,
-      price: parseInt(priceRaw),
-      image: finalImages,
-    };
 
     const updated = await prisma.speaker.update({
       where: { id },
-      data,
+      data: {
+        name,
+        brand,
+        condition,
+        batteryLife,
+        description,
+        price: parseInt(priceRaw || "0", 10),
+        image: finalImages,
+      },
     });
 
     return NextResponse.json(updated);
   } catch (error: any) {
-    return NextResponse.json(
-      { error: error.message },
-      { status: 500 }
-    );
+    return handleApiError(error);
   }
 }
 
@@ -107,19 +101,15 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    await checkAuth();
     const { id } = await params;
 
     await prisma.speaker.delete({
       where: { id },
     });
 
-    return NextResponse.json({
-      message: "Deleted",
-    });
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to delete" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Speaker record deleted" });
+  } catch (error: any) {
+    return handleApiError(error);
   }
 }

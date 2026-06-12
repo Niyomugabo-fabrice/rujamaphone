@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import prisma from "@/lib/prisma";
+import { checkAuth } from "@/lib/auth-check";
+
+import { handleApiError} from "@/lib/util/errorhandle"
 
 import type {
   SmartphoneBrand,
@@ -11,6 +14,7 @@ import type {
 // READ: Fetch smartphones with pagination, search, and filtering
 export async function GET(request: Request) {
   try {
+    await checkAuth();
     const { searchParams } = new URL(request.url);
     const page = Math.max(Number(searchParams.get("page") || "1"), 1);
     const limit = Math.max(Number(searchParams.get("limit") || "10"), 1);
@@ -70,18 +74,16 @@ export async function GET(request: Request) {
       },
       { status: 200 }
     );
-  } catch (error) {
+  } catch (error:any) {
     console.error("GET_SMARTPHONES_ERROR:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch smartphones" },
-      { status: 500 }
-    );
+    return handleApiError(error)
   }
 }
 
 // CREATE: Process smartphone creation entry with assets
 export async function POST(request: Request) {
   try {
+     await checkAuth();
     
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -156,10 +158,7 @@ export async function POST(request: Request) {
     return NextResponse.json(newSmartphone, { status: 201 });
   } catch (error) {
     console.error("POST_SMARTPHONE_ERROR:", error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Internal Server Processing Error" },
-      { status: 500 }
-    );
+    return handleApiError(error)
   }
 }
 
@@ -180,9 +179,6 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ message: "Smartphone tracking record deleted" }, { status: 200 });
   } catch (error) {
     console.error("DELETE_SMARTPHONE_ERROR:", error);
-    return NextResponse.json(
-      { error: "Failed to delete item from records" },
-      { status: 500 }
-    );
+    return handleApiError(error)
   }
 }

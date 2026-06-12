@@ -134,13 +134,28 @@ useEffect(() => {
                   <span>Shop Now</span>
                   <ArrowRight className="w-5 h-5" />
                 </Link>
-
-                <Link
-                  href="/installment"
-                  className="px-8 py-3 border border-primary text-primary rounded-xl font-semibold hover:bg-primary hover:text-white transition"
+                <div className="flex items-center">
+                 <Link
+                  href="/upgrade"
+                  className="group inline-flex items-center gap-3 px-8 py-3 border-2 border-primary text-primary rounded-xl font-semibold hover:bg-primary hover:text-white transition-all duration-300 shadow-md hover:shadow-lg"
                 >
-                  Pay in Installments
+                  <span className="relative flex items-center justify-center w-3 h-3">
+                    {/* Accelerated Pinging Glow (duration-700) */}
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75 animate-ping [animation-duration:0.7s] shadow-[0_0_15px_5px_rgba(34,211,238,0.7)]"></span>
+                    
+                    {/* The Core Dot */}
+                    <span className="relative inline-flex w-3 h-3 rounded-full bg-primary shadow-[0_0_12px_rgba(130,2,16,0.6)]">
+  <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-75 animate-ping [animation-duration:1s]"></span>
+  <span className="relative inline-flex w-3 h-3 rounded-full bg-primary"></span>
+</span>
+{/* <span className="relative inline-flex w-3 h-3 rounded-full bg-primary shadow-[0_0_12px_rgba(130,2,16,0.6)]"></span> */}
+ </span>
+
+                  <span>Top Up Services</span>
                 </Link>
+              </div>
+             
+             
               </div>
             </div>
 
