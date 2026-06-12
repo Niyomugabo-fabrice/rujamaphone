@@ -13,7 +13,7 @@ export default function Header({ onOpenMobileSidebar }: HeaderProps) {
         <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
           <span className="text-[#820210] text-sm font-bold">R</span>
         </div>
-        <span className="font-bold text-white tracking-wide text-sm">Rujama Console</span>
+        <span className="font-bold text-white tracking-wide text-sm">Rujama Phones Shop</span>
       </div>
       
       <button

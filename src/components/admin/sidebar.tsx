@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Smartphone, Speaker, Layers, LogOut } from "lucide-react";
+import Image from "next/image";
+
 
 interface SidebarProps {
   onCloseMobile?: () => void;
@@ -14,6 +16,16 @@ export const navigationOptions = [
   { name: "SPEAKER", href: "/admin/speakers", icon: Speaker },
 ];
 
+const handleLogout = async () => {
+  try {
+    // No headers needed! The browser automatically sends the cookie
+    await fetch("/api/auth/logout", { method: "POST" });
+    window.location.href = "/auth/login";
+  } catch (error) {
+    console.error("Logout failed", error);
+  }
+};
+
 export default function Sidebar({ onCloseMobile }: SidebarProps) {
   const pathname = usePathname();
 
@@ -22,11 +34,18 @@ export default function Sidebar({ onCloseMobile }: SidebarProps) {
       {/* Brand Identity Header */}
       <div className="flex items-center flex-shrink-0 px-6 space-x-3">
         <div className="w-9 h-9 bg-white rounded-xl flex items-center justify-center shadow-sm">
-          <span className="text-[#820210] text-xl font-bold font-sans">R</span>
+            <div className="hidden sm:flex w-12 h-12 rounded-lg items-center justify-center shadow-md shrink-0">
+                         <Image
+                           src="/image/logo.jpeg"
+                           alt="logo"
+                           width={48}
+                           height={48}
+                           className="rounded-full object-cover"
+                         />
+            </div>
         </div>
         <div>
-          <h2 className="font-bold text-lg leading-tight tracking-wide">Rujama Core</h2>
-          <p className="text-[11px] text-red-200">Kigali Management Engine</p>
+          <h2 className="font-serif text-sm  leading-tight tracking-wide">Rujama Phones Shop </h2>
         </div>
       </div>
 
@@ -58,14 +77,14 @@ export default function Sidebar({ onCloseMobile }: SidebarProps) {
 
       {/* Workspace Footer */}
       <div className="flex-shrink-0 flex border-t border-red-800/60 p-4 mx-2">
-        <Link 
-          href="/" 
-          className="flex items-center text-sm font-medium text-red-200 hover:text-white group w-full px-2 py-1"
-        >
-          <LogOut className="mr-3 h-5 w-5 text-red-300 group-hover:text-white" />
-          Exit Workspace
-        </Link>
-      </div>
+          <button 
+  onClick={handleLogout}
+  className="group flex items-center w-full px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 text-red-200 hover:bg-white hover:text-[#820210]"
+>
+  <LogOut className="mr-3 h-5 w-5 text-red-300 group-hover:text-[#820210]" />
+  Logout
+</button>
+        </div>
     </div>
   );
 }

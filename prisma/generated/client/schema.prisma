@@ -51,6 +51,46 @@ enum AccessoryBrand {
 }
 
 // ==========================================
+// AUTHENTICATION ENUMS
+// ==========================================
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+// ==========================================
+// USER MODEL
+// ==========================================
+
+model User {
+  id            String     @id @default(uuid())
+  fullName      String
+  email         String     @unique
+  password      String
+  role          UserRole   @default(USER)
+  avatar        String?
+  emailVerified Boolean    @default(false)
+  status        UserStatus @default(ACTIVE)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  lastLogin     DateTime?
+
+  // Password reset token
+  resetToken        String?
+  resetTokenExpires DateTime?
+
+  @@index([email])
+  @@index([status])
+}
+
+// ==========================================
 // CORE HARDWARE PRODUCT MODELS
 // ==========================================
 

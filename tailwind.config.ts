@@ -47,6 +47,10 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      boxShadow: {
+        // 0px horizontal, 0px vertical, 25px blur, 10px spread
+        'all-sides': '0 0 55px 90px rgba(59, 130, 246, 0.2)', 
+      }
     },
   },
   plugins: [],
