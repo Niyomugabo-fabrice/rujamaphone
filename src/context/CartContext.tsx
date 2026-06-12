@@ -39,7 +39,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
       ...prevCart,
       {
         ...product,
-        image: product.image[0], 
+        image: Array.isArray(product.image)
+        ? product.image[0]
+        : product.image || "", 
         quantity: 1,
       },
     ];

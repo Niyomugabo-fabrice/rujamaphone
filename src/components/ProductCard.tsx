@@ -6,21 +6,26 @@ import Image from "next/image";
 import { Star, ShoppingCart, Heart, Eye, X } from "lucide-react";
 import type { Product } from "@/types/product";
 import { toast } from "sonner";
+import { useCart } from "@/context/CartContext";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  const { addToCart } = useCart();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
 
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toast.success(`${product.name} added to cart!`);
-  };
+const handleAddToCart = (e: React.MouseEvent) => {
+  e.preventDefault();
+  e.stopPropagation();
+
+  addToCart(product);
+
+  toast.success(`${product.name} added to cart!`);
+};
 
   const handleWishlistToggle = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -48,13 +53,11 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <>
-      <Link
-        href={`/products/${product.id}`}
-        className="group bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative"
-      >
-        {/* Image Gallery */}
-        <div
-          className="aspect-square overflow-hidden bg-gray-100 relative"
+      <div className="group bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative">
+        {/* Image Gallery Wrapper */}
+        <Link
+          href={`/products/${product.id}`}
+          className="block aspect-square overflow-hidden bg-gray-100 relative"
           onMouseEnter={() => images.length > 1 && setCurrentImageIndex(1)}
           onMouseLeave={() => setCurrentImageIndex(0)}
         >
@@ -79,38 +82,24 @@ export function ProductCard({ product }: ProductCardProps) {
               ))}
             </div>
           )}
+        </Link>
 
-          {/* Action Buttons */}
-          <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button
-              onClick={handleWishlistToggle}
-              className="p-2 bg-white rounded-full shadow-md hover:bg-red-50 transition-colors"
-            >
-              <Heart
-                className={`w-4 h-4 ${isWishlisted ? "fill-red-500 text-red-500" : "text-gray-600"}`}
-              />
-            </button>
-            <button
-              onClick={handleQuickView}
-              className="p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors"
-            >
-              <Eye className="w-4 h-4 text-gray-600" />
-            </button>
-          </div>
-
-          {/* Condition Badge */}
-          {/* <div className="absolute top-2 left-2">
-            <span
-              className={`text-xs px-2 py-1 rounded font-semibold ${
-                product.condition === "NEW"
-                  ? "bg-emerald-500 text-white"
-                  : "bg-amber-500 text-white"
-              }`}
-            > */}
-              {/* {product.condition} */}
-            {/* </span>
-          </div> */}
-          
+        {/* Action Buttons (Absolute position, outside the main Link) */}
+        <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+          <button
+            onClick={handleWishlistToggle}
+            type="button"
+            className="p-2 bg-white rounded-full shadow-md hover:bg-red-50 transition-colors"
+          >
+            <Heart className={`w-4 h-4 ${isWishlisted ? "fill-red-500 text-red-500" : "text-gray-600"}`} />
+          </button>
+          <button
+            onClick={handleQuickView}
+            type="button"
+            className="p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors"
+          >
+            <Eye className="w-4 h-4 text-gray-600" />
+          </button>
         </div>
 
         {/* Product Info */}
@@ -120,13 +109,16 @@ export function ProductCard({ product }: ProductCardProps) {
               {product.brand}
             </span>
             <span className="text-xs px-2 py-1 bg-red-50 text-red-700 rounded font-medium">
+              
               {product.category}
             </span>
           </div>
 
-          <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 min-h-[40px]">
-            {product.name}
-          </h3>
+          <Link href={`/products/${product.id}`}>
+            <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 min-h-[40px]">
+              {product.name}
+            </h3>
+          </Link>
 
           {/* Rating */}
           <div className="flex items-center space-x-1 mb-3">
@@ -150,13 +142,14 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
             <button
               onClick={handleAddToCart}
+              type="button"
               className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors shadow-md hover:shadow-lg"
             >
               <ShoppingCart className="w-5 h-5" />
             </button>
           </div>
         </div>
-      </Link>
+      </div>
 
       {/* Quick View Modal */}
       {isQuickViewOpen && (
@@ -171,7 +164,6 @@ export function ProductCard({ product }: ProductCardProps) {
             </button>
 
             <div className="grid md:grid-cols-2 gap-6">
-              {/* Image Gallery */}
               <div className="aspect-square bg-gray-100 rounded-xl overflow-hidden">
                 <Image
                   src={images[0] || "/placeholder.jpg"}
@@ -182,7 +174,6 @@ export function ProductCard({ product }: ProductCardProps) {
                 />
               </div>
 
-              {/* Product Details */}
               <div className="space-y-4">
                 <div>
                   <span className="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded font-medium">
@@ -222,36 +213,24 @@ export function ProductCard({ product }: ProductCardProps) {
                       {product.condition}
                     </span>
                   </div>
-
                   {product.storage && (
                     <div className="flex items-center gap-2">
                       <span className="text-sm text-gray-600">Storage:</span>
                       <span className="text-sm font-medium">{product.storage}</span>
                     </div>
                   )}
-
                   {product.batteryLife && (
                     <div className="flex items-center gap-2">
                       <span className="text-sm text-gray-600">Battery Life:</span>
                       <span className="text-sm font-medium">{product.batteryLife}</span>
                     </div>
                   )}
-
-                  {product.type && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-600">Type:</span>
-                      <span className="text-sm font-medium">{product.type}</span>
-                    </div>
-                  )}
                 </div>
-
-                {product.description && (
-                  <p className="text-sm text-gray-600 line-clamp-3">{product.description}</p>
-                )}
 
                 <div className="flex gap-3 pt-4">
                   <button
                     onClick={handleAddToCart}
+                    type="button"
                     className="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-semibold transition-colors"
                   >
                     Add to Cart
