@@ -18,7 +18,7 @@ import type { Product } from "@/types/product";
 
 export function Home() {
 
-  const sliderImages = [
+  const staticSliders = [
     "/image/hero1.png",
     "/image/hero2.png",
     "/image/hero3.png",
@@ -27,28 +27,47 @@ export function Home() {
     "/image/rujamashop.jpeg"
   ];
 
+  const [sliderImages, setSliderImages] = useState<string[]>(staticSliders);
+  const [sliderIndex, setSliderIndex] = useState(0);
+  const [text, setText] = useState("");
+  const [serviceIndex, setServiceIndex] = useState(0);
+  const [subIndex, setSubIndex] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+
+  // Fetch dynamic sliders from API
+  useEffect(() => {
+    async function loadSliders() {
+      try {
+        const res = await fetch("/api/sliders");
+        const json = await res.json();
+        if (json.success && json.data && json.data.length > 0) {
+          setSliderImages(json.data.map((item: any) => item.image));
+          setSliderIndex(0);
+        }
+      } catch (err) {
+        console.error("Failed to load dynamic sliders:", err);
+      }
+    }
+    loadSliders();
+  }, []);
+
   // 🔥 IMAGE SLIDER
   useEffect(() => {
+    if (sliderImages.length <= 1) return;
     const interval = setInterval(() => {
       setSliderIndex((prev) => (prev + 1) % sliderImages.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [sliderImages]);
 
   // 🔥 SERVICES ANIMATION
- const services = [
-  "Top up your device easily",
-  "Get a phone on installment payment",
-  "Buy best accessories, smartphones & speakers",
-  "Enjoy high quality at low prices",
-  "Fast delivery across Kigali"
-];
-
-const [text, setText] = useState("");
-const [sliderIndex, setSliderIndex] = useState(0);
-const [serviceIndex, setServiceIndex] = useState(0);
-const [subIndex, setSubIndex] = useState(0);
-const [deleting, setDeleting] = useState(false);
+  const services = [
+    "Top up your device easily",
+    "Get a phone on installment payment",
+    "Buy best accessories, smartphones & speakers",
+    "Enjoy high quality at low prices",
+    "Fast delivery across Kigali"
+  ];
 
 useEffect(() => {
   if (subIndex === services[serviceIndex].length + 1 && !deleting) {

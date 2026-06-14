@@ -1,316 +1,262 @@
-"use client";
-
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
+  BadgeCheck,
+  BatteryCharging,
+  Calculator,
+  Check,
+  Clock,
+  MessageCircle,
+  Phone,
   RefreshCw,
   ShieldCheck,
-  Clock,
-  Award,
-  Phone,
-  MessageCircle,
-  ChevronRight,
   Smartphone,
-  Info,
+  Store,
 } from "lucide-react";
 
-// ─── Brand data ────────────────────────────────────────────────────────────────
-const STEPS = [
+const processCards = [
   {
-    num: 1,
-    emoji: "📱",
-    title: "Bring your phone",
-    desc: "Visit our shop in Kigali with your current device in working condition. We accept all major brands.",
+    image: "/image/rujamashop.jpeg",
+    icon: Store,
+    title: "Visit our shop",
+    text: "Bring your current phone to Rujama Phones Shop in Kigali so our team can inspect it properly.",
   },
   {
-    num: 2,
-    emoji: "💰",
-    title: "Get instant valuation",
-    desc: "Our team assesses your phone on the spot and gives you a fair, transparent trade-in price.",
+    image: "/image/hero2.png",
+    icon: Calculator,
+    title: "Get a fair value",
+    text: "We check model, storage, screen, battery, body condition, and market value before giving a clear offer.",
   },
   {
-    num: 3,
-    emoji: "🎉",
-    title: "Top up & upgrade",
-    desc: "Pay only the difference between your trade-in value and your chosen new device. Done!",
-  },
-];
-
-const BRANDS = [
-  { name: "Apple iPhone", hot: true },
-  { name: "Samsung", hot: true },
-  { name: "Tecno", hot: false },
-  { name: "Infinix", hot: false },
-  { name: "Xiaomi", hot: false },
-  { name: "Itel", hot: false },
-  { name: "Huawei", hot: false },
-  { name: "OPPO", hot: false },
-  { name: "Realme", hot: false },
-  { name: "Nokia", hot: false },
-  { name: "OnePlus", hot: false },
-];
-
-const BENEFITS = [
-  {
-    icon: ShieldCheck,
-    title: "Fair & transparent pricing",
-    desc: "No hidden fees. You see the valuation before you decide.",
-  },
-  {
-    icon: Clock,
-    title: "Same-day upgrade",
-    desc: "Walk in with your old phone, walk out with a new one — same visit.",
-  },
-  {
-    icon: Award,
-    title: "Warranty included",
-    desc: "Every device sold comes with a warranty for your peace of mind.",
+    image: "/image/hero1.png",
+    icon: RefreshCw,
+    title: "Top up and upgrade",
+    text: "Choose a better device, pay only the difference, and leave with your upgraded phone the same day.",
   },
 ];
 
-// ─── Component ─────────────────────────────────────────────────────────────────
-export default function TopUpService() {
+const checkItems = [
+  { icon: Smartphone, title: "Phone condition", text: "Screen, body, camera, buttons, charging, and network are checked." },
+  { icon: BatteryCharging, title: "Battery health", text: "A stronger battery gives your current phone a better trade value." },
+  { icon: ShieldCheck, title: "Ownership check", text: "Bring your ID and make sure the phone is unlocked and ready to verify." },
+  { icon: BadgeCheck, title: "Final offer", text: "You see the valuation before deciding. No pressure and no hidden fees." },
+];
+
+const brands = ["iPhone", "Samsung", "Tecno", "Infinix", "Xiaomi", "Itel", "OPPO", "Huawei", "Realme", "Nokia"];
+
+export default function UpgradePage() {
   return (
-    <div className="bg-[#FFE4E8] min-h-screen font-sans">
+    <div className="bg-white text-slate-950">
+      <section className="relative overflow-hidden bg-[#820210] text-white">
+        <div className="absolute inset-0">
+          <Image
+            src="/image/rujamashop.jpeg"
+            alt="Rujama Phones Shop entrance"
+            fill
+            priority
+            className="object-cover opacity-35"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#820210] via-[#820210]/90 to-[#820210]/60" />
+        </div>
 
-      {/* ── HERO ──────────────────────────────────────────────────────────── */}
-      <section className="bg-white border-b border-red-100 px-4 sm:px-6 lg:px-8 pt-14 pb-16">
-        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 items-center">
-
-          {/* Left — copy */}
-          <div>
-            {/* Badge */}
-            <div className="inline-flex items-center gap-3 bg-[#FFE4E8] border border-red-200 text-[#820210] px-6 py-3 rounded-full text-sm font-bold uppercase tracking-widest mb-7">
-              <span className="relative flex items-center justify-center w-3 h-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#820210] opacity-40" />
-                <span className="relative w-2.5 h-2.5 rounded-full bg-[#820210]" />
-              </span>
-              Phone Exchange Service
+        <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_520px] lg:px-8 lg:py-20">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-bold">
+              <RefreshCw className="h-4 w-4" />
+              Phone upgrade service
             </div>
-
-            <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 leading-[1.1] mb-5">
-              Upgrade Your{" "}
-              <span className="text-[#820210]">Device Today</span>
+            <h1 className="mt-6 text-4xl font-extrabold leading-tight tracking-normal sm:text-5xl lg:text-6xl">
+              Bring your old phone. Leave with a better one.
             </h1>
-
-            <p className="text-gray-500 text-base sm:text-lg leading-relaxed mb-8 max-w-md">
-              Bring your current phone, get a fair valuation, top up the
-              difference, and walk out with a brand-new device — same day,
-              no hassle.
+            <p className="mt-5 max-w-2xl text-base leading-8 text-white/85 sm:text-lg">
+              We value your current device, subtract it from the price of your next phone,
+              and you only top up the difference. Simple, visual, and handled in-store.
             </p>
 
-            <a
-              href="https://wa.me/250788773754?text=Hi,%20I%20want%20to%20learn%20more%20about%20the%20phone%20exchange%20service"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-[#820210] text-white px-7 py-3.5 rounded-xl font-semibold text-sm hover:bg-[#6b0110] transition-colors shadow-lg shadow-red-900/20"
-            >
-              <MessageCircle className="w-4 h-4" />
-              Chat on WhatsApp
-              <ArrowRight className="w-4 h-4" />
-            </a>
-          </div>
-
-          {/* Right — exchange card */}
-          <div className="bg-[#FFE4E8] rounded-2xl p-7 border border-red-100">
-
-            {/* Device swap row */}
-            <div className="flex items-center justify-between gap-3 mb-6">
-              {/* Old phone */}
-              <div className="text-center flex-1">
-                <div className="w-20 h-20 bg-white border border-red-100 rounded-2xl flex items-center justify-center mx-auto mb-2 shadow-sm">
-                  <Smartphone className="w-9 h-9 text-gray-400" />
-                </div>
-                <p className="text-xs text-gray-500 font-medium">Your phone</p>
-              </div>
-
-              {/* Swap icon */}
-              <div className="flex flex-col items-center gap-1">
-                <div className="w-11 h-11 rounded-full bg-white border border-red-200 flex items-center justify-center shadow-sm">
-                  <RefreshCw className="w-5 h-5 text-[#820210] animate-spin [animation-duration:4s]" />
-                </div>
-                <span className="text-[9px] font-semibold text-[#820210] tracking-widest uppercase">
-                  Exchange
-                </span>
-              </div>
-
-              {/* New phone */}
-              <div className="text-center flex-1">
-                <div className="w-20 h-20 bg-[#820210] rounded-2xl flex items-center justify-center mx-auto mb-2 shadow-lg shadow-red-900/30">
-                  <Smartphone className="w-9 h-9 text-white" />
-                </div>
-                <p className="text-xs text-[#820210] font-semibold">New device</p>
-              </div>
-            </div>
-
-            {/* Price breakdown */}
-            <div className="bg-white border border-red-100 rounded-xl p-4 space-y-2.5">
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-gray-500">Your phone value</span>
-                <span className="font-medium text-gray-700">
-                  XXX,XXX <span className="text-xs text-gray-400">RWF</span>
-                </span>
-              </div>
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-gray-500">New device price</span>
-                <span className="font-medium text-gray-700">
-                  XXX,XXX <span className="text-xs text-gray-400">RWF</span>
-                </span>
-              </div>
-              <hr className="border-red-100" />
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-semibold text-gray-800">You pay</span>
-                <span className="text-xl font-bold text-[#820210]">
-                  XXX,XXX{" "}
-                  <span className="text-xs font-medium text-gray-400">RWF</span>
-                </span>
-              </div>
-            </div>
-
-            {/* Disclaimer */}
-            <p className="flex items-start gap-1.5 text-[11px] text-gray-500 mt-3 leading-relaxed">
-              <Info className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-              Exact valuation done in-store. Prices vary by model &amp; condition.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── HOW IT WORKS ──────────────────────────────────────────────────── */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <p className="text-xs font-semibold uppercase tracking-widest text-[#820210] mb-2">
-          How it works
-        </p>
-        <h2 className="text-3xl font-bold text-gray-800 mb-2">
-          Three simple steps
-        </h2>
-        <p className="text-gray-500 mb-10">
-          From your old phone to a new device in under an hour.
-        </p>
-
-        <div className="grid sm:grid-cols-3 gap-5">
-          {STEPS.map((step, i) => (
-            <div key={step.num} className="relative bg-white rounded-2xl p-7 border border-red-100 shadow-sm">
-              {/* Step number */}
-              <div className="w-10 h-10 rounded-full bg-[#820210] text-white flex items-center justify-center font-bold text-lg mb-4">
-                {step.num}
-              </div>
-
-              <div className="text-3xl mb-3">{step.emoji}</div>
-              <h3 className="font-semibold text-gray-800 mb-2">{step.title}</h3>
-              <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
-
-              {/* Arrow connector (hidden on last) */}
-              {i < STEPS.length - 1 && (
-                <ChevronRight className="hidden sm:flex absolute -right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-300 z-10" />
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── ACCEPTED BRANDS ───────────────────────────────────────────────── */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <div className="bg-white rounded-3xl border border-red-100 px-8 py-10 shadow-sm">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#820210] mb-2">
-              Accepted devices
-            </p>
-            <h3 className="text-xl font-bold text-gray-800">
-              We buy &amp; trade all major brands
-            </h3>
-            <p className="text-sm text-gray-500 mt-1">
-              Good condition phones accepted — any network, any storage size.
-            </p>
-          </div>
-
-          {/* Hot picks row */}
-          <div className="flex flex-wrap gap-3 justify-center mb-5">
-            {BRANDS.filter((b) => b.hot).map((brand) => (
-              <span
-                key={brand.name}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-[#820210] text-white shadow-md shadow-red-900/20"
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a
+                href="https://wa.me/250788773754?text=Hi,%20I%20want%20to%20upgrade%20my%20phone"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 font-bold text-[#820210] transition hover:bg-gray-100"
               >
-                <span className="w-2 h-2 rounded-full bg-red-300" />
-                {brand.name}
-              </span>
-            ))}
-          </div>
-
-          {/* Divider */}
-          <div className="flex items-center gap-3 mb-5">
-            <div className="flex-1 h-px bg-red-100" />
-            <span className="text-xs text-gray-400 font-medium">and many more</span>
-            <div className="flex-1 h-px bg-red-100" />
-          </div>
-
-          {/* Other brands */}
-          <div className="flex flex-wrap gap-2.5 justify-center">
-            {BRANDS.filter((b) => !b.hot).map((brand) => (
-              <span
-                key={brand.name}
-                className="px-4 py-2 rounded-xl text-xs font-semibold border border-red-100 bg-[#FFE4E8] text-[#820210]"
+                <MessageCircle className="h-5 w-5" />
+                Start on WhatsApp
+              </a>
+              <Link
+                href="/products"
+                className="inline-flex items-center gap-2 rounded-xl border border-white/30 px-6 py-3 font-bold text-white transition hover:bg-white/10"
               >
-                {brand.name}
-              </span>
-            ))}
-            <span className="px-4 py-2 rounded-xl text-xs font-semibold border border-dashed border-red-200 bg-transparent text-gray-400">
-              + more brands
-            </span>
+                Browse devices
+                <ArrowRight className="h-5 w-5" />
+              </Link>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-white/20 bg-white p-4 text-slate-950 shadow-2xl">
+            <div className="relative h-[360px] overflow-hidden rounded-xl bg-slate-100">
+              <Image
+                src="/image/hero2.png"
+                alt="New phone available for upgrade"
+                fill
+                className="object-cover"
+                sizes="(min-width: 1024px) 520px, 100vw"
+              />
+            </div>
+            <div className="grid grid-cols-3 gap-3 pt-4 text-center">
+              {["Value old phone", "Top up balance", "Take new device"].map((item, index) => (
+                <div key={item} className="rounded-lg bg-red-50 px-3 py-3">
+                  <div className="mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-[#e60023] text-sm font-bold text-white">
+                    {index + 1}
+                  </div>
+                  <p className="text-xs font-bold text-slate-800">{item}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── WHY RUJAMA ────────────────────────────────────────────────────── */}
-      <section className="bg-[#820210] px-4 sm:px-6 lg:px-8 py-14">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-white text-center mb-10">
-            Why upgrade with Rujama Phones?
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+        <div className="mb-8 max-w-2xl">
+          <p className="text-sm font-extrabold uppercase tracking-widest text-[#820210]">See the process</p>
+          <h2 className="mt-3 text-3xl font-extrabold text-slate-950 sm:text-4xl">
+            Customers understand it at a glance
           </h2>
-          <div className="grid sm:grid-cols-3 gap-6">
-            {BENEFITS.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="text-center">
-                <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mx-auto mb-4">
-                  <Icon className="w-6 h-6 text-red-300" />
+          <p className="mt-3 leading-7 text-slate-600">
+            This is the exact idea: your old phone has value, and that value helps you move to a better device.
+          </p>
+        </div>
+
+        <div className="overflow-hidden rounded-2xl border border-red-100 bg-red-50 shadow-sm">
+          <Image
+            src="/image/upgrade-process.png"
+            alt="Three step phone upgrade process"
+            width={1600}
+            height={900}
+            className="h-auto w-full"
+            sizes="100vw"
+          />
+        </div>
+      </section>
+
+      <section className="bg-slate-50 py-14">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-6 lg:grid-cols-3">
+            {processCards.map(({ image, icon: Icon, title, text }, index) => (
+              <article key={title} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                <div className="relative h-56">
+                  <Image
+                    src={image}
+                    alt={title}
+                    fill
+                    className="object-cover"
+                    sizes="(min-width: 1024px) 33vw, 100vw"
+                  />
+                  <div className="absolute left-5 top-5 flex h-12 w-12 items-center justify-center rounded-xl bg-white text-[#820210] shadow-lg">
+                    <Icon className="h-6 w-6" />
+                  </div>
                 </div>
-                <h4 className="text-white font-semibold text-sm mb-1.5">{title}</h4>
-                <p className="text-white/60 text-sm leading-relaxed">{desc}</p>
-              </div>
+                <div className="p-6">
+                  <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-[#e60023] font-bold text-white">
+                    {index + 1}
+                  </div>
+                  <h3 className="text-xl font-extrabold text-slate-950">{title}</h3>
+                  <p className="mt-3 text-sm leading-7 text-slate-600">{text}</p>
+                </div>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── CTA ───────────────────────────────────────────────────────────── */}
-      <section className="max-w-xl mx-auto px-4 sm:px-6 py-16 text-center">
-        <h2 className="text-2xl font-bold text-gray-800 mb-3">
-          Ready to upgrade?
-        </h2>
-        <p className="text-gray-500 leading-relaxed mb-8">
-          Come visit us in Kigali or send us a WhatsApp message — we'll guide
-          you through the process and answer any questions.
+      <section className="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 lg:grid-cols-[1fr_420px] lg:px-8">
+        <div>
+          <p className="text-sm font-extrabold uppercase tracking-widest text-[#820210]">What we check</p>
+          <h2 className="mt-3 text-3xl font-extrabold text-slate-950">
+            Clear valuation before you decide
+          </h2>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            {checkItems.map(({ icon: Icon, title, text }) => (
+              <div key={title} className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 text-[#820210]">
+                  <Icon className="h-6 w-6" />
+                </div>
+                <h3 className="font-extrabold text-slate-950">{title}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <aside className="rounded-2xl border border-red-100 bg-red-50 p-6 shadow-sm">
+          <h2 className="text-2xl font-extrabold text-slate-950">Example top-up</h2>
+          <div className="mt-6 space-y-4 rounded-xl bg-white p-5 text-sm shadow-sm">
+            <div className="flex justify-between gap-4">
+              <span className="text-slate-500">Current phone value</span>
+              <span className="font-bold text-slate-950">350,000 RWF</span>
+            </div>
+            <div className="flex justify-between gap-4">
+              <span className="text-slate-500">New device price</span>
+              <span className="font-bold text-slate-950">900,000 RWF</span>
+            </div>
+            <div className="border-t border-slate-100 pt-4">
+              <div className="flex justify-between gap-4">
+                <span className="font-bold text-slate-950">You top up</span>
+                <span className="text-xl font-extrabold text-[#e60023]">550,000 RWF</span>
+              </div>
+            </div>
+          </div>
+          <p className="mt-4 text-sm leading-6 text-slate-600">
+            Final prices depend on the exact device model, storage, condition, and available stock.
+          </p>
+          <div className="mt-6 flex items-center gap-3 rounded-xl bg-white p-4">
+            <Clock className="h-6 w-6 text-[#820210]" />
+            <p className="text-sm font-bold text-slate-800">Most upgrades can be completed in one shop visit.</p>
+          </div>
+        </aside>
+      </section>
+
+      <section className="border-y border-red-100 bg-[#820210] py-14 text-white">
+        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+          <p className="text-sm font-extrabold uppercase tracking-widest text-white/70">Accepted devices</p>
+          <h2 className="mt-3 text-3xl font-extrabold">We trade major phone brands</h2>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            {brands.map((brand) => (
+              <span key={brand} className="rounded-xl bg-white/10 px-5 py-3 text-sm font-bold ring-1 ring-white/15">
+                {brand}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-4xl px-4 py-14 text-center sm:px-6 lg:px-8">
+        <h2 className="text-3xl font-extrabold text-slate-950">Ready to upgrade?</h2>
+        <p className="mx-auto mt-3 max-w-2xl leading-7 text-slate-600">
+          Send us your current phone model and the device you want. We will guide you on the next step before you visit.
         </p>
-        <div className="flex flex-wrap gap-3 justify-center">
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
           <a
             href="https://wa.me/250788773754?text=Hi,%20I%20want%20to%20upgrade%20my%20phone"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-[#820210] text-white px-7 py-3.5 rounded-xl font-semibold text-sm hover:bg-[#6b0110] transition-colors"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#820210] px-7 py-3.5 font-bold text-white transition hover:bg-[#6b0110]"
           >
-            <MessageCircle className="w-4 h-4" />
+            <MessageCircle className="h-5 w-5" />
             WhatsApp us
           </a>
           <a
             href="tel:+250788773754"
-            className="inline-flex items-center gap-2 bg-white text-[#820210] border border-red-200 px-7 py-3.5 rounded-xl font-semibold text-sm hover:bg-red-50 transition-colors"
+            className="inline-flex items-center gap-2 rounded-xl border border-red-200 bg-white px-7 py-3.5 font-bold text-[#820210] transition hover:bg-red-50"
           >
-            <Phone className="w-4 h-4" />
+            <Phone className="h-5 w-5" />
             Call now
           </a>
         </div>
       </section>
-
     </div>
   );
 }

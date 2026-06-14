@@ -34,7 +34,7 @@ ${cart.map(item => `- ${item.name} x${item.quantity} = ${formatPrice(item.price 
 Total: ${formatPrice(totalPrice)}
     `.trim();
 
-    const whatsappUrl = `https://wa.me/250791905573?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/+250788773754?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 

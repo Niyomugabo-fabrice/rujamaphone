@@ -181,6 +181,13 @@ exports.Prisma.AccessoryScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.SliderImageScalarFieldEnum = {
+  id: 'id',
+  image: 'image',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -247,7 +254,8 @@ exports.Prisma.ModelName = {
   User: 'User',
   Smartphone: 'Smartphone',
   Speaker: 'Speaker',
-  Accessory: 'Accessory'
+  Accessory: 'Accessory',
+  SliderImage: 'SliderImage'
 };
 
 /**

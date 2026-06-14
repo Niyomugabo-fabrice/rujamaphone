@@ -33,6 +33,11 @@ export type Speaker = $Result.DefaultSelection<Prisma.$SpeakerPayload>
  * 
  */
 export type Accessory = $Result.DefaultSelection<Prisma.$AccessoryPayload>
+/**
+ * Model SliderImage
+ * 
+ */
+export type SliderImage = $Result.DefaultSelection<Prisma.$SliderImagePayload>
 
 /**
  * Enums
@@ -296,6 +301,16 @@ export class PrismaClient<
     * ```
     */
   get accessory(): Prisma.AccessoryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.sliderImage`: Exposes CRUD operations for the **SliderImage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SliderImages
+    * const sliderImages = await prisma.sliderImage.findMany()
+    * ```
+    */
+  get sliderImage(): Prisma.SliderImageDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -733,7 +748,8 @@ export namespace Prisma {
     User: 'User',
     Smartphone: 'Smartphone',
     Speaker: 'Speaker',
-    Accessory: 'Accessory'
+    Accessory: 'Accessory',
+    SliderImage: 'SliderImage'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -749,7 +765,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "smartphone" | "speaker" | "accessory"
+      modelProps: "user" | "smartphone" | "speaker" | "accessory" | "sliderImage"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1049,6 +1065,80 @@ export namespace Prisma {
           }
         }
       }
+      SliderImage: {
+        payload: Prisma.$SliderImagePayload<ExtArgs>
+        fields: Prisma.SliderImageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SliderImageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SliderImagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SliderImageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SliderImagePayload>
+          }
+          findFirst: {
+            args: Prisma.SliderImageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SliderImagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SliderImageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SliderImagePayload>
+          }
+          findMany: {
+            args: Prisma.SliderImageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SliderImagePayload>[]
+          }
+          create: {
+            args: Prisma.SliderImageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SliderImagePayload>
+          }
+          createMany: {
+            args: Prisma.SliderImageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SliderImageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SliderImagePayload>[]
+          }
+          delete: {
+            args: Prisma.SliderImageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SliderImagePayload>
+          }
+          update: {
+            args: Prisma.SliderImageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SliderImagePayload>
+          }
+          deleteMany: {
+            args: Prisma.SliderImageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SliderImageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SliderImageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SliderImagePayload>[]
+          }
+          upsert: {
+            args: Prisma.SliderImageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SliderImagePayload>
+          }
+          aggregate: {
+            args: Prisma.SliderImageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSliderImage>
+          }
+          groupBy: {
+            args: Prisma.SliderImageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SliderImageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SliderImageCountArgs<ExtArgs>
+            result: $Utils.Optional<SliderImageCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1161,6 +1251,7 @@ export namespace Prisma {
     smartphone?: SmartphoneOmit
     speaker?: SpeakerOmit
     accessory?: AccessoryOmit
+    sliderImage?: SliderImageOmit
   }
 
   /* Types for Logging */
@@ -5733,6 +5824,993 @@ export namespace Prisma {
 
 
   /**
+   * Model SliderImage
+   */
+
+  export type AggregateSliderImage = {
+    _count: SliderImageCountAggregateOutputType | null
+    _min: SliderImageMinAggregateOutputType | null
+    _max: SliderImageMaxAggregateOutputType | null
+  }
+
+  export type SliderImageMinAggregateOutputType = {
+    id: string | null
+    image: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SliderImageMaxAggregateOutputType = {
+    id: string | null
+    image: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SliderImageCountAggregateOutputType = {
+    id: number
+    image: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SliderImageMinAggregateInputType = {
+    id?: true
+    image?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SliderImageMaxAggregateInputType = {
+    id?: true
+    image?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SliderImageCountAggregateInputType = {
+    id?: true
+    image?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SliderImageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SliderImage to aggregate.
+     */
+    where?: SliderImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SliderImages to fetch.
+     */
+    orderBy?: SliderImageOrderByWithRelationInput | SliderImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SliderImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SliderImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SliderImages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SliderImages
+    **/
+    _count?: true | SliderImageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SliderImageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SliderImageMaxAggregateInputType
+  }
+
+  export type GetSliderImageAggregateType<T extends SliderImageAggregateArgs> = {
+        [P in keyof T & keyof AggregateSliderImage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSliderImage[P]>
+      : GetScalarType<T[P], AggregateSliderImage[P]>
+  }
+
+
+
+
+  export type SliderImageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SliderImageWhereInput
+    orderBy?: SliderImageOrderByWithAggregationInput | SliderImageOrderByWithAggregationInput[]
+    by: SliderImageScalarFieldEnum[] | SliderImageScalarFieldEnum
+    having?: SliderImageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SliderImageCountAggregateInputType | true
+    _min?: SliderImageMinAggregateInputType
+    _max?: SliderImageMaxAggregateInputType
+  }
+
+  export type SliderImageGroupByOutputType = {
+    id: string
+    image: string
+    createdAt: Date
+    updatedAt: Date
+    _count: SliderImageCountAggregateOutputType | null
+    _min: SliderImageMinAggregateOutputType | null
+    _max: SliderImageMaxAggregateOutputType | null
+  }
+
+  type GetSliderImageGroupByPayload<T extends SliderImageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SliderImageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SliderImageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SliderImageGroupByOutputType[P]>
+            : GetScalarType<T[P], SliderImageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SliderImageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    image?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["sliderImage"]>
+
+  export type SliderImageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    image?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["sliderImage"]>
+
+  export type SliderImageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    image?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["sliderImage"]>
+
+  export type SliderImageSelectScalar = {
+    id?: boolean
+    image?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SliderImageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "image" | "createdAt" | "updatedAt", ExtArgs["result"]["sliderImage"]>
+
+  export type $SliderImagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SliderImage"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      image: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["sliderImage"]>
+    composites: {}
+  }
+
+  type SliderImageGetPayload<S extends boolean | null | undefined | SliderImageDefaultArgs> = $Result.GetResult<Prisma.$SliderImagePayload, S>
+
+  type SliderImageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SliderImageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SliderImageCountAggregateInputType | true
+    }
+
+  export interface SliderImageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SliderImage'], meta: { name: 'SliderImage' } }
+    /**
+     * Find zero or one SliderImage that matches the filter.
+     * @param {SliderImageFindUniqueArgs} args - Arguments to find a SliderImage
+     * @example
+     * // Get one SliderImage
+     * const sliderImage = await prisma.sliderImage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SliderImageFindUniqueArgs>(args: SelectSubset<T, SliderImageFindUniqueArgs<ExtArgs>>): Prisma__SliderImageClient<$Result.GetResult<Prisma.$SliderImagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SliderImage that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SliderImageFindUniqueOrThrowArgs} args - Arguments to find a SliderImage
+     * @example
+     * // Get one SliderImage
+     * const sliderImage = await prisma.sliderImage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SliderImageFindUniqueOrThrowArgs>(args: SelectSubset<T, SliderImageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SliderImageClient<$Result.GetResult<Prisma.$SliderImagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SliderImage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SliderImageFindFirstArgs} args - Arguments to find a SliderImage
+     * @example
+     * // Get one SliderImage
+     * const sliderImage = await prisma.sliderImage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SliderImageFindFirstArgs>(args?: SelectSubset<T, SliderImageFindFirstArgs<ExtArgs>>): Prisma__SliderImageClient<$Result.GetResult<Prisma.$SliderImagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SliderImage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SliderImageFindFirstOrThrowArgs} args - Arguments to find a SliderImage
+     * @example
+     * // Get one SliderImage
+     * const sliderImage = await prisma.sliderImage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SliderImageFindFirstOrThrowArgs>(args?: SelectSubset<T, SliderImageFindFirstOrThrowArgs<ExtArgs>>): Prisma__SliderImageClient<$Result.GetResult<Prisma.$SliderImagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SliderImages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SliderImageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SliderImages
+     * const sliderImages = await prisma.sliderImage.findMany()
+     * 
+     * // Get first 10 SliderImages
+     * const sliderImages = await prisma.sliderImage.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const sliderImageWithIdOnly = await prisma.sliderImage.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SliderImageFindManyArgs>(args?: SelectSubset<T, SliderImageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SliderImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SliderImage.
+     * @param {SliderImageCreateArgs} args - Arguments to create a SliderImage.
+     * @example
+     * // Create one SliderImage
+     * const SliderImage = await prisma.sliderImage.create({
+     *   data: {
+     *     // ... data to create a SliderImage
+     *   }
+     * })
+     * 
+     */
+    create<T extends SliderImageCreateArgs>(args: SelectSubset<T, SliderImageCreateArgs<ExtArgs>>): Prisma__SliderImageClient<$Result.GetResult<Prisma.$SliderImagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SliderImages.
+     * @param {SliderImageCreateManyArgs} args - Arguments to create many SliderImages.
+     * @example
+     * // Create many SliderImages
+     * const sliderImage = await prisma.sliderImage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SliderImageCreateManyArgs>(args?: SelectSubset<T, SliderImageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SliderImages and returns the data saved in the database.
+     * @param {SliderImageCreateManyAndReturnArgs} args - Arguments to create many SliderImages.
+     * @example
+     * // Create many SliderImages
+     * const sliderImage = await prisma.sliderImage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SliderImages and only return the `id`
+     * const sliderImageWithIdOnly = await prisma.sliderImage.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SliderImageCreateManyAndReturnArgs>(args?: SelectSubset<T, SliderImageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SliderImagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SliderImage.
+     * @param {SliderImageDeleteArgs} args - Arguments to delete one SliderImage.
+     * @example
+     * // Delete one SliderImage
+     * const SliderImage = await prisma.sliderImage.delete({
+     *   where: {
+     *     // ... filter to delete one SliderImage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SliderImageDeleteArgs>(args: SelectSubset<T, SliderImageDeleteArgs<ExtArgs>>): Prisma__SliderImageClient<$Result.GetResult<Prisma.$SliderImagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SliderImage.
+     * @param {SliderImageUpdateArgs} args - Arguments to update one SliderImage.
+     * @example
+     * // Update one SliderImage
+     * const sliderImage = await prisma.sliderImage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SliderImageUpdateArgs>(args: SelectSubset<T, SliderImageUpdateArgs<ExtArgs>>): Prisma__SliderImageClient<$Result.GetResult<Prisma.$SliderImagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SliderImages.
+     * @param {SliderImageDeleteManyArgs} args - Arguments to filter SliderImages to delete.
+     * @example
+     * // Delete a few SliderImages
+     * const { count } = await prisma.sliderImage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SliderImageDeleteManyArgs>(args?: SelectSubset<T, SliderImageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SliderImages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SliderImageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SliderImages
+     * const sliderImage = await prisma.sliderImage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SliderImageUpdateManyArgs>(args: SelectSubset<T, SliderImageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SliderImages and returns the data updated in the database.
+     * @param {SliderImageUpdateManyAndReturnArgs} args - Arguments to update many SliderImages.
+     * @example
+     * // Update many SliderImages
+     * const sliderImage = await prisma.sliderImage.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SliderImages and only return the `id`
+     * const sliderImageWithIdOnly = await prisma.sliderImage.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SliderImageUpdateManyAndReturnArgs>(args: SelectSubset<T, SliderImageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SliderImagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SliderImage.
+     * @param {SliderImageUpsertArgs} args - Arguments to update or create a SliderImage.
+     * @example
+     * // Update or create a SliderImage
+     * const sliderImage = await prisma.sliderImage.upsert({
+     *   create: {
+     *     // ... data to create a SliderImage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SliderImage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SliderImageUpsertArgs>(args: SelectSubset<T, SliderImageUpsertArgs<ExtArgs>>): Prisma__SliderImageClient<$Result.GetResult<Prisma.$SliderImagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SliderImages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SliderImageCountArgs} args - Arguments to filter SliderImages to count.
+     * @example
+     * // Count the number of SliderImages
+     * const count = await prisma.sliderImage.count({
+     *   where: {
+     *     // ... the filter for the SliderImages we want to count
+     *   }
+     * })
+    **/
+    count<T extends SliderImageCountArgs>(
+      args?: Subset<T, SliderImageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SliderImageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SliderImage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SliderImageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SliderImageAggregateArgs>(args: Subset<T, SliderImageAggregateArgs>): Prisma.PrismaPromise<GetSliderImageAggregateType<T>>
+
+    /**
+     * Group by SliderImage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SliderImageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SliderImageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SliderImageGroupByArgs['orderBy'] }
+        : { orderBy?: SliderImageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SliderImageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSliderImageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SliderImage model
+   */
+  readonly fields: SliderImageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SliderImage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SliderImageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SliderImage model
+   */
+  interface SliderImageFieldRefs {
+    readonly id: FieldRef<"SliderImage", 'String'>
+    readonly image: FieldRef<"SliderImage", 'String'>
+    readonly createdAt: FieldRef<"SliderImage", 'DateTime'>
+    readonly updatedAt: FieldRef<"SliderImage", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SliderImage findUnique
+   */
+  export type SliderImageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SliderImage
+     */
+    select?: SliderImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SliderImage
+     */
+    omit?: SliderImageOmit<ExtArgs> | null
+    /**
+     * Filter, which SliderImage to fetch.
+     */
+    where: SliderImageWhereUniqueInput
+  }
+
+  /**
+   * SliderImage findUniqueOrThrow
+   */
+  export type SliderImageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SliderImage
+     */
+    select?: SliderImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SliderImage
+     */
+    omit?: SliderImageOmit<ExtArgs> | null
+    /**
+     * Filter, which SliderImage to fetch.
+     */
+    where: SliderImageWhereUniqueInput
+  }
+
+  /**
+   * SliderImage findFirst
+   */
+  export type SliderImageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SliderImage
+     */
+    select?: SliderImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SliderImage
+     */
+    omit?: SliderImageOmit<ExtArgs> | null
+    /**
+     * Filter, which SliderImage to fetch.
+     */
+    where?: SliderImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SliderImages to fetch.
+     */
+    orderBy?: SliderImageOrderByWithRelationInput | SliderImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SliderImages.
+     */
+    cursor?: SliderImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SliderImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SliderImages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SliderImages.
+     */
+    distinct?: SliderImageScalarFieldEnum | SliderImageScalarFieldEnum[]
+  }
+
+  /**
+   * SliderImage findFirstOrThrow
+   */
+  export type SliderImageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SliderImage
+     */
+    select?: SliderImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SliderImage
+     */
+    omit?: SliderImageOmit<ExtArgs> | null
+    /**
+     * Filter, which SliderImage to fetch.
+     */
+    where?: SliderImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SliderImages to fetch.
+     */
+    orderBy?: SliderImageOrderByWithRelationInput | SliderImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SliderImages.
+     */
+    cursor?: SliderImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SliderImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SliderImages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SliderImages.
+     */
+    distinct?: SliderImageScalarFieldEnum | SliderImageScalarFieldEnum[]
+  }
+
+  /**
+   * SliderImage findMany
+   */
+  export type SliderImageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SliderImage
+     */
+    select?: SliderImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SliderImage
+     */
+    omit?: SliderImageOmit<ExtArgs> | null
+    /**
+     * Filter, which SliderImages to fetch.
+     */
+    where?: SliderImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SliderImages to fetch.
+     */
+    orderBy?: SliderImageOrderByWithRelationInput | SliderImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SliderImages.
+     */
+    cursor?: SliderImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SliderImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SliderImages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SliderImages.
+     */
+    distinct?: SliderImageScalarFieldEnum | SliderImageScalarFieldEnum[]
+  }
+
+  /**
+   * SliderImage create
+   */
+  export type SliderImageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SliderImage
+     */
+    select?: SliderImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SliderImage
+     */
+    omit?: SliderImageOmit<ExtArgs> | null
+    /**
+     * The data needed to create a SliderImage.
+     */
+    data: XOR<SliderImageCreateInput, SliderImageUncheckedCreateInput>
+  }
+
+  /**
+   * SliderImage createMany
+   */
+  export type SliderImageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SliderImages.
+     */
+    data: SliderImageCreateManyInput | SliderImageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SliderImage createManyAndReturn
+   */
+  export type SliderImageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SliderImage
+     */
+    select?: SliderImageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SliderImage
+     */
+    omit?: SliderImageOmit<ExtArgs> | null
+    /**
+     * The data used to create many SliderImages.
+     */
+    data: SliderImageCreateManyInput | SliderImageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SliderImage update
+   */
+  export type SliderImageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SliderImage
+     */
+    select?: SliderImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SliderImage
+     */
+    omit?: SliderImageOmit<ExtArgs> | null
+    /**
+     * The data needed to update a SliderImage.
+     */
+    data: XOR<SliderImageUpdateInput, SliderImageUncheckedUpdateInput>
+    /**
+     * Choose, which SliderImage to update.
+     */
+    where: SliderImageWhereUniqueInput
+  }
+
+  /**
+   * SliderImage updateMany
+   */
+  export type SliderImageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SliderImages.
+     */
+    data: XOR<SliderImageUpdateManyMutationInput, SliderImageUncheckedUpdateManyInput>
+    /**
+     * Filter which SliderImages to update
+     */
+    where?: SliderImageWhereInput
+    /**
+     * Limit how many SliderImages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SliderImage updateManyAndReturn
+   */
+  export type SliderImageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SliderImage
+     */
+    select?: SliderImageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SliderImage
+     */
+    omit?: SliderImageOmit<ExtArgs> | null
+    /**
+     * The data used to update SliderImages.
+     */
+    data: XOR<SliderImageUpdateManyMutationInput, SliderImageUncheckedUpdateManyInput>
+    /**
+     * Filter which SliderImages to update
+     */
+    where?: SliderImageWhereInput
+    /**
+     * Limit how many SliderImages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SliderImage upsert
+   */
+  export type SliderImageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SliderImage
+     */
+    select?: SliderImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SliderImage
+     */
+    omit?: SliderImageOmit<ExtArgs> | null
+    /**
+     * The filter to search for the SliderImage to update in case it exists.
+     */
+    where: SliderImageWhereUniqueInput
+    /**
+     * In case the SliderImage found by the `where` argument doesn't exist, create a new SliderImage with this data.
+     */
+    create: XOR<SliderImageCreateInput, SliderImageUncheckedCreateInput>
+    /**
+     * In case the SliderImage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SliderImageUpdateInput, SliderImageUncheckedUpdateInput>
+  }
+
+  /**
+   * SliderImage delete
+   */
+  export type SliderImageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SliderImage
+     */
+    select?: SliderImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SliderImage
+     */
+    omit?: SliderImageOmit<ExtArgs> | null
+    /**
+     * Filter which SliderImage to delete.
+     */
+    where: SliderImageWhereUniqueInput
+  }
+
+  /**
+   * SliderImage deleteMany
+   */
+  export type SliderImageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SliderImages to delete
+     */
+    where?: SliderImageWhereInput
+    /**
+     * Limit how many SliderImages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SliderImage without action
+   */
+  export type SliderImageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SliderImage
+     */
+    select?: SliderImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SliderImage
+     */
+    omit?: SliderImageOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -5817,6 +6895,16 @@ export namespace Prisma {
   };
 
   export type AccessoryScalarFieldEnum = (typeof AccessoryScalarFieldEnum)[keyof typeof AccessoryScalarFieldEnum]
+
+
+  export const SliderImageScalarFieldEnum: {
+    id: 'id',
+    image: 'image',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SliderImageScalarFieldEnum = (typeof SliderImageScalarFieldEnum)[keyof typeof SliderImageScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -6371,6 +7459,53 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Accessory"> | Date | string
   }
 
+  export type SliderImageWhereInput = {
+    AND?: SliderImageWhereInput | SliderImageWhereInput[]
+    OR?: SliderImageWhereInput[]
+    NOT?: SliderImageWhereInput | SliderImageWhereInput[]
+    id?: StringFilter<"SliderImage"> | string
+    image?: StringFilter<"SliderImage"> | string
+    createdAt?: DateTimeFilter<"SliderImage"> | Date | string
+    updatedAt?: DateTimeFilter<"SliderImage"> | Date | string
+  }
+
+  export type SliderImageOrderByWithRelationInput = {
+    id?: SortOrder
+    image?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SliderImageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SliderImageWhereInput | SliderImageWhereInput[]
+    OR?: SliderImageWhereInput[]
+    NOT?: SliderImageWhereInput | SliderImageWhereInput[]
+    image?: StringFilter<"SliderImage"> | string
+    createdAt?: DateTimeFilter<"SliderImage"> | Date | string
+    updatedAt?: DateTimeFilter<"SliderImage"> | Date | string
+  }, "id">
+
+  export type SliderImageOrderByWithAggregationInput = {
+    id?: SortOrder
+    image?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SliderImageCountOrderByAggregateInput
+    _max?: SliderImageMaxOrderByAggregateInput
+    _min?: SliderImageMinOrderByAggregateInput
+  }
+
+  export type SliderImageScalarWhereWithAggregatesInput = {
+    AND?: SliderImageScalarWhereWithAggregatesInput | SliderImageScalarWhereWithAggregatesInput[]
+    OR?: SliderImageScalarWhereWithAggregatesInput[]
+    NOT?: SliderImageScalarWhereWithAggregatesInput | SliderImageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SliderImage"> | string
+    image?: StringWithAggregatesFilter<"SliderImage"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"SliderImage"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SliderImage"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     fullName: string
@@ -6794,6 +7929,55 @@ export namespace Prisma {
     condition?: EnumConditionFieldUpdateOperationsInput | $Enums.Condition
     brand?: EnumAccessoryBrandFieldUpdateOperationsInput | $Enums.AccessoryBrand
     type?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SliderImageCreateInput = {
+    id?: string
+    image: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SliderImageUncheckedCreateInput = {
+    id?: string
+    image: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SliderImageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SliderImageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SliderImageCreateManyInput = {
+    id?: string
+    image: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SliderImageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SliderImageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -7324,6 +8508,27 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumAccessoryBrandFilter<$PrismaModel>
     _max?: NestedEnumAccessoryBrandFilter<$PrismaModel>
+  }
+
+  export type SliderImageCountOrderByAggregateInput = {
+    id?: SortOrder
+    image?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SliderImageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    image?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SliderImageMinOrderByAggregateInput = {
+    id?: SortOrder
+    image?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type StringFieldUpdateOperationsInput = {

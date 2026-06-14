@@ -1,26 +1,59 @@
-import { useState } from 'react';
+'use client';
+
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Search, ShoppingCart, Menu, X } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import Image from "next/image";
 
-export function Header() {
-  const router = useRouter();
-  const { totalItems } = useCart();
+interface SearchBarProps {
+  className: string;
+  isMobile?: boolean;
+  onSearchSubmit?: () => void;
+}
 
+function SearchBar({ className, isMobile, onSearchSubmit }: SearchBarProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Synchronize the search input with URL query param
+  useEffect(() => {
+    setSearchQuery(searchParams.get('search') || '');
+  }, [searchParams]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-
     if (searchQuery.trim()) {
-      router.push(`/products?search=${encodeURIComponent(searchQuery)}`);
-      setSearchQuery('');
-      setMobileMenuOpen(false);
+      router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      router.push('/products');
+    }
+    if (onSearchSubmit) {
+      onSearchSubmit();
     }
   };
+
+  return (
+    <form onSubmit={handleSearch} className={className}>
+      <div className="relative w-full">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search phones..."
+          className="w-full px-4 py-2 pl-10 rounded-lg bg-white text-black focus:outline-none focus:ring-2 focus:ring-white"
+        />
+        <Search className={`absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 ${isMobile ? "w-4 h-4" : "w-5 h-5"}`} />
+      </div>
+    </form>
+  );
+}
+
+export function Header() {
+  const { totalItems } = useCart();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 bg-[#820210] shadow-md w-full overflow-x-hidden">
@@ -54,21 +87,11 @@ export function Header() {
           </Link>
 
           {/* DESKTOP SEARCH */}
-          <form
-            onSubmit={handleSearch}
-            className="hidden md:flex flex-1 max-w-lg mx-8"
-          >
-            <div className="relative w-full">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search phones..."
-                className="w-full px-4 py-2 pl-10 rounded-lg bg-white text-black border border-transparent focus:outline-none focus:ring-2 focus:ring-white"
-              />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-            </div>
-          </form>
+          <Suspense fallback={
+            <div className="hidden md:flex flex-1 max-w-lg mx-8 h-10 bg-red-900/50 rounded-lg animate-pulse" />
+          }>
+            <SearchBar className="hidden md:flex flex-1 max-w-lg mx-8" />
+          </Suspense>
 
           {/* RIGHT SIDE (Links + Cart + Menu) */}
           <div className="flex items-center space-x-2 md:space-x-6 shrink-0">
@@ -76,6 +99,7 @@ export function Header() {
             <nav className="hidden md:flex items-center space-x-6">
               <Link href="/" className="text-white hover:text-gray-200 font-medium transition-colors">Home</Link>
               <Link href="/products" className="text-white hover:text-gray-200 font-medium transition-colors">Products</Link>
+              <Link href="/services" className="text-white hover:text-gray-200 font-medium transition-colors">Services</Link>
               <Link href="/contact" className="text-white hover:text-gray-200 font-medium transition-colors">Contact</Link>
             </nav>
 
@@ -107,18 +131,11 @@ export function Header() {
         </div>
 
         {/* MOBILE SEARCH */}
-        <form onSubmit={handleSearch} className="md:hidden pb-4">
-          <div className="relative">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search phones..."
-              className="w-full px-4 py-2 pl-10 rounded-lg bg-white text-black focus:outline-none focus:ring-2 focus:ring-white"
-            />
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-          </div>
-        </form>
+        <Suspense fallback={
+          <div className="md:hidden pb-4 h-10 bg-red-900/50 rounded-lg animate-pulse" />
+        }>
+          <SearchBar className="md:hidden pb-4" isMobile={true} onSearchSubmit={() => setMobileMenuOpen(false)} />
+        </Suspense>
       </div>
 
       {/* MOBILE MENU */}
@@ -127,6 +144,7 @@ export function Header() {
           <nav className="px-4 py-4 space-y-3">
             <Link href="/" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-white">Home</Link>
             <Link href="/products" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-white">Products</Link>
+            <Link href="/services" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-white">Services</Link>
             <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-white">Contact</Link>
           </nav>
         </div>

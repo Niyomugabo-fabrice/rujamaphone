@@ -160,6 +160,15 @@ export function Footer() {
 
                 <li>
                   <Link
+                    href="/services"
+                    className="text-gray-300 hover:text-white transition-colors"
+                  >
+                    Services
+                  </Link>
+                </li>
+
+                <li>
+                  <Link
                     href="/cart"
                     className="text-gray-300 hover:text-white transition-colors"
                   >

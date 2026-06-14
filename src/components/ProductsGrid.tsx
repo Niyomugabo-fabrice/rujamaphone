@@ -6,7 +6,8 @@ import { ProductCard } from "@/components/ProductCard";
 import FilterDrawer from "@/components/FilterDrawer";
 import FilterChips from "@/components/FilterChips";
 import type { Product, ProductFilters, ProductCategory } from "@/types/product";
-import { useSearchParams } from "next/navigation";
+// import { useSearchParams } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 interface ProductsGridProps {
   initialCategory?: ProductCategory;
@@ -31,6 +32,8 @@ const [tempFilters, setTempFilters] = useState<ProductFilters>({
 
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("createdAt-desc");
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (initialCategory) {
@@ -38,49 +41,61 @@ const [tempFilters, setTempFilters] = useState<ProductFilters>({
     }
   }, [initialCategory]);
 
-   useEffect(() => {
-    const query = searchParams.get("search");
-    if (query) {
-      setSearchQuery(query);
-    }
+  useEffect(() => {
+    setSearchQuery(searchParams.get("search") || "");
   }, [searchParams]);
 
   useEffect(() => {
     fetchProducts();
-  }, [page, filters, sortBy,searchQuery]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, filters, sortBy, searchParams]);
 
- 
+const fetchProducts = async () => {
+  setIsLoading(true);
+  try {
+    // 1. Build parameters from current state and URL
+    const params = new URLSearchParams();
+    
+    // Pagination and Sorting
+    params.set("page", String(page));
+    params.set("limit", "12");
+    params.set("sort", sortBy);
 
-  const fetchProducts = async () => {
-    setIsLoading(true);
-    try {
-      const params = new URLSearchParams();
-      params.set("page", String(page));
-      params.set("limit", "12");
-      params.set("sort", sortBy);
+    // Search Query (Directly from URL)
+    const urlSearch = searchParams.get("search");
+    if (urlSearch) params.set("search", urlSearch);
 
-      if (filters.category) params.set("category", filters.category);
-      if (filters.brand) params.set("brand", filters.brand);
-      if (filters.condition) params.set("condition", filters.condition);
-      if (filters.minPrice) params.set("minPrice", String(filters.minPrice));
-      if (filters.maxPrice) params.set("maxPrice", String(filters.maxPrice));
-      if (filters.storage) params.set("storage", filters.storage);
-      if (filters.batteryLife) params.set("batteryLife", filters.batteryLife);
-      if (filters.type) params.set("type", filters.type);
-      if (searchQuery) params.set("search", searchQuery);
+    // Standard Filters
+    if (filters.category) params.set("category", filters.category);
+    if (filters.brand) params.set("brand", filters.brand);
+    if (filters.condition) params.set("condition", filters.condition);
+    if (filters.minPrice) params.set("minPrice", String(filters.minPrice));
+    if (filters.maxPrice) params.set("maxPrice", String(filters.maxPrice));
+    
+    // Category-specific filters
+    if (filters.storage) params.set("storage", filters.storage);
+    if (filters.batteryLife) params.set("batteryLife", filters.batteryLife);
+    if (filters.type) params.set("type", filters.type);
 
-      const response = await fetch(`/api/products?${params.toString()}`);
-      const data = await response.json();
+    // 2. Execute fetch
+    const response = await fetch(`/api/products?${params.toString()}`);
+    
+    if (!response.ok) throw new Error("Failed to fetch products");
+    
+    const data = await response.json();
 
-      setProducts(data.data || []);
-      setTotal(data.total || 0);
-      setTotalPages(data.totalPages || 1);
-    } catch (error) {
-      console.error("Failed to fetch products:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    // 3. Update state
+    setProducts(data.data || []);
+    setTotal(data.total || 0);
+    setTotalPages(data.totalPages || 1);
+    
+  } catch (error) {
+    console.error("SEARCH_API_ERROR:", error);
+    setProducts([]);
+  } finally {
+    setIsLoading(false);
+  }
+};
 const handleMobileFiltersChange = (newFilters: ProductFilters) => {
   setTempFilters(newFilters); // ONLY TEMP
 };
@@ -88,8 +103,14 @@ const handleMobileFiltersChange = (newFilters: ProductFilters) => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setPage(1);
-    fetchProducts();
+    const params = new URLSearchParams(searchParams.toString());
+    if (searchQuery.trim()) {
+      params.set("search", searchQuery.trim());
+    } else {
+      params.delete("search");
+    }
+    params.set("page", "1");
+    router.push(`${pathname}?${params.toString()}`);
   };
 
 
@@ -108,44 +129,36 @@ const handleMobileFiltersChange = (newFilters: ProductFilters) => {
     setPage(1);
   };
 
-  const handleClearAll = () => {
-    setFilters({ category: initialCategory });
-    setSearchQuery("");
-    setPage(1);
-  };
+ 
+const handleClearAll = () => {
+  setFilters({ category: initialCategory });
+  setPage(1);
+  router.push(pathname);
+}; // Make sure this closing brace is here
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-RW", {
-      style: "currency",
-      currency: "RWF",
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
+const formatPrice = (price: number) => {
+  return new Intl.NumberFormat("en-RW", {
+    style: "currency",
+    currency: "RWF",
+    minimumFractionDigits: 0,
+  }).format(price);
+};
 
-  const getBrandsForCategory = (category?: ProductCategory): string[] => {
-    switch (category) {
-      case "SMARTPHONE":
-        return ["APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS"];
-      case "SPEAKER":
-        return ["JBL", "SONY", "BOSE", "APPLE", "ANKER"];
-      case "ACCESSORY":
-        return ["APPLE", "SAMSUNG", "ANKER", "BASEUS", "GENERIC"];
-      default:
-        return [
-          "APPLE",
-          "SAMSUNG",
-          "GOOGLE",
-          "XIAOMI",
-          "ONEPLUS",
-          "JBL",
-          "SONY",
-          "BOSE",
-          "ANKER",
-          "BASEUS",
-          "GENERIC",
-        ];
-    }
-  };
+const getBrandsForCategory = (category?: ProductCategory): string[] => {
+  switch (category) {
+    case "SMARTPHONE":
+      return ["APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS"];
+    case "SPEAKER":
+      return ["JBL", "SONY", "BOSE", "APPLE", "ANKER"];
+    case "ACCESSORY":
+      return ["APPLE", "SAMSUNG", "ANKER", "BASEUS", "GENERIC"];
+    default:
+      return [
+        "APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS",
+        "JBL", "SONY", "BOSE", "ANKER", "BASEUS", "GENERIC",
+      ];
+  }
+};
 
   return (
     <div className="w-full">
@@ -160,6 +173,31 @@ const handleMobileFiltersChange = (newFilters: ProductFilters) => {
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
             {/* Search Bar */}
+            <form onSubmit={handleSearch} className="relative w-full sm:w-80">
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-10 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm transition-all"
+              />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery("");
+                    const params = new URLSearchParams(searchParams.toString());
+                    params.delete("search");
+                    params.set("page", "1");
+                    router.push(`${pathname}?${params.toString()}`);
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </form>
            
             {/* Sort Dropdown */}
             <div className="relative">
@@ -192,8 +230,17 @@ const handleMobileFiltersChange = (newFilters: ProductFilters) => {
 
         {/* Active Filter Chips */}
         <FilterChips
-          filters={filters}
-          onFilterRemove={handleFilterRemove}
+          filters={searchParams.get("search") ? { ...filters, search: searchParams.get("search") || undefined } : filters}
+          onFilterRemove={(key) => {
+            if (key === "search") {
+              const params = new URLSearchParams(searchParams.toString());
+              params.delete("search");
+              params.set("page", "1");
+              router.push(`${pathname}?${params.toString()}`);
+            } else {
+              handleFilterRemove(key);
+            }
+          }}
           onClearAll={handleClearAll}
         />
 

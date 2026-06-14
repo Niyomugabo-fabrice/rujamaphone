@@ -156,3 +156,10 @@ model Accessory {
   @@index([brand])
   @@index([price])
 }
+
+model SliderImage {
+  id        String   @id @default(uuid())
+  image     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
