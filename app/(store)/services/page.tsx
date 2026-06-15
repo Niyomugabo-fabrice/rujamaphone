@@ -70,7 +70,7 @@ export default function ServicesPage() {
               <ShieldCheck className="h-4 w-4" />
               Trusted phone services in Kigali
             </div>
-            <h1 className="mt-6 text-2xl md:text-6xl font-bold leading-tight">
+            <h1 className="mt-6 text-xl md:text-3xl font-bold leading-tight">
               Upgrade, Parts payment, and phone support made simple.
             </h1>
             <p className="mt-5 max-w-2xl text-base md:text-lg leading-8 text-slate-600">
