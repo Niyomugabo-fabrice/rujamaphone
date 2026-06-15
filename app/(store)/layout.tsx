@@ -10,9 +10,9 @@ export default function StoreLayout({
 }) {
   return (
     <div className="min-h-screen flex flex-col">
+      <AnnouncementBanner />
       {/* Universal Store Navigation */}
       <Header />
-      <AnnouncementBanner />
       
       {/* Injected Active Public Store Page Content */}
       <main className="flex-1">
