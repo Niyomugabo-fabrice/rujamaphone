@@ -76,7 +76,7 @@ export default function UpgradePage() {
               <RefreshCw className="h-4 w-4" />
               Phone upgrade service
             </div>
-            <h1 className="mt-6 text-4xl font-extrabold leading-tight tracking-normal sm:text-5xl lg:text-6xl">
+            <h1 className="mt-6 text-2xl font-extrabold leading-tight tracking-normal sm:text-2xl lg:text-3xl">
               Bring your old phone. Leave with a better one.
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">

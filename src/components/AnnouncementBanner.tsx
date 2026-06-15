@@ -129,7 +129,7 @@ export function AnnouncementBanner() {
   };
 
   return (
-    <section className="relative z-[60] border-b border-[#D90429]/30 bg-[#fff7f8] shadow-sm">
+    <section className="relative z-[60] border-b border-[#D90429]/30 bg-[#fff7f8] shadow-sm h-20[px]">
       <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#D90429] text-white shadow-sm">
           <Icon className="h-5 w-5" />

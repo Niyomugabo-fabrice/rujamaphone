@@ -15,10 +15,9 @@ import {
 const services = [
   {
     title: "Upgrade Your Phone",
-    subtitle: "Trade in your current phone, top up the balance, and leave with a better device.",
     href: "/upgrade",
     image: "/image/upgrade.jpeg",
-    icon: RefreshCw,
+    
     action: "View Upgrade Service",
     highlights: [
       { icon: BadgeCheck, label: "Instant valuation" },
@@ -28,10 +27,9 @@ const services = [
   },
   {
     title: "Pay in Installments",
-    subtitle: "Get a smartphone, speaker, or accessory with a clear payment plan that fits your budget.",
     href: "/installment",
     image: "/image/parts.jpeg",
-    icon: Wallet,
+   
     action: "View Installment Plans",
     highlights: [
       { icon: CalendarDays, label: "Flexible payment terms" },
@@ -110,7 +108,7 @@ export default function ServicesPage() {
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
-          {services.map(({ title, subtitle, href, image, icon: Icon, action, highlights }) => (
+          {services.map(({ title, href, image,  action, highlights }) => (
             <Link
               key={title}
               href={href}
@@ -125,12 +123,9 @@ export default function ServicesPage() {
                   sizes="(min-width: 1024px) 50vw, 100vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
-                <div className="absolute left-6 top-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-[#820210] shadow-lg">
-                  <Icon className="h-7 w-7" />
-                </div>
+                
                 <div className="absolute bottom-6 left-6 right-6 text-white">
                   <h3 className="text-2xl font-bold">{title}</h3>
-                  <p className="mt-2 max-w-md text-sm leading-6 text-white/85">{subtitle}</p>
                 </div>
               </div>
 

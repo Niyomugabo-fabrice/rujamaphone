@@ -15,6 +15,7 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AUTH_CHECK_TIMEOUT_MS = 5000;
 
 function unwrapApiData<T>(payload: any): T {
   return payload?.success && payload?.data !== undefined ? payload.data : payload;
@@ -69,6 +70,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     setIsLoading(true);
 
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), AUTH_CHECK_TIMEOUT_MS);
+
     try {
       const headers: HeadersInit = token
         ? { Authorization: `Bearer ${token}` }
@@ -76,6 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await fetch("/api/auth/me", {
         credentials: "include",
         headers,
+        signal: controller.signal,
       });
 
       if (response.ok) {
@@ -88,11 +93,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(null);
       }
     } catch (error) {
-      console.error("Failed to fetch user:", error);
+      if (error instanceof DOMException && error.name === "AbortError") {
+        console.warn("Auth check timed out.");
+      } else {
+        console.error("Failed to fetch user:", error);
+      }
       localStorage.removeItem("auth_token");
       setToken(null);
       setUser(null);
     } finally {
+      window.clearTimeout(timeoutId);
       setIsLoading(false);
     }
   }, [token]);
