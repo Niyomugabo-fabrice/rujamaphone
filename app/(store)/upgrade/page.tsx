@@ -7,6 +7,7 @@ import {
   Calculator,
   Check,
   Clock,
+  HandCoins,
   MessageCircle,
   Phone,
   RefreshCw,
@@ -41,6 +42,12 @@ const checkItems = [
   { icon: BatteryCharging, title: "Battery health", text: "A stronger battery gives your current phone a better trade value." },
   { icon: ShieldCheck, title: "Ownership check", text: "Bring your ID and make sure the phone is unlocked and ready to verify." },
   { icon: BadgeCheck, title: "Final offer", text: "You see the valuation before deciding. No pressure and no hidden fees." },
+];
+
+const upgradeSteps = [
+  { icon: Calculator, title: "Value old phone" },
+  { icon: HandCoins, title: "Top up balance" },
+  { icon: Smartphone, title: "Take new device" },
 ];
 
 const brands = ["iPhone", "Samsung", "Tecno", "Infinix", "Xiaomi", "Itel", "OPPO", "Huawei", "Realme", "Nokia"];
@@ -108,12 +115,12 @@ export default function UpgradePage() {
               />
             </div>
             <div className="grid grid-cols-3 gap-3 pt-4 text-center">
-              {["Value old phone", "Top up balance", "Take new device"].map((item, index) => (
-                <div key={item} className="rounded-lg bg-red-50 px-3 py-3">
-                  <div className="mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-[#e60023] text-sm font-bold text-white">
-                    {index + 1}
+              {upgradeSteps.map(({ icon: Icon, title }) => (
+                <div key={title} className="rounded-lg bg-red-50 px-3 py-3">
+                  <div className="mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-[#e60023] text-white">
+                    <Icon className="h-4 w-4" />
                   </div>
-                  <p className="text-xs font-bold text-slate-800">{item}</p>
+                  <p className="text-xs font-bold text-slate-800">{title}</p>
                 </div>
               ))}
             </div>

@@ -20,7 +20,11 @@ const services = [
     image: "/image/service-upgrade-infographic.svg",
     icon: RefreshCw,
     action: "View Upgrade Service",
-    highlights: ["Instant valuation", "Same-day exchange", "Major brands accepted"],
+    highlights: [
+      { icon: BadgeCheck, label: "Instant valuation" },
+      { icon: RefreshCw, label: "Same-day exchange" },
+      { icon: Smartphone, label: "Major brands accepted" },
+    ],
   },
   {
     title: "Pay in Installments",
@@ -29,7 +33,11 @@ const services = [
     image: "/image/service-installment-infographic.svg",
     icon: Wallet,
     action: "View Installment Plans",
-    highlights: ["Flexible payment terms", "Clear first payment", "Support from our team"],
+    highlights: [
+      { icon: CalendarDays, label: "Flexible payment terms" },
+      { icon: CreditCard, label: "Clear first payment" },
+      { icon: ShieldCheck, label: "Support from our team" },
+    ],
   },
 ];
 
@@ -128,9 +136,10 @@ export default function ServicesPage() {
 
               <div className="p-6">
                 <div className="grid gap-3 sm:grid-cols-3">
-                  {highlights.map((item) => (
-                    <div key={item} className="rounded-lg bg-gray-50 px-3 py-3 text-sm font-medium text-gray-700">
-                      {item}
+                  {highlights.map(({ icon: HighlightIcon, label }) => (
+                    <div key={label} className="rounded-lg bg-gray-50 px-3 py-3 text-sm font-medium text-gray-700">
+                      <HighlightIcon className="mb-2 h-4 w-4 text-[#820210]" />
+                      {label}
                     </div>
                   ))}
                 </div>

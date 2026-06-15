@@ -139,10 +139,10 @@ export default function InstallmentPage() {
                 {index < steps.length - 1 && (
                   <ArrowRight className="absolute left-[calc(50%+4rem)] top-7 hidden h-9 w-9 text-slate-300 lg:block" />
                 )}
-                <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-[#e60023] text-lg font-bold text-white shadow-sm">
-                  {index + 1}
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#e60023] text-white shadow-sm">
+                  <Icon className="h-7 w-7" strokeWidth={1.8} />
                 </div>
-                <Icon className="mx-auto mt-4 h-14 w-14 text-[#c9001e]" strokeWidth={1.6} />
+                <p className="mt-3 text-xs font-extrabold uppercase tracking-wide text-[#c9001e]">Step {index + 1}</p>
                 <h3 className="mt-4 text-base font-extrabold text-slate-950">{title}</h3>
                 <p className="mx-auto mt-1 max-w-[190px] text-sm leading-6 text-slate-600">{text}</p>
               </div>
