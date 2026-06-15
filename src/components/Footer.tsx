@@ -1,5 +1,8 @@
+"use client";
+
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Facebook,
   Instagram,
@@ -53,17 +56,6 @@ export function Footer() {
 
   return (
     <>
-      {/* WhatsApp Floating Button */}
-      <a
-        href="https://wa.me/250788773754"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-110"
-        aria-label="WhatsApp"
-      >
-        <MessageCircle className="w-7 h-7" />
-      </a>
-
       <footer className="bg-[#820210] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
           {/* Top Section */}
@@ -298,10 +290,12 @@ export function Footer() {
                 className="relative h-[420px] rounded-3xl overflow-hidden cursor-pointer group border border-white/10 shadow-2xl"
               >
                 {/* Preview Image */}
-                <img
+                <Image
                   src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1200&auto=format&fit=crop"
                   alt="Map Preview"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 1200px"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
 
                 {/* Overlay */}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Star, ShoppingCart, Heart, Eye, X } from "lucide-react";
@@ -12,43 +12,43 @@ interface ProductCardProps {
   product: Product;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+const priceFormatter = new Intl.NumberFormat("en-RW", {
+  style: "currency",
+  currency: "RWF",
+  minimumFractionDigits: 0,
+});
+
+function ProductCardComponent({ product }: ProductCardProps) {
   const { addToCart } = useCart();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
 
-const handleAddToCart = (e: React.MouseEvent) => {
+const handleAddToCart = useCallback((e: React.MouseEvent) => {
   e.preventDefault();
   e.stopPropagation();
 
   addToCart(product);
 
   toast.success(`${product.name} added to cart!`);
-};
+}, [addToCart, product]);
 
-  const handleWishlistToggle = (e: React.MouseEvent) => {
+  const handleWishlistToggle = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsWishlisted(!isWishlisted);
     toast.success(isWishlisted ? "Removed from wishlist" : "Added to wishlist");
-  };
+  }, [isWishlisted]);
 
-  const handleQuickView = (e: React.MouseEvent) => {
+  const handleQuickView = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsQuickViewOpen(true);
-  };
+  }, []);
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-RW", {
-      style: "currency",
-      currency: "RWF",
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
+  const formatPrice = useCallback((price: number) => priceFormatter.format(price), []);
 
-  const images = product.image || [];
+  const images = useMemo(() => product.image || [], [product.image]);
   const currentImage = images[currentImageIndex] || "/placeholder.jpg";
 
   return (
@@ -250,3 +250,5 @@ const handleAddToCart = (e: React.MouseEvent) => {
     </>
   );
 }
+
+export const ProductCard = memo(ProductCardComponent);

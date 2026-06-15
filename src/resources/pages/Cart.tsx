@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useState } from 'react';
@@ -78,9 +79,12 @@ Total: ${formatPrice(totalPrice)}
                 key={item.id}
                 className="bg-white rounded-lg border border-border p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4"
               >
-                <img
+                <Image
                   src={item.image}
                   alt={item.name}
+                  width={96}
+                  height={96}
+                  sizes="(max-width: 640px) 80px, 96px"
                   className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg bg-secondary shrink-0"
                 />
                 <div className="flex-1 w-full min-w-0">

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useCallback, useContext, useMemo, useState, useEffect, ReactNode } from "react";
 import type { User, LoginCredentials, SignupCredentials } from "@/types/auth";
 
 interface AuthContextType {
@@ -30,16 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  // Fetch user data when token changes
-  useEffect(() => {
-    if (token) {
-      fetchUser();
-    } else {
-      setUser(null);
-    }
-  }, [token]);
-
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     try {
       const response = await fetch("/api/auth/me", {
         headers: {
@@ -62,9 +53,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setToken(null);
       setUser(null);
     }
-  };
+  }, [token]);
 
-  const login = async (credentials: LoginCredentials) => {
+  // Fetch user data when token changes
+  useEffect(() => {
+    if (token) {
+      fetchUser();
+    } else {
+      setUser(null);
+    }
+  }, [fetchUser, token]);
+
+  const login = useCallback(async (credentials: LoginCredentials) => {
     try {
       const response = await fetch("/api/auth/login", {
         method: "POST",
@@ -86,9 +86,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       throw error;
     }
-  };
+  }, []);
 
-  const signup = async (credentials: SignupCredentials) => {
+  const signup = useCallback(async (credentials: SignupCredentials) => {
     try {
       const response = await fetch("/api/auth/signup", {
         method: "POST",
@@ -110,9 +110,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       throw error;
     }
-  };
+  }, []);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       if (token) {
         await fetch("/api/auth/logout", {
@@ -129,22 +129,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setToken(null);
       setUser(null);
     }
-  };
+  }, [token]);
 
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
     await fetchUser();
-  };
+  }, [fetchUser]);
 
-  const value: AuthContextType = {
-    user,
-    token,
-    isLoading,
-    isAuthenticated: !!user,
-    login,
-    signup,
-    logout,
-    refreshUser,
-  };
+  const value: AuthContextType = useMemo(
+    () => ({
+      user,
+      token,
+      isLoading,
+      isAuthenticated: !!user,
+      login,
+      signup,
+      logout,
+      refreshUser,
+    }),
+    [isLoading, login, logout, refreshUser, signup, token, user]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

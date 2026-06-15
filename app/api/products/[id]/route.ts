@@ -2,6 +2,22 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import type { Product } from "@/types/product";
 
+const detailCacheHeaders = {
+  "Cache-Control": "public, s-maxage=120, stale-while-revalidate=600",
+};
+
+const baseDetailSelect = {
+  id: true,
+  name: true,
+  price: true,
+  image: true,
+  description: true,
+  rating: true,
+  reviews: true,
+  condition: true,
+  brand: true,
+};
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -11,9 +27,27 @@ export async function GET(
 
     // Try to find the product in all three models
     const [smartphone, speaker, accessory] = await Promise.all([
-      prisma.smartphone.findUnique({ where: { id } }),
-      prisma.speaker.findUnique({ where: { id } }),
-      prisma.accessory.findUnique({ where: { id } }),
+      prisma.smartphone.findUnique({
+        where: { id },
+        select: {
+          ...baseDetailSelect,
+          storage: true,
+        },
+      }),
+      prisma.speaker.findUnique({
+        where: { id },
+        select: {
+          ...baseDetailSelect,
+          batteryLife: true,
+        },
+      }),
+      prisma.accessory.findUnique({
+        where: { id },
+        select: {
+          ...baseDetailSelect,
+          type: true,
+        },
+      }),
     ]);
 
     let product: Product | null = null;
@@ -66,7 +100,7 @@ export async function GET(
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    return NextResponse.json(product);
+    return NextResponse.json(product, { headers: detailCacheHeaders });
   } catch (error) {
     console.error("GET_PRODUCT_ERROR:", error);
     return NextResponse.json(

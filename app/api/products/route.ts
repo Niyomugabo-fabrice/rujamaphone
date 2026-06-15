@@ -1,11 +1,30 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { normalizeSearchText, rankProducts } from "@/lib/search";
+
+const productCacheHeaders = {
+  "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+};
+
+const baseProductSelect = {
+  id: true,
+  name: true,
+  price: true,
+  image: true,
+  description: true,
+  rating: true,
+  reviews: true,
+  condition: true,
+  brand: true,
+  createdAt: true,
+  updatedAt: true,
+};
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   
   // 1. Sanitize and Extract Inputs
-  const search = searchParams.get("search")?.trim() || "";
+  const search = normalizeSearchText(searchParams.get("search") || "");
   const category = searchParams.get("category");
   const brand = searchParams.get("brand");
   const condition = searchParams.get("condition");
@@ -13,12 +32,13 @@ export async function GET(request: Request) {
   const batteryLife = searchParams.get("batteryLife");
   const type = searchParams.get("type");
   const sort = searchParams.get("sort") || "createdAt-desc";
+  const isSuggestionsRequest = searchParams.get("suggestions") === "1";
   
   const minPrice = Number(searchParams.get("minPrice")) || 0;
   const maxPrice = Number(searchParams.get("maxPrice")) || 999999999;
   
   const page = Math.max(Number(searchParams.get("page") || "1"), 1);
-  const limit = 12;
+  const limit = Math.min(Math.max(Number(searchParams.get("limit") || "12"), 1), 50);
   const skip = (page - 1) * limit;
 
   try {
@@ -43,43 +63,47 @@ export async function GET(request: Request) {
     if (batteryLife) speakerWhere.batteryLife = { contains: batteryLife, mode: "insensitive" };
     if (type) accessoryWhere.type = type;
 
-    // Search filter
-    if (search) {
-      const searchCondition = {
-        OR: [
-          { name: { contains: search, mode: "insensitive" } },
-          { brand: { contains: search, mode: "insensitive" } },
-        ],
-      };
-      smartphoneWhere.OR = searchCondition.OR;
-      speakerWhere.OR = searchCondition.OR;
-      accessoryWhere.OR = searchCondition.OR;
-    }
-
     // 3. Fetch from each table in parallel
+    const shouldRankSearch = Boolean(search);
+    const candidateTake = shouldRankSearch ? 250 : limit * 3;
+    const categoryTake = shouldRankSearch ? 250 : limit;
+    const categorySkip = shouldRankSearch ? 0 : skip;
+
     const [smartphones, speakers, accessories] = await Promise.all([
       category === "SMARTPHONE" || !category
         ? prisma.smartphone.findMany({
             where: smartphoneWhere,
+            select: {
+              ...baseProductSelect,
+              storage: true,
+            },
             orderBy: getOrderBy(sort),
-            take: category ? limit : limit * 3,
-            skip: category ? skip : 0,
+            take: category ? categoryTake : candidateTake,
+            skip: category ? categorySkip : 0,
           })
         : [],
       category === "SPEAKER" || !category
         ? prisma.speaker.findMany({
             where: speakerWhere,
+            select: {
+              ...baseProductSelect,
+              batteryLife: true,
+            },
             orderBy: getOrderBy(sort),
-            take: category ? limit : limit * 3,
-            skip: category ? skip : 0,
+            take: category ? categoryTake : candidateTake,
+            skip: category ? categorySkip : 0,
           })
         : [],
       category === "ACCESSORY" || !category
         ? prisma.accessory.findMany({
             where: accessoryWhere,
+            select: {
+              ...baseProductSelect,
+              type: true,
+            },
             orderBy: getOrderBy(sort),
-            take: category ? limit : limit * 3,
-            skip: category ? skip : 0,
+            take: category ? categoryTake : candidateTake,
+            skip: category ? categorySkip : 0,
           })
         : [],
     ]);
@@ -92,8 +116,10 @@ export async function GET(request: Request) {
     ];
 
     // 5. Sort combined results if no category filter
-    let sortedProducts = allProducts;
-    if (!category) {
+    let sortedProducts = allProducts as any[];
+    if (search) {
+      sortedProducts = rankProducts(sortedProducts, search).map((result) => result.item);
+    } else if (!category) {
       sortedProducts = allProducts.sort((a, b) => {
         const sortFn = getSortFunction(sort);
         return sortFn(a, b);
@@ -102,16 +128,19 @@ export async function GET(request: Request) {
 
     // 6. Apply pagination
     const total = sortedProducts.length;
-    const paginatedProducts = category
-      ? sortedProducts
+    const paginatedProducts = isSuggestionsRequest
+      ? sortedProducts.slice(0, limit)
       : sortedProducts.slice(skip, skip + limit);
 
-    return NextResponse.json({
-      success: true,
-      data: paginatedProducts,
-      total,
-      totalPages: Math.ceil(total / limit),
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        data: paginatedProducts,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+      { headers: productCacheHeaders }
+    );
   } catch (error) {
     console.error("SEARCH_API_ERROR:", error);
     return NextResponse.json(

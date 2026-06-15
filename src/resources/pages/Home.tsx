@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { ArrowRight, Smartphone, Headphones, Speaker, Zap, Shield, Truck } from 'lucide-react';
 import { ProductCard } from '@/components/ProductCard';
-import Masonry from 'react-responsive-masonry';
 import Link from 'next/link';
+import Image from 'next/image';
 import { CheckCircle } from "lucide-react";
 import type { Product } from "@/types/product";
 
@@ -93,15 +93,20 @@ useEffect(() => {
 
 
 const [products, setProducts] = useState<Product[]>([]);
-const [loading, setLoading] = useState(true);
-
-const featuredProducts = products.slice(0, 4);
-const galleryImages = products.slice(0, 8).map(p => p.image);
+const featuredProducts = useMemo(() => products.slice(0, 4), [products]);
+const galleryImages = useMemo(
+  () =>
+    products
+      .slice(0, 8)
+      .map((product) => product.image?.[0])
+      .filter((image): image is string => Boolean(image)),
+  [products]
+);
 
 useEffect(() => {
   async function fetchProducts() {
     try {
-      const res = await fetch("/api/products");
+      const res = await fetch("/api/products?limit=8");
       const data = await res.json();
 
       console.log("API RESPONSE:", data);
@@ -110,8 +115,6 @@ useEffect(() => {
     } catch (err) {
       console.error(err);
       setProducts([]);
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -187,10 +190,13 @@ useEffect(() => {
                 {sliderImages.map((img, i) => (
                   <div key={i} className="relative w-full h-full flex-shrink-0">
 
-                    <img
+                    <Image
                       src={img}
-                      alt={`Slide ${i}`}
-                      className="w-full h-full object-cover"
+                      alt={`Slide ${i + 1}`}
+                      fill
+                      priority={i === 0}
+                      sizes="(max-width: 768px) 280px, 320px"
+                      className="object-cover"
                     />
 
                     <div className="absolute inset-0 bg-black/40"></div>
@@ -277,11 +283,15 @@ useEffect(() => {
 
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {galleryImages.map((image, i) => (
-              <img
-                key={i}
-                src={image[0]}
+              <div key={image} className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
+              <Image
+                src={image}
+                alt={`Product gallery ${i + 1}`}
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                 className="rounded-lg hover:scale-105 transition w-full"
               />
+              </div>
             ))}
           </div>
 

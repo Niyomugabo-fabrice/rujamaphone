@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { Search, SlidersHorizontal, ChevronDown, X } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
 import FilterDrawer from "@/components/FilterDrawer";
@@ -45,12 +45,7 @@ const [tempFilters, setTempFilters] = useState<ProductFilters>({
     setSearchQuery(searchParams.get("search") || "");
   }, [searchParams]);
 
-  useEffect(() => {
-    fetchProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, filters, sortBy, searchParams]);
-
-const fetchProducts = async () => {
+const fetchProducts = useCallback(async (signal?: AbortSignal) => {
   setIsLoading(true);
   try {
     // 1. Build parameters from current state and URL
@@ -78,7 +73,7 @@ const fetchProducts = async () => {
     if (filters.type) params.set("type", filters.type);
 
     // 2. Execute fetch
-    const response = await fetch(`/api/products?${params.toString()}`);
+    const response = await fetch(`/api/products?${params.toString()}`, { signal });
     
     if (!response.ok) throw new Error("Failed to fetch products");
     
@@ -90,51 +85,50 @@ const fetchProducts = async () => {
     setTotalPages(data.totalPages || 1);
     
   } catch (error) {
+    if ((error as DOMException).name === "AbortError") return;
     console.error("SEARCH_API_ERROR:", error);
     setProducts([]);
   } finally {
-    setIsLoading(false);
-  }
-};
-const handleMobileFiltersChange = (newFilters: ProductFilters) => {
-  setTempFilters(newFilters); // ONLY TEMP
-};
-
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const params = new URLSearchParams(searchParams.toString());
-    if (searchQuery.trim()) {
-      params.set("search", searchQuery.trim());
-    } else {
-      params.delete("search");
+    if (!signal?.aborted) {
+      setIsLoading(false);
     }
-    params.set("page", "1");
-    router.push(`${pathname}?${params.toString()}`);
-  };
+  }
+}, [filters, page, searchParams, sortBy]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchProducts(controller.signal);
+    return () => controller.abort();
+  }, [fetchProducts]);
+
+const handleMobileFiltersChange = useCallback((newFilters: ProductFilters) => {
+  setTempFilters(newFilters); // ONLY TEMP
+}, []);
 
 
- const handleFilterChange = <K extends keyof ProductFilters>(key: K, value: ProductFilters[K]) => {
+
+
+ const handleFilterChange = useCallback(<K extends keyof ProductFilters,>(key: K, value: ProductFilters[K]) => {
   setFilters((prev) => ({
     ...prev,
     [key]: value,
   }));
   setPage(1);
-};
+}, []);
 
-  const handleFilterRemove = (key: keyof ProductFilters) => {
+  const handleFilterRemove = useCallback((key: keyof ProductFilters) => {
     const newFilters = { ...filters };
     delete newFilters[key];
     setFilters(newFilters);
     setPage(1);
-  };
+  }, [filters]);
 
  
-const handleClearAll = () => {
+const handleClearAll = useCallback(() => {
   setFilters({ category: initialCategory });
   setPage(1);
   router.push(pathname);
-}; // Make sure this closing brace is here
+}, [initialCategory, pathname, router]);
 
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat("en-RW", {
@@ -144,7 +138,9 @@ const formatPrice = (price: number) => {
   }).format(price);
 };
 
-const getBrandsForCategory = (category?: ProductCategory): string[] => {
+const brandOptions = useMemo(() => getBrandsForCategory(filters.category), [filters.category]);
+
+function getBrandsForCategory(category?: ProductCategory): string[] {
   switch (category) {
     case "SMARTPHONE":
       return ["APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS"];
@@ -158,7 +154,7 @@ const getBrandsForCategory = (category?: ProductCategory): string[] => {
         "JBL", "SONY", "BOSE", "ANKER", "BASEUS", "GENERIC",
       ];
   }
-};
+}
 
   return (
     <div className="w-full">
@@ -173,32 +169,7 @@ const getBrandsForCategory = (category?: ProductCategory): string[] => {
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
             {/* Search Bar */}
-            <form onSubmit={handleSearch} className="relative w-full sm:w-80">
-              <input
-                type="text"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-10 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm transition-all"
-              />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSearchQuery("");
-                    const params = new URLSearchParams(searchParams.toString());
-                    params.delete("search");
-                    params.set("page", "1");
-                    router.push(`${pathname}?${params.toString()}`);
-                  }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </form>
-           
+
             {/* Sort Dropdown */}
             <div className="relative">
               <select
@@ -287,7 +258,7 @@ const getBrandsForCategory = (category?: ProductCategory): string[] => {
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3">Brand</h3>
                 <div className="space-y-2 max-h-48 overflow-y-auto">
-                  {getBrandsForCategory(filters.category).map((brand) => (
+                  {brandOptions.map((brand) => (
                     <label key={brand} className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="radio"
