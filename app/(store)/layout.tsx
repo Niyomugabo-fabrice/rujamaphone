@@ -1,6 +1,7 @@
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
+import { AnnouncementBanner } from '@/components/AnnouncementBanner';
 
 export default function StoreLayout({
   children,
@@ -11,6 +12,7 @@ export default function StoreLayout({
     <div className="min-h-screen flex flex-col">
       {/* Universal Store Navigation */}
       <Header />
+      <AnnouncementBanner />
       
       {/* Injected Active Public Store Page Content */}
       <main className="flex-1">

@@ -75,6 +75,12 @@ enum AccessoryBrand {
   RAVPOWER
 }
 
+enum AnnouncementKind {
+  GENERAL
+  PROMOTION
+  PUBLIC_HOLIDAY
+}
+
 // ==========================================
 // USER MODEL
 // ==========================================
@@ -175,4 +181,21 @@ model SliderImage {
   image     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Announcement {
+  id          String           @id @default(uuid())
+  title       String
+  message     String
+  kind        AnnouncementKind @default(GENERAL)
+  isPublished Boolean          @default(false)
+  startsAt    DateTime?
+  endsAt      DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([isPublished])
+  @@index([startsAt])
+  @@index([endsAt])
+  @@index([createdAt])
 }

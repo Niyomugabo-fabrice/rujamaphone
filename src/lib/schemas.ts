@@ -132,6 +132,52 @@ export const accessoryFormSchema = z.object({
 
 export const productImagesSchema = z.array(z.string().url()).min(1).max(10);
 
+export const announcementKindSchema = z.enum(["GENERAL", "PROMOTION", "PUBLIC_HOLIDAY"]);
+
+const nullableDateInput = z
+  .union([z.string().datetime(), z.string().date(), z.literal(""), z.null()])
+  .optional()
+  .transform((value) => {
+    if (!value) return null;
+    return new Date(value);
+  });
+
+export const announcementQuerySchema = z.object({
+  scope: z.enum(["public", "admin"]).optional().default("public"),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+});
+
+const announcementBaseSchema = z.object({
+  title: z.string().trim().min(2).max(120),
+  message: z.string().trim().min(2).max(500),
+  kind: announcementKindSchema.default("GENERAL"),
+  isPublished: z.coerce.boolean().optional().default(false),
+  startsAt: nullableDateInput,
+  endsAt: nullableDateInput,
+});
+
+export const announcementFormSchema = announcementBaseSchema.refine(
+  (value) => !value.startsAt || !value.endsAt || value.startsAt <= value.endsAt,
+  {
+    message: "Start date must be before end date",
+    path: ["endsAt"],
+  }
+);
+
+export const announcementPatchSchema = announcementBaseSchema.partial().refine(
+  (value) => Object.keys(value).length > 0,
+  { message: "At least one field is required" }
+).refine(
+  (value) => !value.startsAt || !value.endsAt || value.startsAt <= value.endsAt,
+  {
+    message: "Start date must be before end date",
+    path: ["endsAt"],
+  }
+);
+
+export const announcementUpdateSchema = announcementPatchSchema.and(idSchema);
+
 // ==========================================
 // AUTHENTICATION SCHEMAS
 // ==========================================

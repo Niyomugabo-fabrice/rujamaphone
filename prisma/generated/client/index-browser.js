@@ -186,6 +186,18 @@ exports.Prisma.SliderImageScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.AnnouncementScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  message: 'message',
+  kind: 'kind',
+  isPublished: 'isPublished',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -262,12 +274,19 @@ exports.AccessoryBrand = exports.$Enums.AccessoryBrand = {
   RAVPOWER: 'RAVPOWER'
 };
 
+exports.AnnouncementKind = exports.$Enums.AnnouncementKind = {
+  GENERAL: 'GENERAL',
+  PROMOTION: 'PROMOTION',
+  PUBLIC_HOLIDAY: 'PUBLIC_HOLIDAY'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Smartphone: 'Smartphone',
   Speaker: 'Speaker',
   Accessory: 'Accessory',
-  SliderImage: 'SliderImage'
+  SliderImage: 'SliderImage',
+  Announcement: 'Announcement'
 };
 
 /**

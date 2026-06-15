@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Smartphone, Speaker, Layers, LogOut, Image as ImageIcon } from "lucide-react";
+import { Smartphone, Speaker, Layers, LogOut, Image as ImageIcon, Megaphone } from "lucide-react";
 import Image from "next/image";
 
 
@@ -15,6 +15,7 @@ export const navigationOptions = [
   { name: "ACCESSORY", href: "/admin/accessories", icon: Layers },
   { name: "SPEAKER", href: "/admin/speakers", icon: Speaker },
   { name: "SLIDER IMAGES", href: "/admin/sliders", icon: ImageIcon },
+  { name: "ANNOUNCEMENTS", href: "/admin/announcements", icon: Megaphone },
 ];
 
 const handleLogout = async () => {
