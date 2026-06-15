@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { RefreshCw, Plus, Volume2, Image as ImageIcon, X, Eye, AlertCircle, CheckCircle2 } from "lucide-react";
 import SpeakerTable from "@/components/admin/speaker-table";
+import { adminFetch } from "@/lib/admin-fetch";
 
 export default function SpeakersPage() {
   const [itemsData, setItemsData] = useState<any[]>([]);
@@ -33,7 +34,7 @@ export default function SpeakersPage() {
   const fetchSpeakers = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/speakers", { cache: "no-store" });
+      const res = await adminFetch("/api/speakers", { cache: "no-store" });
       const payload = await res.json();
       const result = payload?.success ? payload.data : payload;
       setItemsData(Array.isArray(result) ? result : result?.data || []);
@@ -73,7 +74,7 @@ export default function SpeakersPage() {
         });
       }
 
-      const response = await fetch("/api/speakers", {
+      const response = await adminFetch("/api/speakers", {
         method: "POST",
         body: nativeFormData,
       });

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Edit3, Trash2, Smartphone, AlertTriangle, Eye, X, Layers, Image, Trash, Plus, CheckSquare, Square } from "lucide-react";
+import { adminFetch } from "@/lib/admin-fetch";
 
 interface SmartphoneTableProps {
   data: any[];
@@ -64,7 +65,7 @@ export default function SmartphoneTable({ data, onViewProduct }: SmartphoneTable
     setIsLoading(true);
     try {
       const queryString = buildQueryString();
-      const response = await fetch(`/api/smartphones?${queryString}`, {credentials: "include"});
+      const response = await adminFetch(`/api/smartphones?${queryString}`);
       const payload = await response.json();
 
       if (!response.ok) {
@@ -116,7 +117,7 @@ export default function SmartphoneTable({ data, onViewProduct }: SmartphoneTable
     setIsSubmitting(true);
     try {
       const remainingImages = (viewingItem.image || []).filter((url: string) => url !== imgUrl);
-      const response = await fetch(`/api/smartphones/${viewingItem.id}`, {
+      const response = await adminFetch(`/api/smartphones/${viewingItem.id}`, {
         method: "PATCH",
         // headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -152,7 +153,7 @@ export default function SmartphoneTable({ data, onViewProduct }: SmartphoneTable
         (url: string) => !selectedDetailImages.includes(url)
       );
 
-      const response = await fetch(`/api/smartphones/${viewingItem.id}`, {
+      const response = await adminFetch(`/api/smartphones/${viewingItem.id}`, {
         method: "PATCH",
         // headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -247,7 +248,7 @@ const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         image: finalImages,
       };
 
-      const response = await fetch(`/api/smartphones/${editingItem.id}`, {
+      const response = await adminFetch(`/api/smartphones/${editingItem.id}`, {
         method: "PATCH",
         // headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -287,7 +288,7 @@ const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     if (!deletingId) return;
     setIsSubmitting(true);
     try {
-      const response = await fetch(`/api/smartphones?id=${deletingId}`, { 
+      const response = await adminFetch(`/api/smartphones?id=${deletingId}`, { 
         method: "DELETE",
         credentials: "include",
       

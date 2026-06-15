@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { RefreshCw, Plus, Layers, Image as ImageIcon, X, Eye, AlertCircle, CheckCircle2 } from "lucide-react";
 import AccessoryTable from "@/components/admin/accessory-table";
+import { adminFetch } from "@/lib/admin-fetch";
 
 export default function AccessoriesPage() {
   const [itemsData, setItemsData] = useState<any[]>([]);
@@ -33,7 +34,7 @@ export default function AccessoriesPage() {
   const fetchAccessories = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/accessories", { cache: "no-store" });
+      const res = await adminFetch("/api/accessories", { cache: "no-store" });
       const payload = await res.json();
       const result = payload?.success ? payload.data : payload;
       setItemsData(Array.isArray(result) ? result : result?.data || []);
@@ -73,7 +74,7 @@ export default function AccessoriesPage() {
         });
       }
 
-      const response = await fetch("/api/accessories", {
+      const response = await adminFetch("/api/accessories", {
         method: "POST",
         body: nativeFormData,
       });

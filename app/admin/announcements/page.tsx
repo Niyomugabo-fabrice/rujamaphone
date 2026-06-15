@@ -13,6 +13,7 @@ import {
   Trash2,
   X,
 } from "lucide-react";
+import { adminFetch } from "@/lib/admin-fetch";
 
 type AnnouncementKind = "GENERAL" | "PROMOTION" | "PUBLIC_HOLIDAY";
 
@@ -98,7 +99,7 @@ export default function AnnouncementsPage() {
   const fetchAnnouncements = useCallback(async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/announcements?scope=admin&limit=50");
+      const response = await adminFetch("/api/announcements?scope=admin&limit=50");
       const payload = await response.json();
       if (!response.ok) throw new Error(payload?.error || "Failed to load announcements");
 
@@ -147,7 +148,7 @@ export default function AnnouncementsPage() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/announcements", {
+      const response = await adminFetch("/api/announcements", {
         method: editingAnnouncement ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editingAnnouncement ? { id: editingAnnouncement.id, ...form } : form),
@@ -169,7 +170,7 @@ export default function AnnouncementsPage() {
 
   const togglePublished = async (announcement: Announcement) => {
     try {
-      const response = await fetch("/api/announcements", {
+      const response = await adminFetch("/api/announcements", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: announcement.id, isPublished: !announcement.isPublished }),
@@ -192,7 +193,7 @@ export default function AnnouncementsPage() {
     if (!window.confirm(`Delete "${announcement.title}"?`)) return;
 
     try {
-      const response = await fetch(`/api/announcements?id=${announcement.id}`, {
+      const response = await adminFetch(`/api/announcements?id=${announcement.id}`, {
         method: "DELETE",
       });
       const payload = await response.json();

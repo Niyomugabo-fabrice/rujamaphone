@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Edit3, Trash2, Layers, AlertTriangle, Eye, X, Image, Trash, Plus, CheckSquare } from "lucide-react";
+import { adminFetch } from "@/lib/admin-fetch";
 
 interface AccessoryTableProps {
   data: any[];
@@ -62,9 +63,7 @@ export default function AccessoryTable({ data, onViewProduct }: AccessoryTablePr
     setIsLoading(true);
     try {
       const queryString = buildQueryString();
-      const response = await fetch(`/api/accessories?${queryString}`,
-        {credentials: "include"}
-      );
+      const response = await adminFetch(`/api/accessories?${queryString}`);
       const payload = await response.json();
 
       if (!response.ok) {
@@ -109,9 +108,8 @@ export default function AccessoryTable({ data, onViewProduct }: AccessoryTablePr
 
     setIsSubmitting(true);
     try {
-      const response = await fetch(`/api/accessories?id=${deletingId}`, {
+      const response = await adminFetch(`/api/accessories?id=${deletingId}`, {
         method: "DELETE",
-        credentials: "include",
       });
 
       if (response.ok) {
@@ -168,10 +166,9 @@ export default function AccessoryTable({ data, onViewProduct }: AccessoryTablePr
         formData.append("images", file);
       }
 
-      const response = await fetch(`/api/accessories/${editingItem.id}`, {
+      const response = await adminFetch(`/api/accessories/${editingItem.id}`, {
         method: "PATCH",
         body: formData,
-        credentials: "include",
       });
 
       if (response.ok) {
@@ -195,10 +192,9 @@ export default function AccessoryTable({ data, onViewProduct }: AccessoryTablePr
         (url: string) => !selectedDetailImages.includes(url)
       );
 
-      const response = await fetch(`/api/accessories/${viewingItem.id}`, {
+      const response = await adminFetch(`/api/accessories/${viewingItem.id}`, {
         method: "PATCH",
         // headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({
           ...viewingItem,
           image: updatedImages,

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { RefreshCw, Plus, Smartphone, Image as ImageIcon, X, Eye, AlertCircle, CheckCircle2 } from "lucide-react";
 import SmartphoneTable from "@/components/admin/smartphone-table";
+import { adminFetch } from "@/lib/admin-fetch";
 
 export default function SmartphonesPage() {
   const [itemsData, setItemsData] = useState<any[]>([]);
@@ -33,7 +34,7 @@ export default function SmartphonesPage() {
   const fetchSmartphones = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/smartphones", { cache: "no-store" });
+      const res = await adminFetch("/api/smartphones", { cache: "no-store" });
       const payload = await res.json();
       const result = payload?.success ? payload.data : payload;
       setItemsData(Array.isArray(result) ? result : result?.data || []);
@@ -73,7 +74,7 @@ export default function SmartphonesPage() {
         });
       }
 
-      const response = await fetch("/api/smartphones", {
+      const response = await adminFetch("/api/smartphones", {
         method: "POST",
         body: nativeFormData,
       });

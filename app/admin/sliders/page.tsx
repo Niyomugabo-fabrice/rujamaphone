@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { RefreshCw, Plus, Image as ImageIcon, X, Eye, AlertCircle, CheckCircle2, Edit3, Trash2, AlertTriangle } from "lucide-react";
+import { adminFetch } from "@/lib/admin-fetch";
 
 export default function SlidersAdminPage() {
   const [itemsData, setItemsData] = useState<any[]>([]);
@@ -37,7 +38,7 @@ export default function SlidersAdminPage() {
   const fetchSliders = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/sliders", { cache: "no-store" });
+      const res = await adminFetch("/api/sliders", { cache: "no-store" });
       const payload = await res.json();
       setItemsData(payload?.success ? payload.data || [] : payload.data || []);
     } catch (err) {
@@ -83,7 +84,7 @@ export default function SlidersAdminPage() {
         nativeFormData.append("images", file);
       });
 
-      const response = await fetch("/api/sliders", {
+      const response = await adminFetch("/api/sliders", {
         method: "POST",
         body: nativeFormData,
       });
@@ -122,7 +123,7 @@ export default function SlidersAdminPage() {
       const formData = new FormData();
       formData.append("images", editFile);
 
-      const response = await fetch(`/api/sliders/${editingItem.id}`, {
+      const response = await adminFetch(`/api/sliders/${editingItem.id}`, {
         method: "PATCH",
         body: formData,
       });
@@ -155,7 +156,7 @@ export default function SlidersAdminPage() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch(`/api/sliders/${deletingId}`, {
+      const response = await adminFetch(`/api/sliders/${deletingId}`, {
         method: "DELETE",
       });
 

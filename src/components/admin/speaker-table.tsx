@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Edit3, Trash2, Volume2, AlertTriangle, Eye, X, Layers, Image, Trash, Plus, CheckSquare, Square } from "lucide-react";
+import { adminFetch } from "@/lib/admin-fetch";
 
 interface SpeakerTableProps {
   data: any[];
@@ -60,7 +61,7 @@ export default function SpeakerTable({ data, onViewProduct }: SpeakerTableProps)
     setIsLoading(true);
     try {
       const queryString = buildQueryString();
-      const response = await fetch(`/api/speakers?${queryString}`,{credentials: "include"});
+      const response = await adminFetch(`/api/speakers?${queryString}`);
       const payload = await response.json();
 
       if (!response.ok) {
@@ -105,7 +106,7 @@ export default function SpeakerTable({ data, onViewProduct }: SpeakerTableProps)
 
     setIsSubmitting(true);
     try {
-      const response = await fetch(`/api/speakers?id=${deletingId}`, {
+      const response = await adminFetch(`/api/speakers?id=${deletingId}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -164,7 +165,7 @@ export default function SpeakerTable({ data, onViewProduct }: SpeakerTableProps)
         formData.append("images", file);
       }
 
-      const response = await fetch(`/api/speakers/${editingItem.id}`, {
+      const response = await adminFetch(`/api/speakers/${editingItem.id}`, {
         method: "PATCH",
         body: formData,
         credentials: "include",
@@ -191,7 +192,7 @@ export default function SpeakerTable({ data, onViewProduct }: SpeakerTableProps)
         (url: string) => !selectedDetailImages.includes(url)
       );
 
-      const response = await fetch(`/api/speakers/${viewingItem.id}`, {
+      const response = await adminFetch(`/api/speakers/${viewingItem.id}`, {
         method: "PATCH",
 
         headers: { "Content-Type": "application/json" },
