@@ -132,7 +132,7 @@ export function Contact() {
               <h2 className="text-2xl font-bold text-accent mb-6">Follow Us</h2>
               <div className="flex flex-wrap gap-3">
                 <a
-                  href="https://facebook.com/rujamaphones"
+                  href="https://web.facebook.com/search/top?q=rujama_phones_shop"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors"
@@ -141,7 +141,7 @@ export function Contact() {
                   <Facebook className="w-7 h-7 text-white" />
                 </a>
                 <a
-                  href="https://instagram.com/rujamaphones"
+                  href="https://www.instagram.com/rujama_phones_shop/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-14 h-14 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-full flex items-center justify-center hover:opacity-90 transition-opacity"

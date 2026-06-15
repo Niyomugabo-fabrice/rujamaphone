@@ -13,6 +13,40 @@ function configureCloudinary() {
   });
 }
 
+function getCloudinaryPublicId(imageUrl?: string | null) {
+  if (!imageUrl) return null;
+
+  try {
+    const url = new URL(imageUrl);
+    const uploadIndex = url.pathname.indexOf("/upload/");
+    if (uploadIndex === -1) return null;
+
+    const uploadPath = url.pathname.slice(uploadIndex + "/upload/".length);
+    const pathWithoutVersion = uploadPath.replace(/^v\d+\//, "");
+    const withoutExtension = pathWithoutVersion.replace(/\.[^/.]+$/, "");
+    return decodeURIComponent(withoutExtension);
+  } catch {
+    return null;
+  }
+}
+
+async function deleteCloudinaryImage(imageUrl?: string | null) {
+  const publicId = getCloudinaryPublicId(imageUrl);
+  if (!publicId) return;
+
+  try {
+    configureCloudinary();
+    await cloudinary.uploader.destroy(publicId);
+  } catch (error) {
+    console.error(JSON.stringify({
+      level: "warn",
+      scope: "sliders.id.cloudinary.destroy",
+      message: error instanceof Error ? error.message : "Failed to delete Cloudinary asset",
+      at: new Date().toISOString(),
+    }));
+  }
+}
+
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -37,6 +71,11 @@ export async function PATCH(
 
     if (!uploadResult?.secure_url) return fail("Cloudinary upload failed", 500);
 
+    const current = await prisma.sliderImage.findUnique({
+      where: { id },
+      select: { image: true },
+    });
+
     const updated = await prisma.sliderImage.update({
       where: { id },
       data: { image: uploadResult.secure_url },
@@ -48,8 +87,32 @@ export async function PATCH(
       },
     });
 
+    await deleteCloudinaryImage(current?.image);
+
     return ok(updated);
   } catch (error) {
     return handleApiError("sliders.id.PATCH", error);
+  }
+}
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await requireAdminAuth(request);
+    if (!session) return fail("Unauthorized", 401);
+
+    const { id } = await parseRouteParams(params, idSchema);
+    const deleted = await prisma.sliderImage.delete({
+      where: { id },
+      select: { id: true, image: true },
+    });
+
+    await deleteCloudinaryImage(deleted.image);
+
+    return ok({ message: "Slider image deleted successfully" });
+  } catch (error) {
+    return handleApiError("sliders.id.DELETE", error);
   }
 }

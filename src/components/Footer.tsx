@@ -88,7 +88,7 @@ export function Footer() {
               {/* Social Icons */}
               <div className="flex space-x-4 mt-6">
                 <a
-                  href="https://web.facebook.com/profile.php?id=100077072063658"
+                  href="https://web.facebook.com/search/top?q=rujama_phones_shop"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-white/10 hover:bg-white hover:text-[#820210] transition-all duration-300 p-3 rounded-full"

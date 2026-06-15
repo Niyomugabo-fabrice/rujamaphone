@@ -29,6 +29,40 @@ async function uploadSlider(file: File) {
   return uploadResult?.secure_url as string | undefined;
 }
 
+function getCloudinaryPublicId(imageUrl?: string | null) {
+  if (!imageUrl) return null;
+
+  try {
+    const url = new URL(imageUrl);
+    const uploadIndex = url.pathname.indexOf("/upload/");
+    if (uploadIndex === -1) return null;
+
+    const uploadPath = url.pathname.slice(uploadIndex + "/upload/".length);
+    const pathWithoutVersion = uploadPath.replace(/^v\d+\//, "");
+    const withoutExtension = pathWithoutVersion.replace(/\.[^/.]+$/, "");
+    return decodeURIComponent(withoutExtension);
+  } catch {
+    return null;
+  }
+}
+
+async function deleteCloudinaryImage(imageUrl?: string | null) {
+  const publicId = getCloudinaryPublicId(imageUrl);
+  if (!publicId) return;
+
+  try {
+    configureCloudinary();
+    await cloudinary.uploader.destroy(publicId);
+  } catch (error) {
+    console.error(JSON.stringify({
+      level: "warn",
+      scope: "sliders.cloudinary.destroy",
+      message: error instanceof Error ? error.message : "Failed to delete Cloudinary asset",
+      at: new Date().toISOString(),
+    }));
+  }
+}
+
 export async function GET() {
   try {
     const sliders = await prisma.sliderImage.findMany({
@@ -37,7 +71,7 @@ export async function GET() {
       take: 20,
     });
     return ok(sliders, 200, {
-      headers: { "Cache-Control": "public, s-maxage=120, stale-while-revalidate=600" },
+      headers: { "Cache-Control": "no-store, max-age=0" },
     });
   } catch (error) {
     return handleApiError("sliders.GET", error);
@@ -78,7 +112,11 @@ export async function DELETE(request: Request) {
     if (!session) return fail("Unauthorized", 401);
 
     const { id } = parseSearchParams(request, deleteByIdQuerySchema);
-    await prisma.sliderImage.delete({ where: { id }, select: { id: true } });
+    const deleted = await prisma.sliderImage.delete({
+      where: { id },
+      select: { id: true, image: true },
+    });
+    await deleteCloudinaryImage(deleted.image);
     return ok({ message: "Slider image deleted successfully" });
   } catch (error) {
     return handleApiError("sliders.DELETE", error);

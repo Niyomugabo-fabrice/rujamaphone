@@ -32,7 +32,7 @@ export default function SlidersAdminPage() {
   const fetchSliders = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/sliders");
+      const res = await fetch("/api/sliders", { cache: "no-store" });
       const payload = await res.json();
       setItemsData(payload?.success ? payload.data || [] : payload.data || []);
     } catch (err) {
@@ -142,7 +142,7 @@ export default function SlidersAdminPage() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch(`/api/sliders?id=${deletingId}`, {
+      const response = await fetch(`/api/sliders/${deletingId}`, {
         method: "DELETE",
       });
 
@@ -151,7 +151,8 @@ export default function SlidersAdminPage() {
         triggerNotification("success", "Slider image deleted successfully.");
         fetchSliders();
       } else {
-        triggerNotification("error", "Failed to delete slider image.");
+        const errData = await response.json().catch(() => null);
+        triggerNotification("error", errData?.error || "Failed to delete slider image.");
       }
     } catch (error) {
       console.error("Delete slider error:", error);

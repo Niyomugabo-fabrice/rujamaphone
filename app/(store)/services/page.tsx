@@ -15,9 +15,9 @@ import {
 const services = [
   {
     title: "Upgrade Your Phone",
-    subtitle: "Trade in your current device and top up for a better one.",
+    subtitle: "Trade in your current phone, top up the balance, and leave with a better device.",
     href: "/upgrade",
-    image: "/image/service-upgrade-infographic.svg",
+    image: "/image/upgrade.jpeg",
     icon: RefreshCw,
     action: "View Upgrade Service",
     highlights: [
@@ -28,7 +28,7 @@ const services = [
   },
   {
     title: "Pay in Installments",
-    subtitle: "Choose a device now and pay with a flexible daily, weekly, or monthly plan.",
+    subtitle: "Get a smartphone, speaker, or accessory with a clear payment plan that fits your budget.",
     href: "/installment",
     image: "/image/service-installment-infographic.svg",
     icon: Wallet,
