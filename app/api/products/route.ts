@@ -22,6 +22,35 @@ const baseProductSelect = {
   updatedAt: true,
 };
 
+const smartphoneBrands = ["APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS", "TECNO", "INFINIX"];
+const speakerBrands = ["JBL", "SONY", "BOSE", "APPLE", "ANKER", "BEATS", "ULTIMATE_EARS", "MARSHALL", "SONOS"];
+const accessoryBrands = [
+  "APPLE",
+  "SAMSUNG",
+  "ANKER",
+  "BASEUS",
+  "GENERIC",
+  "ONEPLUS",
+  "SONY",
+  "XIAOMI",
+  "SPIGEN",
+  "BELKIN",
+  "OTTERBOX",
+  "JBL",
+  "BEATS",
+  "BOSE",
+  "MOPHIE",
+  "CASETIFY",
+  "GOOGLE",
+  "UAG",
+  "JABRA",
+  "NOMAD",
+  "NOTHING",
+  "MOUS",
+  "SENNHEISER",
+  "RAVPOWER",
+];
+
 export async function GET(request: Request) {
   try {
     const query = parseSearchParams(request, publicProductsQuerySchema);
@@ -41,26 +70,42 @@ export async function GET(request: Request) {
     } = query;
     const isSuggestionsRequest = query.suggestions === "1";
     const skip = (page - 1) * limit;
-    // 2. Build Prisma where clauses for each table
-    const baseWhere: any = {
-      price: { gte: minPrice, lte: maxPrice },
-    };
-
-    if (brand) baseWhere.brand = brand;
-    if (condition) baseWhere.condition = condition;
-
-    // Category-specific filters
-    const smartphoneWhere = { ...baseWhere };
-    const speakerWhere = { ...baseWhere };
-    const accessoryWhere = { ...baseWhere };
-
-    if (category && category !== "SMARTPHONE") smartphoneWhere.brand = undefined;
-    if (category && category !== "SPEAKER") speakerWhere.brand = undefined;
-    if (category && category !== "ACCESSORY") accessoryWhere.brand = undefined;
-
-    if (storage) smartphoneWhere.storage = storage;
-    if (batteryLife) speakerWhere.batteryLife = { contains: batteryLife, mode: "insensitive" };
-    if (type) accessoryWhere.type = type;
+    const smartphoneWhere = buildProductWhere({
+      tableCategory: "SMARTPHONE",
+      selectedCategory: category,
+      brand,
+      validBrands: smartphoneBrands,
+      condition,
+      minPrice,
+      maxPrice,
+      storage,
+      batteryLife,
+      type,
+    });
+    const speakerWhere = buildProductWhere({
+      tableCategory: "SPEAKER",
+      selectedCategory: category,
+      brand,
+      validBrands: speakerBrands,
+      condition,
+      minPrice,
+      maxPrice,
+      storage,
+      batteryLife,
+      type,
+    });
+    const accessoryWhere = buildProductWhere({
+      tableCategory: "ACCESSORY",
+      selectedCategory: category,
+      brand,
+      validBrands: accessoryBrands,
+      condition,
+      minPrice,
+      maxPrice,
+      storage,
+      batteryLife,
+      type,
+    });
 
     // 3. Fetch from each table in parallel
     const shouldRankSearch = Boolean(search);
@@ -69,7 +114,7 @@ export async function GET(request: Request) {
     const categorySkip = shouldRankSearch ? 0 : skip;
 
     const [smartphones, speakers, accessories] = await Promise.all([
-      category === "SMARTPHONE" || !category
+      smartphoneWhere
         ? prisma.smartphone.findMany({
             where: smartphoneWhere,
             select: {
@@ -81,7 +126,7 @@ export async function GET(request: Request) {
             skip: category ? categorySkip : 0,
           })
         : [],
-      category === "SPEAKER" || !category
+      speakerWhere
         ? prisma.speaker.findMany({
             where: speakerWhere,
             select: {
@@ -93,7 +138,7 @@ export async function GET(request: Request) {
             skip: category ? categorySkip : 0,
           })
         : [],
-      category === "ACCESSORY" || !category
+      accessoryWhere
         ? prisma.accessory.findMany({
             where: accessoryWhere,
             select: {
@@ -143,6 +188,52 @@ export async function GET(request: Request) {
   } catch (error) {
     return handleApiError("products.GET", error);
   }
+}
+
+type BuildWhereOptions = {
+  tableCategory: "SMARTPHONE" | "SPEAKER" | "ACCESSORY";
+  selectedCategory?: "SMARTPHONE" | "SPEAKER" | "ACCESSORY";
+  brand?: string;
+  validBrands: string[];
+  condition?: string;
+  minPrice: number;
+  maxPrice: number;
+  storage?: string;
+  batteryLife?: string;
+  type?: string;
+};
+
+function buildProductWhere({
+  tableCategory,
+  selectedCategory,
+  brand,
+  validBrands,
+  condition,
+  minPrice,
+  maxPrice,
+  storage,
+  batteryLife,
+  type,
+}: BuildWhereOptions) {
+  if (selectedCategory && selectedCategory !== tableCategory) return null;
+  if (brand && !validBrands.includes(brand)) return null;
+  if (storage && tableCategory !== "SMARTPHONE") return null;
+  if (batteryLife && tableCategory !== "SPEAKER") return null;
+  if (type && tableCategory !== "ACCESSORY") return null;
+
+  const where: any = {
+    price: { gte: minPrice, lte: maxPrice },
+  };
+
+  if (brand) where.brand = brand;
+  if (condition) where.condition = condition;
+  if (tableCategory === "SMARTPHONE" && storage) where.storage = storage;
+  if (tableCategory === "SPEAKER" && batteryLife) {
+    where.batteryLife = { contains: batteryLife, mode: "insensitive" };
+  }
+  if (tableCategory === "ACCESSORY" && type) where.type = type;
+
+  return where;
 }
 
 function getOrderBy(sort: string) {

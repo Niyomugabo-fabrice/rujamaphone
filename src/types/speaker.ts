@@ -3,6 +3,10 @@ export type SpeakerBrand =
   | "SONY"
   | "BOSE"
   | "APPLE"
-  | "ANKER";
+  | "ANKER"
+  | "BEATS"
+  | "ULTIMATE_EARS"
+  | "MARSHALL"
+  | "SONOS";
 
 export type Condition = "NEW" | "USED";

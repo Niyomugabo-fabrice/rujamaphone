@@ -3,7 +3,9 @@ export type SmartphoneBrand =
   | "SAMSUNG"
   | "GOOGLE"
   | "XIAOMI"
-  | "ONEPLUS";
+  | "ONEPLUS"
+  | "TECNO"
+  | "INFINIX";
 
 export type StorageCapacity =
   | "GB64"

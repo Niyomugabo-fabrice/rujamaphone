@@ -144,15 +144,23 @@ const brandOptions = useMemo(() => getBrandsForCategory(filters.category), [filt
 function getBrandsForCategory(category?: ProductCategory): string[] {
   switch (category) {
     case "SMARTPHONE":
-      return ["APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS"];
+      return ["APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS", "TECNO", "INFINIX"];
     case "SPEAKER":
-      return ["JBL", "SONY", "BOSE", "APPLE", "ANKER"];
+      return ["JBL", "SONY", "BOSE", "APPLE", "ANKER", "BEATS", "ULTIMATE_EARS", "MARSHALL", "SONOS"];
     case "ACCESSORY":
-      return ["APPLE", "SAMSUNG", "ANKER", "BASEUS", "GENERIC"];
+      return [
+        "APPLE", "SAMSUNG", "ANKER", "BASEUS", "GENERIC", "ONEPLUS", "SONY",
+        "XIAOMI", "SPIGEN", "BELKIN", "OTTERBOX", "JBL", "BEATS", "BOSE",
+        "MOPHIE", "CASETIFY", "GOOGLE", "UAG", "JABRA", "NOMAD", "NOTHING",
+        "MOUS", "SENNHEISER", "RAVPOWER",
+      ];
     default:
       return [
-        "APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS",
-        "JBL", "SONY", "BOSE", "ANKER", "BASEUS", "GENERIC",
+        "APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS", "TECNO", "INFINIX",
+        "JBL", "SONY", "BOSE", "ANKER", "BEATS", "ULTIMATE_EARS", "MARSHALL",
+        "SONOS", "BASEUS", "GENERIC", "SPIGEN", "BELKIN", "OTTERBOX", "MOPHIE",
+        "CASETIFY", "UAG", "JABRA", "NOMAD", "NOTHING", "MOUS", "SENNHEISER",
+        "RAVPOWER",
       ];
   }
 }
@@ -191,7 +199,10 @@ function getBrandsForCategory(category?: ProductCategory): string[] {
             </div>
             {/* Mobile Filter Button */}
             <button
-              onClick={() => setIsFilterOpen(true)}
+              onClick={() => {
+                setTempFilters(filters);
+                setIsFilterOpen(true);
+              }}
               className="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
             >
               <SlidersHorizontal className="w-4 h-4" />
@@ -432,13 +443,14 @@ function getBrandsForCategory(category?: ProductCategory): string[] {
      <FilterDrawer
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
-        filters={filters}
+        filters={tempFilters}
         onFiltersChange={handleMobileFiltersChange}
-        category={filters.category}
-        onApply={() => {
-    setFilters(tempFilters);   // APPLY HERE
-    setPage(1);
-  }}
+        category={tempFilters.category}
+        onApply={(nextFilters) => {
+          setFilters(nextFilters);
+          setTempFilters(nextFilters);
+          setPage(1);
+        }}
       />
     </div>
   );

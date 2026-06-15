@@ -67,7 +67,9 @@ export const SmartphoneBrand: {
   SAMSUNG: 'SAMSUNG',
   GOOGLE: 'GOOGLE',
   XIAOMI: 'XIAOMI',
-  ONEPLUS: 'ONEPLUS'
+  ONEPLUS: 'ONEPLUS',
+  TECNO: 'TECNO',
+  INFINIX: 'INFINIX'
 };
 
 export type SmartphoneBrand = (typeof SmartphoneBrand)[keyof typeof SmartphoneBrand]
@@ -78,7 +80,11 @@ export const SpeakerBrand: {
   SONY: 'SONY',
   BOSE: 'BOSE',
   APPLE: 'APPLE',
-  ANKER: 'ANKER'
+  ANKER: 'ANKER',
+  BEATS: 'BEATS',
+  ULTIMATE_EARS: 'ULTIMATE_EARS',
+  MARSHALL: 'MARSHALL',
+  SONOS: 'SONOS'
 };
 
 export type SpeakerBrand = (typeof SpeakerBrand)[keyof typeof SpeakerBrand]
@@ -89,7 +95,26 @@ export const AccessoryBrand: {
   SAMSUNG: 'SAMSUNG',
   ANKER: 'ANKER',
   BASEUS: 'BASEUS',
-  GENERIC: 'GENERIC'
+  GENERIC: 'GENERIC',
+  ONEPLUS: 'ONEPLUS',
+  SONY: 'SONY',
+  XIAOMI: 'XIAOMI',
+  SPIGEN: 'SPIGEN',
+  BELKIN: 'BELKIN',
+  OTTERBOX: 'OTTERBOX',
+  JBL: 'JBL',
+  BEATS: 'BEATS',
+  BOSE: 'BOSE',
+  MOPHIE: 'MOPHIE',
+  CASETIFY: 'CASETIFY',
+  GOOGLE: 'GOOGLE',
+  UAG: 'UAG',
+  JABRA: 'JABRA',
+  NOMAD: 'NOMAD',
+  NOTHING: 'NOTHING',
+  MOUS: 'MOUS',
+  SENNHEISER: 'SENNHEISER',
+  RAVPOWER: 'RAVPOWER'
 };
 
 export type AccessoryBrand = (typeof AccessoryBrand)[keyof typeof AccessoryBrand]

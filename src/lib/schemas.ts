@@ -4,9 +4,34 @@ export const idSchema = z.object({
 });
 
 export const conditionSchema = z.enum(["NEW", "USED"]);
-export const smartphoneBrandSchema = z.enum(["APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS"]);
-export const speakerBrandSchema = z.enum(["JBL", "SONY", "BOSE", "APPLE", "ANKER"]);
-export const accessoryBrandSchema = z.enum(["APPLE", "SAMSUNG", "ANKER", "BASEUS", "GENERIC"]);
+export const smartphoneBrandSchema = z.enum(["APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS", "TECNO", "INFINIX"]);
+export const speakerBrandSchema = z.enum(["JBL", "SONY", "BOSE", "APPLE", "ANKER", "BEATS", "ULTIMATE_EARS", "MARSHALL", "SONOS"]);
+export const accessoryBrandSchema = z.enum([
+  "APPLE",
+  "SAMSUNG",
+  "ANKER",
+  "BASEUS",
+  "GENERIC",
+  "ONEPLUS",
+  "SONY",
+  "XIAOMI",
+  "SPIGEN",
+  "BELKIN",
+  "OTTERBOX",
+  "JBL",
+  "BEATS",
+  "BOSE",
+  "MOPHIE",
+  "CASETIFY",
+  "GOOGLE",
+  "UAG",
+  "JABRA",
+  "NOMAD",
+  "NOTHING",
+  "MOUS",
+  "SENNHEISER",
+  "RAVPOWER",
+]);
 export const storageSchema = z.enum(["GB64", "GB128", "GB256", "GB512", "TB1"]);
 export const accessoryTypeSchema = z.enum(["Cable", "Case", "Charger", "Screen Protector", "Headphones", "Other"]);
 

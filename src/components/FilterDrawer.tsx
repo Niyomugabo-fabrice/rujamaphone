@@ -11,6 +11,7 @@ interface FilterDrawerProps {
   filters: ProductFilters;
   onFiltersChange: (filters: ProductFilters) => void;
   category?: ProductCategory;
+  onApply: (filters: ProductFilters) => void;
 }
 
 export default function FilterDrawer({
@@ -19,7 +20,8 @@ export default function FilterDrawer({
   filters,
   onFiltersChange,
   category,
-}: FilterDrawerProps & { onApply: () => void }) {
+  onApply,
+}: FilterDrawerProps) {
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     category: true,
     brand: true,
@@ -48,11 +50,14 @@ onFiltersChange({
   };
 
   const handleClearFilters = () => {
-    onFiltersChange({});
+    const clearedFilters = {};
+    onFiltersChange(clearedFilters);
+    onApply(clearedFilters);
     onClose();
   };
 
   const handleApplyFilters = () => {
+    onApply(filters);
     onClose();
   };
 
@@ -309,12 +314,23 @@ onFiltersChange({
 function getBrandsForCategory(category?: ProductCategory): string[] {
   switch (category) {
     case "SMARTPHONE":
-      return ["APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS"];
+      return ["APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS", "TECNO", "INFINIX"];
     case "SPEAKER":
-      return ["JBL", "SONY", "BOSE", "APPLE", "ANKER"];
+      return ["JBL", "SONY", "BOSE", "APPLE", "ANKER", "BEATS", "ULTIMATE_EARS", "MARSHALL", "SONOS"];
     case "ACCESSORY":
-      return ["APPLE", "SAMSUNG", "ANKER", "BASEUS", "GENERIC"];
+      return [
+        "APPLE", "SAMSUNG", "ANKER", "BASEUS", "GENERIC", "ONEPLUS", "SONY",
+        "XIAOMI", "SPIGEN", "BELKIN", "OTTERBOX", "JBL", "BEATS", "BOSE",
+        "MOPHIE", "CASETIFY", "GOOGLE", "UAG", "JABRA", "NOMAD", "NOTHING",
+        "MOUS", "SENNHEISER", "RAVPOWER",
+      ];
     default:
-      return ["APPLE", "SAMSUNG", "JBL", "SONY", "ANKER"];
+      return [
+        "APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS", "TECNO", "INFINIX",
+        "JBL", "SONY", "BOSE", "ANKER", "BEATS", "ULTIMATE_EARS", "MARSHALL",
+        "SONOS", "BASEUS", "GENERIC", "SPIGEN", "BELKIN", "OTTERBOX", "MOPHIE",
+        "CASETIFY", "UAG", "JABRA", "NOMAD", "NOTHING", "MOUS", "SENNHEISER",
+        "RAVPOWER",
+      ];
   }
 }

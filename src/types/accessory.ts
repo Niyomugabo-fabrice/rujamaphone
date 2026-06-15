@@ -3,7 +3,26 @@ export type AccessoryBrand =
   | "SAMSUNG"
   | "ANKER"
   | "BASEUS"
-  | "GENERIC";
+  | "GENERIC"
+  | "ONEPLUS"
+  | "SONY"
+  | "XIAOMI"
+  | "SPIGEN"
+  | "BELKIN"
+  | "OTTERBOX"
+  | "JBL"
+  | "BEATS"
+  | "BOSE"
+  | "MOPHIE"
+  | "CASETIFY"
+  | "GOOGLE"
+  | "UAG"
+  | "JABRA"
+  | "NOMAD"
+  | "NOTHING"
+  | "MOUS"
+  | "SENNHEISER"
+  | "RAVPOWER";
 
 export type AccessoryType =
   | "Cable"

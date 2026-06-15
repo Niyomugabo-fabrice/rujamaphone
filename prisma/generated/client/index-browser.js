@@ -218,7 +218,9 @@ exports.SmartphoneBrand = exports.$Enums.SmartphoneBrand = {
   SAMSUNG: 'SAMSUNG',
   GOOGLE: 'GOOGLE',
   XIAOMI: 'XIAOMI',
-  ONEPLUS: 'ONEPLUS'
+  ONEPLUS: 'ONEPLUS',
+  TECNO: 'TECNO',
+  INFINIX: 'INFINIX'
 };
 
 exports.SpeakerBrand = exports.$Enums.SpeakerBrand = {
@@ -226,7 +228,11 @@ exports.SpeakerBrand = exports.$Enums.SpeakerBrand = {
   SONY: 'SONY',
   BOSE: 'BOSE',
   APPLE: 'APPLE',
-  ANKER: 'ANKER'
+  ANKER: 'ANKER',
+  BEATS: 'BEATS',
+  ULTIMATE_EARS: 'ULTIMATE_EARS',
+  MARSHALL: 'MARSHALL',
+  SONOS: 'SONOS'
 };
 
 exports.AccessoryBrand = exports.$Enums.AccessoryBrand = {
@@ -234,7 +240,26 @@ exports.AccessoryBrand = exports.$Enums.AccessoryBrand = {
   SAMSUNG: 'SAMSUNG',
   ANKER: 'ANKER',
   BASEUS: 'BASEUS',
-  GENERIC: 'GENERIC'
+  GENERIC: 'GENERIC',
+  ONEPLUS: 'ONEPLUS',
+  SONY: 'SONY',
+  XIAOMI: 'XIAOMI',
+  SPIGEN: 'SPIGEN',
+  BELKIN: 'BELKIN',
+  OTTERBOX: 'OTTERBOX',
+  JBL: 'JBL',
+  BEATS: 'BEATS',
+  BOSE: 'BOSE',
+  MOPHIE: 'MOPHIE',
+  CASETIFY: 'CASETIFY',
+  GOOGLE: 'GOOGLE',
+  UAG: 'UAG',
+  JABRA: 'JABRA',
+  NOMAD: 'NOMAD',
+  NOTHING: 'NOTHING',
+  MOUS: 'MOUS',
+  SENNHEISER: 'SENNHEISER',
+  RAVPOWER: 'RAVPOWER'
 };
 
 exports.Prisma.ModelName = {

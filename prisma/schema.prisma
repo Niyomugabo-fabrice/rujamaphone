@@ -33,6 +33,8 @@ enum SmartphoneBrand {
   GOOGLE
   XIAOMI
   ONEPLUS
+  TECNO
+  INFINIX
 }
 
 enum SpeakerBrand {
@@ -41,6 +43,10 @@ enum SpeakerBrand {
   BOSE
   APPLE
   ANKER
+  BEATS
+  ULTIMATE_EARS
+  MARSHALL
+  SONOS
 }
 
 enum AccessoryBrand {
@@ -49,6 +55,25 @@ enum AccessoryBrand {
   ANKER
   BASEUS
   GENERIC
+  ONEPLUS
+  SONY
+  XIAOMI
+  SPIGEN
+  BELKIN
+  OTTERBOX
+  JBL
+  BEATS
+  BOSE
+  MOPHIE
+  CASETIFY
+  GOOGLE
+  UAG
+  JABRA
+  NOMAD
+  NOTHING
+  MOUS
+  SENNHEISER
+  RAVPOWER
 }
 
 // ==========================================

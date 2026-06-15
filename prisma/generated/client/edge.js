@@ -190,7 +190,9 @@ exports.SmartphoneBrand = exports.$Enums.SmartphoneBrand = {
   SAMSUNG: 'SAMSUNG',
   GOOGLE: 'GOOGLE',
   XIAOMI: 'XIAOMI',
-  ONEPLUS: 'ONEPLUS'
+  ONEPLUS: 'ONEPLUS',
+  TECNO: 'TECNO',
+  INFINIX: 'INFINIX'
 };
 
 exports.SpeakerBrand = exports.$Enums.SpeakerBrand = {
@@ -198,7 +200,11 @@ exports.SpeakerBrand = exports.$Enums.SpeakerBrand = {
   SONY: 'SONY',
   BOSE: 'BOSE',
   APPLE: 'APPLE',
-  ANKER: 'ANKER'
+  ANKER: 'ANKER',
+  BEATS: 'BEATS',
+  ULTIMATE_EARS: 'ULTIMATE_EARS',
+  MARSHALL: 'MARSHALL',
+  SONOS: 'SONOS'
 };
 
 exports.AccessoryBrand = exports.$Enums.AccessoryBrand = {
@@ -206,7 +212,26 @@ exports.AccessoryBrand = exports.$Enums.AccessoryBrand = {
   SAMSUNG: 'SAMSUNG',
   ANKER: 'ANKER',
   BASEUS: 'BASEUS',
-  GENERIC: 'GENERIC'
+  GENERIC: 'GENERIC',
+  ONEPLUS: 'ONEPLUS',
+  SONY: 'SONY',
+  XIAOMI: 'XIAOMI',
+  SPIGEN: 'SPIGEN',
+  BELKIN: 'BELKIN',
+  OTTERBOX: 'OTTERBOX',
+  JBL: 'JBL',
+  BEATS: 'BEATS',
+  BOSE: 'BOSE',
+  MOPHIE: 'MOPHIE',
+  CASETIFY: 'CASETIFY',
+  GOOGLE: 'GOOGLE',
+  UAG: 'UAG',
+  JABRA: 'JABRA',
+  NOMAD: 'NOMAD',
+  NOTHING: 'NOTHING',
+  MOUS: 'MOUS',
+  SENNHEISER: 'SENNHEISER',
+  RAVPOWER: 'RAVPOWER'
 };
 
 exports.Prisma.ModelName = {
@@ -226,7 +251,7 @@ const config = {
   "clientVersion": "7.8.0",
   "engineVersion": "3c6e192761c0362d496ed980de936e2f3cebcd3a",
   "activeProvider": "postgresql",
-  "inlineSchema": "generator client {\n  provider        = \"prisma-client-js\"\n  // Prisma 7 requires an output path\n  output          = \"./generated/client\"\n  previewFeatures = [\"driverAdapters\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\n// ==========================================\n// SHARED SYSTEM ENUMS\n// ==========================================\n\nenum Condition {\n  NEW\n  USED\n}\n\nenum StorageCapacity {\n  GB64\n  GB128\n  GB256\n  GB512\n  TB1\n}\n\nenum SmartphoneBrand {\n  APPLE\n  SAMSUNG\n  GOOGLE\n  XIAOMI\n  ONEPLUS\n}\n\nenum SpeakerBrand {\n  JBL\n  SONY\n  BOSE\n  APPLE\n  ANKER\n}\n\nenum AccessoryBrand {\n  APPLE\n  SAMSUNG\n  ANKER\n  BASEUS\n  GENERIC\n}\n\n// ==========================================\n// USER MODEL\n// ==========================================\n\nmodel User {\n  id            String    @id @default(uuid())\n  fullName      String\n  email         String    @unique\n  password      String\n  avatar        String?\n  emailVerified Boolean   @default(false)\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n  lastLogin     DateTime?\n\n  // Password reset token\n  resetToken        String?\n  resetTokenExpires DateTime?\n\n  @@index([email])\n}\n\n// ==========================================\n// CORE HARDWARE PRODUCT MODELS\n// ==========================================\n\nmodel Smartphone {\n  id          String   @id @default(uuid())\n  name        String\n  price       Int // Value mapped in RWF\n  image       String[] // Native array of image strings\n  description String?\n  rating      Float    @default(0)\n  reviews     Int      @default(0)\n\n  // Specific Required Hardware Fields\n  storage   StorageCapacity\n  condition Condition\n  brand     SmartphoneBrand\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([brand])\n  @@index([price])\n  @@index([createdAt])\n  @@index([brand, price])\n}\n\nmodel Speaker {\n  id          String   @id @default(uuid())\n  name        String\n  price       Int // Value mapped in RWF\n  image       String[]\n  description String?\n  rating      Float    @default(0)\n  reviews     Int      @default(0)\n\n  // Specific Required Hardware Fields (No Storage!)\n  condition   Condition\n  brand       SpeakerBrand\n  batteryLife String? // Optional performance metric specific to sound hardware\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([brand])\n  @@index([price])\n  @@index([createdAt])\n  @@index([brand, price])\n}\n\nmodel Accessory {\n  id          String   @id @default(uuid())\n  name        String\n  price       Int // Value mapped in RWF\n  image       String[]\n  description String?\n  rating      Float    @default(0)\n  reviews     Int      @default(0)\n\n  // Specific Required Fields (Clean of storage rules)\n  condition Condition\n  brand     AccessoryBrand\n  type      String // e.g., \"Cable\", \"Case\", \"Charger\", \"Screen Protector\"\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([brand])\n  @@index([price])\n  @@index([createdAt])\n  @@index([brand, price])\n}\n\nmodel SliderImage {\n  id        String   @id @default(uuid())\n  image     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n"
+  "inlineSchema": "generator client {\n  provider        = \"prisma-client-js\"\n  // Prisma 7 requires an output path\n  output          = \"./generated/client\"\n  previewFeatures = [\"driverAdapters\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\n// ==========================================\n// SHARED SYSTEM ENUMS\n// ==========================================\n\nenum Condition {\n  NEW\n  USED\n}\n\nenum StorageCapacity {\n  GB64\n  GB128\n  GB256\n  GB512\n  TB1\n}\n\nenum SmartphoneBrand {\n  APPLE\n  SAMSUNG\n  GOOGLE\n  XIAOMI\n  ONEPLUS\n  TECNO\n  INFINIX\n}\n\nenum SpeakerBrand {\n  JBL\n  SONY\n  BOSE\n  APPLE\n  ANKER\n  BEATS\n  ULTIMATE_EARS\n  MARSHALL\n  SONOS\n}\n\nenum AccessoryBrand {\n  APPLE\n  SAMSUNG\n  ANKER\n  BASEUS\n  GENERIC\n  ONEPLUS\n  SONY\n  XIAOMI\n  SPIGEN\n  BELKIN\n  OTTERBOX\n  JBL\n  BEATS\n  BOSE\n  MOPHIE\n  CASETIFY\n  GOOGLE\n  UAG\n  JABRA\n  NOMAD\n  NOTHING\n  MOUS\n  SENNHEISER\n  RAVPOWER\n}\n\n// ==========================================\n// USER MODEL\n// ==========================================\n\nmodel User {\n  id            String    @id @default(uuid())\n  fullName      String\n  email         String    @unique\n  password      String\n  avatar        String?\n  emailVerified Boolean   @default(false)\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n  lastLogin     DateTime?\n\n  // Password reset token\n  resetToken        String?\n  resetTokenExpires DateTime?\n\n  @@index([email])\n}\n\n// ==========================================\n// CORE HARDWARE PRODUCT MODELS\n// ==========================================\n\nmodel Smartphone {\n  id          String   @id @default(uuid())\n  name        String\n  price       Int // Value mapped in RWF\n  image       String[] // Native array of image strings\n  description String?\n  rating      Float    @default(0)\n  reviews     Int      @default(0)\n\n  // Specific Required Hardware Fields\n  storage   StorageCapacity\n  condition Condition\n  brand     SmartphoneBrand\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([brand])\n  @@index([price])\n  @@index([createdAt])\n  @@index([brand, price])\n}\n\nmodel Speaker {\n  id          String   @id @default(uuid())\n  name        String\n  price       Int // Value mapped in RWF\n  image       String[]\n  description String?\n  rating      Float    @default(0)\n  reviews     Int      @default(0)\n\n  // Specific Required Hardware Fields (No Storage!)\n  condition   Condition\n  brand       SpeakerBrand\n  batteryLife String? // Optional performance metric specific to sound hardware\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([brand])\n  @@index([price])\n  @@index([createdAt])\n  @@index([brand, price])\n}\n\nmodel Accessory {\n  id          String   @id @default(uuid())\n  name        String\n  price       Int // Value mapped in RWF\n  image       String[]\n  description String?\n  rating      Float    @default(0)\n  reviews     Int      @default(0)\n\n  // Specific Required Fields (Clean of storage rules)\n  condition Condition\n  brand     AccessoryBrand\n  type      String // e.g., \"Cable\", \"Case\", \"Charger\", \"Screen Protector\"\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([brand])\n  @@index([price])\n  @@index([createdAt])\n  @@index([brand, price])\n}\n\nmodel SliderImage {\n  id        String   @id @default(uuid())\n  image     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n"
 }
 
 config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fullName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"avatar\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"lastLogin\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"resetToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"resetTokenExpires\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Smartphone\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"rating\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"reviews\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"storage\",\"kind\":\"enum\",\"type\":\"StorageCapacity\"},{\"name\":\"condition\",\"kind\":\"enum\",\"type\":\"Condition\"},{\"name\":\"brand\",\"kind\":\"enum\",\"type\":\"SmartphoneBrand\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Speaker\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"rating\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"reviews\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"condition\",\"kind\":\"enum\",\"type\":\"Condition\"},{\"name\":\"brand\",\"kind\":\"enum\",\"type\":\"SpeakerBrand\"},{\"name\":\"batteryLife\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Accessory\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"rating\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"reviews\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"condition\",\"kind\":\"enum\",\"type\":\"Condition\"},{\"name\":\"brand\",\"kind\":\"enum\",\"type\":\"AccessoryBrand\"},{\"name\":\"type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"SliderImage\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
