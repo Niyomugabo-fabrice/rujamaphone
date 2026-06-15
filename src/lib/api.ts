@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { Prisma } from "../../prisma/generated/client";
 import { ZodError, type ZodSchema } from "zod";
 import { verifyToken } from "@/lib/jwt";
 import prisma from "@/lib/prisma";
@@ -39,6 +38,15 @@ export function logApiError(scope: string, error: unknown, context?: Record<stri
   }));
 }
 
+function getPrismaErrorCode(error: unknown) {
+  if (typeof error !== "object" || error === null || !("code" in error)) {
+    return null;
+  }
+
+  const code = (error as { code?: unknown }).code;
+  return typeof code === "string" ? code : null;
+}
+
 export function handleApiError(scope: string, error: unknown) {
   if (error instanceof ApiError) {
     if (error.status === 401 || error.status === 403) {
@@ -55,10 +63,9 @@ export function handleApiError(scope: string, error: unknown) {
     return fail("Malformed JSON request body", 400);
   }
 
-  if (error instanceof Prisma.PrismaClientKnownRequestError) {
-    if (error.code === "P2002") return fail("Resource already exists", 409);
-    if (error.code === "P2025") return fail("Resource not found", 404);
-  }
+  const prismaErrorCode = getPrismaErrorCode(error);
+  if (prismaErrorCode === "P2002") return fail("Resource already exists", 409);
+  if (prismaErrorCode === "P2025") return fail("Resource not found", 404);
 
   logApiError(scope, error);
   return fail("Internal Server Error", 500);
