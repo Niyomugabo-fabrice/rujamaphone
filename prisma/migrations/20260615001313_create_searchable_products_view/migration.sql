@@ -1,0 +1,4 @@
+-- Historical migration restored to match the Neon database migration history.
+-- The target database has this migration marked as applied, but no searchable
+-- products view currently exists in public.pg_views. Keep this migration empty
+-- locally so Prisma can reconcile history without resetting existing data.
