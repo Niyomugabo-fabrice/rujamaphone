@@ -5,6 +5,7 @@ import type { Product } from "@/types/product";
 import { normalizeSearchText } from "@/lib/search";
 
 type SearchResponse = {
+  success?: boolean;
   data?: Product[];
 };
 
@@ -37,11 +38,12 @@ export function useDebouncedSearch({
       return;
     }
 
-    setIsLoading(true);
     const controller = new AbortController();
     abortRef.current = controller;
 
     const timeoutId = window.setTimeout(async () => {
+      setIsLoading(true);
+
       try {
         const params = new URLSearchParams({
           search: normalizedQuery,
@@ -56,8 +58,12 @@ export function useDebouncedSearch({
           throw new Error("Search request failed");
         }
 
-        const data = (await response.json()) as SearchResponse;
-        setResults(data.data || []);
+        const payload = (await response.json()) as SearchResponse | Product[];
+        const nextResults = Array.isArray(payload) ? payload : payload.data || [];
+
+        if (!controller.signal.aborted) {
+          setResults(nextResults);
+        }
       } catch (searchError) {
         if ((searchError as DOMException).name === "AbortError") return;
 

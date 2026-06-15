@@ -43,43 +43,43 @@ const process = [
 export default function ServicesPage() {
   return (
     <div className="bg-white">
-      <section className="relative overflow-hidden bg-[#820210] text-white">
+      <section className="relative overflow-hidden border-b border-red-100 bg-white text-slate-950">
         <div className="absolute inset-0">
           <Image
             src="/image/rujamashop.jpeg"
             alt="Rujama Phones Shop service counter"
             fill
             priority
-            className="object-cover opacity-30"
+            className="object-cover opacity-10"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-[#820210]/75" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-white/80" />
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold">
+            <div className="inline-flex items-center gap-2 rounded-full border border-red-100 bg-red-50 px-4 py-2 text-sm font-semibold text-[#820210]">
               <ShieldCheck className="h-4 w-4" />
               Trusted phone services in Kigali
             </div>
-            <h1 className="mt-6 text-4xl md:text-6xl font-bold leading-tight">
-              Upgrade, installment, and phone support made simple.
+            <h1 className="mt-6 text-2xl md:text-6xl font-bold leading-tight">
+              Upgrade, Parts payment, and phone support made simple.
             </h1>
-            <p className="mt-5 max-w-2xl text-base md:text-lg leading-8 text-white/85">
+            <p className="mt-5 max-w-2xl text-base md:text-lg leading-8 text-slate-600">
               Rujama Phones Shop helps clients get the device they need with clear service options,
               fair guidance, and flexible ways to pay.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/upgrade"
-                className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 font-semibold text-[#820210] transition hover:bg-gray-100"
+                className="inline-flex items-center gap-2 rounded-xl bg-[#820210] px-6 py-3 font-semibold text-white transition hover:bg-[#6b0110]"
               >
                 Upgrade phone
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 href="/installment"
-                className="inline-flex items-center gap-2 rounded-xl border border-white/30 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
+                className="inline-flex items-center gap-2 rounded-xl border border-red-200 bg-white px-6 py-3 font-semibold text-[#820210] transition hover:bg-red-50"
               >
                 Installment plans
                 <CalendarDays className="h-4 w-4" />

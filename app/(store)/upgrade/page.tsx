@@ -48,29 +48,31 @@ const brands = ["iPhone", "Samsung", "Tecno", "Infinix", "Xiaomi", "Itel", "OPPO
 export default function UpgradePage() {
   return (
     <div className="bg-white text-slate-950">
-      <section className="relative overflow-hidden bg-[#820210] text-white">
+      <section className="relative overflow-hidden bg-white text-slate-950">
         <div className="absolute inset-0">
           <Image
             src="/image/rujamashop.jpeg"
             alt="Rujama Phones Shop entrance"
             fill
             priority
-            className="object-cover opacity-35"
+            className="object-cover opacity-10"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#820210] via-[#820210]/90 to-[#820210]/60" />
+         
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-white/80" />
         </div>
 
         <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_520px] lg:px-8 lg:py-20">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-bold">
+           {/* <h1 className="bg-white/10">welcome</h1> */}
+            <div className="inline-flex items-center gap-2 rounded-full border border-red-100 bg-red-50 px-4 py-2 text-sm font-bold text-[#820210]">
               <RefreshCw className="h-4 w-4" />
               Phone upgrade service
             </div>
             <h1 className="mt-6 text-4xl font-extrabold leading-tight tracking-normal sm:text-5xl lg:text-6xl">
               Bring your old phone. Leave with a better one.
             </h1>
-            <p className="mt-5 max-w-2xl text-base leading-8 text-white/85 sm:text-lg">
+            <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
               We value your current device, subtract it from the price of your next phone,
               and you only top up the difference. Simple, visual, and handled in-store.
             </p>
@@ -80,14 +82,14 @@ export default function UpgradePage() {
                 href="https://wa.me/250788773754?text=Hi,%20I%20want%20to%20upgrade%20my%20phone"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 font-bold text-[#820210] transition hover:bg-gray-100"
+                className="inline-flex items-center gap-2 rounded-xl bg-[#820210] px-6 py-3 font-bold text-white transition hover:bg-[#6b0110]"
               >
                 <MessageCircle className="h-5 w-5" />
                 Start on WhatsApp
               </a>
               <Link
                 href="/products"
-                className="inline-flex items-center gap-2 rounded-xl border border-white/30 px-6 py-3 font-bold text-white transition hover:bg-white/10"
+                className="inline-flex items-center gap-2 rounded-xl border border-red-200 bg-white px-6 py-3 font-bold text-[#820210] transition hover:bg-red-50"
               >
                 Browse devices
                 <ArrowRight className="h-5 w-5" />
@@ -95,13 +97,13 @@ export default function UpgradePage() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-white/20 bg-white p-4 text-slate-950 shadow-2xl">
-            <div className="relative h-[360px] overflow-hidden rounded-xl bg-slate-100">
+          <div className="rounded-2xl border border-red-100 bg-white p-4 text-slate-950 shadow-2xl">
+            <div className="relative h-[360px] overflow-hidden rounded-xl bg-white">
               <Image
-                src="/image/hero2.png"
+                src="/image/upgrade.jpeg"
                 alt="New phone available for upgrade"
                 fill
-                className="object-cover"
+                className="object-contain"
                 sizes="(min-width: 1024px) 520px, 100vw"
               />
             </div>
@@ -119,58 +121,9 @@ export default function UpgradePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="mb-8 max-w-2xl">
-          <p className="text-sm font-extrabold uppercase tracking-widest text-[#820210]">See the process</p>
-          <h2 className="mt-3 text-3xl font-extrabold text-slate-950 sm:text-4xl">
-            Customers understand it at a glance
-          </h2>
-          <p className="mt-3 leading-7 text-slate-600">
-            This is the exact idea: your old phone has value, and that value helps you move to a better device.
-          </p>
-        </div>
 
-        <div className="overflow-hidden rounded-2xl border border-red-100 bg-red-50 shadow-sm">
-          <Image
-            src="/image/upgrade-process.png"
-            alt="Three step phone upgrade process"
-            width={1600}
-            height={900}
-            className="h-auto w-full"
-            sizes="100vw"
-          />
-        </div>
-      </section>
 
-      <section className="bg-slate-50 py-14">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-6 lg:grid-cols-3">
-            {processCards.map(({ image, icon: Icon, title, text }, index) => (
-              <article key={title} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                <div className="relative h-56">
-                  <Image
-                    src={image}
-                    alt={title}
-                    fill
-                    className="object-cover"
-                    sizes="(min-width: 1024px) 33vw, 100vw"
-                  />
-                  <div className="absolute left-5 top-5 flex h-12 w-12 items-center justify-center rounded-xl bg-white text-[#820210] shadow-lg">
-                    <Icon className="h-6 w-6" />
-                  </div>
-                </div>
-                <div className="p-6">
-                  <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-[#e60023] font-bold text-white">
-                    {index + 1}
-                  </div>
-                  <h3 className="text-xl font-extrabold text-slate-950">{title}</h3>
-                  <p className="mt-3 text-sm leading-7 text-slate-600">{text}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+  
 
       <section className="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 lg:grid-cols-[1fr_420px] lg:px-8">
         <div>

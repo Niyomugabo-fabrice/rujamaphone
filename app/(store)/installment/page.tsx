@@ -118,7 +118,7 @@ export default function InstallmentPage() {
             </p>
           </div>
 
-          <div className="rounded-lg border border-red-100 bg-red-50/80 p-6 shadow-sm">
+          <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
             <div className="flex items-center gap-5">
               <ShieldCheck className="h-16 w-16 shrink-0 text-[#d90429]" strokeWidth={1.8} />
               <div>
@@ -227,7 +227,7 @@ export default function InstallmentPage() {
           </aside>
         </section>
 
-        <section className="mt-8 rounded-lg border border-red-100 bg-red-50/80 px-5 py-5 shadow-sm">
+        <section className="mt-8 rounded-lg border border-slate-200 bg-white px-5 py-5 shadow-sm">
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {supportItems.map(({ icon: Icon, title, text }) => (
               <div key={title} className="flex items-center gap-4">

@@ -43,10 +43,22 @@ export default function FilterDrawer({
     key: keyof ProductFilters,
     value: string | number | undefined,
   ) => {
-onFiltersChange({
-  ...filters,
-  [key]: value === "" ? undefined : value,
-});
+    const nextValue = value === "" ? undefined : value;
+
+    if (key === "category") {
+      onFiltersChange({
+        category: nextValue as ProductCategory | undefined,
+        minPrice: filters.minPrice,
+        maxPrice: filters.maxPrice,
+        condition: filters.condition,
+      });
+      return;
+    }
+
+    onFiltersChange({
+      ...filters,
+      [key]: nextValue,
+    });
   };
 
   const handleClearFilters = () => {

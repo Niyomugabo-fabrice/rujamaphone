@@ -27,14 +27,17 @@ export default function ProductsGrid({ initialCategory }: ProductsGridProps) {
   category: initialCategory,
 });
 
-const [tempFilters, setTempFilters] = useState<ProductFilters>({
+  const [tempFilters, setTempFilters] = useState<ProductFilters>({
   category: initialCategory,
 });
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [ignoreUrlSearch, setIgnoreUrlSearch] = useState(false);
   const [sortBy, setSortBy] = useState("createdAt-desc");
   const router = useRouter();
   const pathname = usePathname();
+  const searchParamValue = searchParams.get("search") || "";
+  const effectiveSearch = ignoreUrlSearch ? "" : searchParamValue;
 
   useEffect(() => {
     if (initialCategory) {
@@ -43,8 +46,23 @@ const [tempFilters, setTempFilters] = useState<ProductFilters>({
   }, [initialCategory]);
 
   useEffect(() => {
-    setSearchQuery(searchParams.get("search") || "");
-  }, [searchParams]);
+    setSearchQuery(searchParamValue);
+    if (searchParamValue) {
+      setIgnoreUrlSearch(false);
+    }
+  }, [searchParamValue]);
+
+const clearUrlSearch = useCallback(() => {
+  if (!searchParamValue) return;
+
+  setIgnoreUrlSearch(true);
+  const params = new URLSearchParams(searchParams.toString());
+  params.delete("search");
+  params.delete("page");
+
+  const queryString = params.toString();
+  router.replace(queryString ? `${pathname}?${queryString}` : pathname, { scroll: false });
+}, [pathname, router, searchParamValue, searchParams]);
 
 const fetchProducts = useCallback(async (signal?: AbortSignal) => {
   setIsLoading(true);
@@ -58,8 +76,7 @@ const fetchProducts = useCallback(async (signal?: AbortSignal) => {
     params.set("sort", sortBy);
 
     // Search Query (Directly from URL)
-    const urlSearch = searchParams.get("search");
-    if (urlSearch) params.set("search", urlSearch);
+    if (effectiveSearch) params.set("search", effectiveSearch);
 
     // Standard Filters
     if (filters.category) params.set("category", filters.category);
@@ -94,7 +111,7 @@ const fetchProducts = useCallback(async (signal?: AbortSignal) => {
       setIsLoading(false);
     }
   }
-}, [filters, page, searchParams, sortBy]);
+}, [effectiveSearch, filters, page, sortBy]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -110,19 +127,32 @@ const handleMobileFiltersChange = useCallback((newFilters: ProductFilters) => {
 
 
  const handleFilterChange = useCallback(<K extends keyof ProductFilters,>(key: K, value: ProductFilters[K]) => {
-  setFilters((prev) => ({
-    ...prev,
-    [key]: value,
-  }));
+  clearUrlSearch();
+  setFilters((prev) => {
+    if (key === "category") {
+      return {
+        category: value as ProductCategory,
+        minPrice: prev.minPrice,
+        maxPrice: prev.maxPrice,
+        condition: prev.condition,
+      };
+    }
+
+    return {
+      ...prev,
+      [key]: value,
+    };
+  });
   setPage(1);
-}, []);
+}, [clearUrlSearch]);
 
   const handleFilterRemove = useCallback((key: keyof ProductFilters) => {
+    clearUrlSearch();
     const newFilters = { ...filters };
     delete newFilters[key];
     setFilters(newFilters);
     setPage(1);
-  }, [filters]);
+  }, [clearUrlSearch, filters]);
 
  
 const handleClearAll = useCallback(() => {
@@ -213,7 +243,7 @@ function getBrandsForCategory(category?: ProductCategory): string[] {
 
         {/* Active Filter Chips */}
         <FilterChips
-          filters={searchParams.get("search") ? { ...filters, search: searchParams.get("search") || undefined } : filters}
+          filters={effectiveSearch ? { ...filters, search: effectiveSearch } : filters}
           onFilterRemove={(key) => {
             if (key === "search") {
               const params = new URLSearchParams(searchParams.toString());
@@ -447,6 +477,7 @@ function getBrandsForCategory(category?: ProductCategory): string[] {
         onFiltersChange={handleMobileFiltersChange}
         category={tempFilters.category}
         onApply={(nextFilters) => {
+          clearUrlSearch();
           setFilters(nextFilters);
           setTempFilters(nextFilters);
           setPage(1);

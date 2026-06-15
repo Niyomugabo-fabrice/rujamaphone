@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense, useMemo, useRef } from 'react';
+import { useState, useEffect, Suspense, useMemo, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Search, ShoppingCart, Menu, X, Loader2 } from 'lucide-react';
@@ -13,6 +13,10 @@ interface SearchBarProps {
   className: string;
   isMobile?: boolean;
   onSearchSubmit?: () => void;
+}
+
+interface HeaderProps {
+  sticky?: boolean;
 }
 
 function SearchBar({ className, isMobile, onSearchSubmit }: SearchBarProps) {
@@ -30,11 +34,12 @@ function SearchBar({ className, isMobile, onSearchSubmit }: SearchBarProps) {
     error,
   } = useDebouncedSearch({ delay: 350, enabled: isOpen, limit: 10 });
   const showSuggestions = isOpen && Boolean(normalizedQuery);
+  const urlSearch = searchParams.get('search') || '';
 
   // Synchronize the search input with URL query param
   useEffect(() => {
-    setSearchQuery(searchParams.get('search') || '');
-  }, [searchParams]);
+    setSearchQuery(urlSearch);
+  }, [setSearchQuery, urlSearch]);
 
   useEffect(() => {
     setActiveIndex(-1);
@@ -52,11 +57,28 @@ function SearchBar({ className, isMobile, onSearchSubmit }: SearchBarProps) {
     return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, []);
 
+  const closeSearch = useCallback(() => {
+    setIsOpen(false);
+    setActiveIndex(-1);
+  }, []);
+
+  const selectProduct = useCallback((product: Product) => {
+    setSearchQuery("");
+    closeSearch();
+    onSearchSubmit?.();
+    router.push(`/products/${product.id}`);
+  }, [closeSearch, onSearchSubmit, router, setSearchQuery]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (activeIndex >= 0 && results[activeIndex]) {
       selectProduct(results[activeIndex]);
+      return;
+    }
+
+    if (results.length > 0) {
+      selectProduct(results[0]);
       return;
     }
 
@@ -67,18 +89,6 @@ function SearchBar({ className, isMobile, onSearchSubmit }: SearchBarProps) {
     }
     closeSearch();
     onSearchSubmit?.();
-  };
-
-  const selectProduct = (product: Product) => {
-    router.push(`/products/${product.id}`);
-    setSearchQuery(product.name);
-    closeSearch();
-    onSearchSubmit?.();
-  };
-
-  const closeSearch = () => {
-    setIsOpen(false);
-    setActiveIndex(-1);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -238,7 +248,7 @@ function formatCategory(category: string) {
   return category.toLowerCase();
 }
 
-export function Header() {
+export function Header({ sticky = true }: HeaderProps = {}) {
   const { totalItems } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -275,7 +285,7 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-[#820210] shadow-md w-full overflow-x-hidden">
+    <header className={`${sticky ? "sticky top-0" : "relative"} z-50 bg-[#820210] shadow-md w-full overflow-x-hidden`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
 
         {/* TOP NAVBAR */}
