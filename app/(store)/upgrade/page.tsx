@@ -16,15 +16,15 @@ import {
   Smartphone,
   Store,
 } from "lucide-react";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Phone Upgrade Service",
   description:
     "Upgrade your phone at Rujama Phones Shop in Kigali. Bring your current device, get a fair valuation, top up the difference, and leave with a better phone.",
-  alternates: {
-    canonical: "/upgrade",
-  },
-};
+  path: "/upgrade",
+  image: "/image/upgrade.jpeg",
+});
 
 const processCards = [
   {

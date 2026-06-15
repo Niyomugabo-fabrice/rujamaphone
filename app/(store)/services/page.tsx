@@ -12,15 +12,14 @@ import {
   Store,
   Wallet,
 } from "lucide-react";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Phone Services",
   description:
     "Explore Rujama Phones Shop services in Kigali, including phone upgrades, installment payment plans, device support, and in-store guidance.",
-  alternates: {
-    canonical: "/services",
-  },
-};
+  path: "/services",
+});
 
 const services = [
   {

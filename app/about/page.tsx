@@ -3,15 +3,14 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { About } from '@/components/About';
+import { buildPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: 'About',
   description:
     'Learn about Rujama Phones Shop, a trusted phone and electronics shop serving customers in Kigali, Rwanda since 2012.',
-  alternates: {
-    canonical: '/about',
-  },
-};
+  path: '/about',
+});
 
 export default function AboutPage() {
   return (

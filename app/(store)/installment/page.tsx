@@ -14,15 +14,15 @@ import {
   Handshake,
   ArrowRight,
 } from "lucide-react";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Phone Installment Plans",
   description:
     "Buy a phone in installments from Rujama Phones Shop in Kigali with daily, weekly, or monthly payment options and clear in-store support.",
-  alternates: {
-    canonical: "/installment",
-  },
-};
+  path: "/installment",
+  image: "/image/parts.jpeg",
+});
 
 const steps = [
   {

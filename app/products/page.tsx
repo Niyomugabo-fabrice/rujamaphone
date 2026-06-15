@@ -4,15 +4,14 @@ import ProductsGrid from "@/components/ProductsGrid";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Products",
   description:
     "Browse smartphones, speakers, accessories, and gadgets available from Rujama Phones Shop in Kigali, Rwanda.",
-  alternates: {
-    canonical: "/products",
-  },
-};
+  path: "/products",
+});
 
 export default function ProductsPage() {
   return (
