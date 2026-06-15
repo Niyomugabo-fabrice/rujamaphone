@@ -56,10 +56,6 @@ export function middleware(request: NextRequest) {
     return redirectToLogin(request);
   }
 
-  if (isPublicPath && hasValidToken) {
-    return NextResponse.redirect(new URL('/admin', request.nextUrl));
-  }
-
   if (!isPublicPath && !hasValidToken) {
     return redirectToLogin(request);
   }

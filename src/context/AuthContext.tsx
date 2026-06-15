@@ -42,6 +42,19 @@ function isTokenExpired(token: string) {
   return payload.exp <= Math.floor(Date.now() / 1000);
 }
 
+async function clearAuthSession() {
+  localStorage.removeItem("auth_token");
+
+  try {
+    await fetch("/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+  } catch {
+    // Local auth state should still be cleared even if the cookie cleanup request fails.
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
@@ -61,7 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchUser = useCallback(async () => {
     if (token && isTokenExpired(token)) {
-      localStorage.removeItem("auth_token");
+      await clearAuthSession();
       setToken(null);
       setUser(null);
       setIsLoading(false);
@@ -88,7 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const data = unwrapApiData<{ user: User }>(payload);
         setUser(data.user);
       } else {
-        localStorage.removeItem("auth_token");
+        await clearAuthSession();
         setToken(null);
         setUser(null);
       }
@@ -98,7 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         console.error("Failed to fetch user:", error);
       }
-      localStorage.removeItem("auth_token");
+      await clearAuthSession();
       setToken(null);
       setUser(null);
     } finally {
@@ -175,7 +188,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      localStorage.removeItem("auth_token");
+      await clearAuthSession();
       setToken(null);
       setUser(null);
     }

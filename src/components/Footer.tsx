@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { toast } from 'sonner';
 import {
   Facebook,
   Instagram,
@@ -42,10 +43,7 @@ export function Footer() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Replace this with backend or email service
-    console.log(formData);
-
-    alert('Message sent successfully!');
+    toast.success('Message sent successfully!');
 
     setFormData({
       name: '',

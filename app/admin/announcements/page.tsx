@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   AlertCircle,
+  AlertTriangle,
   CalendarDays,
   CheckCircle2,
   Edit3,
@@ -82,6 +83,7 @@ export default function AnnouncementsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAnnouncement, setEditingAnnouncement] = useState<Announcement | null>(null);
+  const [deletingAnnouncement, setDeletingAnnouncement] = useState<Announcement | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState<AnnouncementFormState>(emptyForm);
   const [notification, setNotification] = useState<{ type: "success" | "error"; message: string } | null>(null);
@@ -189,20 +191,29 @@ export default function AnnouncementsPage() {
     }
   };
 
-  const deleteAnnouncement = async (announcement: Announcement) => {
-    if (!window.confirm(`Delete "${announcement.title}"?`)) return;
+  const closeDeleteModal = () => {
+    if (isSubmitting) return;
+    setDeletingAnnouncement(null);
+  };
+
+  const deleteAnnouncement = async () => {
+    if (!deletingAnnouncement) return;
+    setIsSubmitting(true);
 
     try {
-      const response = await adminFetch(`/api/announcements?id=${announcement.id}`, {
+      const response = await adminFetch(`/api/announcements?id=${deletingAnnouncement.id}`, {
         method: "DELETE",
       });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload?.error || "Failed to delete announcement");
 
-      setAnnouncements((current) => current.filter((item) => item.id !== announcement.id));
+      setAnnouncements((current) => current.filter((item) => item.id !== deletingAnnouncement.id));
+      setDeletingAnnouncement(null);
       triggerNotification("success", "Announcement deleted.");
     } catch (error) {
       triggerNotification("error", error instanceof Error ? error.message : "Failed to delete announcement.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -323,7 +334,7 @@ export default function AnnouncementsPage() {
                       <Edit3 className="h-4 w-4" />
                     </button>
                     <button
-                      onClick={() => deleteAnnouncement(announcement)}
+                      onClick={() => setDeletingAnnouncement(announcement)}
                       className="rounded-lg border border-red-100 bg-white p-2 text-slate-500 transition-colors hover:bg-red-50 hover:text-[#D90429]"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -448,6 +459,50 @@ export default function AnnouncementsPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {deletingAnnouncement && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-2xl border border-red-100 bg-white p-6 text-slate-800 shadow-2xl">
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
+                <AlertTriangle className="h-5 w-5 text-[#D90429]" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-slate-900">Delete Announcement</h3>
+                <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-red-500">
+                  Permanent action
+                </p>
+              </div>
+            </div>
+
+            <p className="text-xs leading-6 text-slate-600">
+              Are you sure you want to delete{" "}
+              <span className="font-bold text-slate-900">"{deletingAnnouncement.title}"</span>? This announcement
+              will be removed from admin and the storefront.
+            </p>
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={closeDeleteModal}
+                disabled={isSubmitting}
+                className="px-4 py-2 text-xs font-bold text-slate-500 transition-colors hover:text-slate-800 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={deleteAnnouncement}
+                disabled={isSubmitting}
+                className="inline-flex items-center gap-2 rounded-xl bg-[#D90429] px-4 py-2 text-xs font-bold text-white transition-all hover:bg-[#A60316] disabled:opacity-50"
+              >
+                {isSubmitting && <RefreshCw className="h-3 w-3 animate-spin" />}
+                {isSubmitting ? "Deleting..." : "Delete"}
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -1,15 +1,30 @@
 "use client";
 
-function redirectToLogin() {
+let isRedirectingToLogin = false;
+
+async function redirectToLogin() {
+  if (isRedirectingToLogin) return;
+  isRedirectingToLogin = true;
+
   localStorage.removeItem("auth_token");
+
+  try {
+    await fetch("/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+  } catch {
+    // The redirect still matters even if the cookie cleanup request fails.
+  }
+
   if (window.location.pathname !== "/login") {
-    window.location.assign("/login");
+    window.location.replace("/login");
   }
 }
 
 async function redirectIfUnauthorized(response: Response) {
   if (response.status === 401) {
-    redirectToLogin();
+    await redirectToLogin();
     return;
   }
 
@@ -19,7 +34,7 @@ async function redirectIfUnauthorized(response: Response) {
   try {
     const payload = await response.clone().json();
     if (payload?.success === false && payload?.error === "Unauthorized") {
-      redirectToLogin();
+      await redirectToLogin();
     }
   } catch {
     // Ignore non-JSON or already-consumed response bodies.
