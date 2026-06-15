@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Search, ShoppingCart, Menu, X } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import Image from "next/image";
@@ -54,6 +54,30 @@ function SearchBar({ className, isMobile, onSearchSubmit }: SearchBarProps) {
 export function Header() {
   const { totalItems } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  const isActive = (path: string) => {
+    if (path === '/') {
+      return pathname === '/';
+    }
+    return pathname.startsWith(path);
+  };
+
+  const navLinkClass = (path: string) => {
+    const baseClass = "font-medium transition-all duration-200 px-3 py-2 rounded-lg";
+    if (isActive(path)) {
+      return `${baseClass} bg-white text-[#820210] shadow-md`;
+    }
+    return `${baseClass} text-white hover:bg-red-900 hover:text-white`;
+  };
+
+  const mobileNavLinkClass = (path: string) => {
+    const baseClass = "block py-3 px-4 rounded-lg transition-all duration-200";
+    if (isActive(path)) {
+      return `${baseClass} bg-white text-[#820210] font-semibold`;
+    }
+    return `${baseClass} text-white hover:bg-red-900 hover:text-white`;
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-[#820210] shadow-md w-full overflow-x-hidden">
@@ -96,19 +120,19 @@ export function Header() {
           {/* RIGHT SIDE (Links + Cart + Menu) */}
           <div className="flex items-center space-x-2 md:space-x-6 shrink-0">
             {/* Desktop Nav Links */}
-            <nav className="hidden md:flex items-center space-x-6">
-              <Link href="/" className="text-white hover:text-gray-200 font-medium transition-colors">Home</Link>
-              <Link href="/products" className="text-white hover:text-gray-200 font-medium transition-colors">Products</Link>
-              <Link href="/services" className="text-white hover:text-gray-200 font-medium transition-colors">Services</Link>
-              <Link href="/contact" className="text-white hover:text-gray-200 font-medium transition-colors">Contact</Link>
+            <nav className="hidden md:flex items-center space-x-2">
+              <Link href="/" className={navLinkClass('/')}>Home</Link>
+              <Link href="/products" className={navLinkClass('/products')}>Products</Link>
+              <Link href="/services" className={navLinkClass('/services')}>Services</Link>
+              <Link href="/contact" className={navLinkClass('/contact')}>Contact</Link>
             </nav>
 
             {/* CART */}
             <Link
               href="/cart"
-              className="relative p-2 rounded-lg hover:bg-red-900 transition-colors duration-300"
+              className={`relative p-2 rounded-lg transition-all duration-300 ${isActive('/cart') ? 'bg-white' : 'hover:bg-red-900'}`}
             >
-              <ShoppingCart className="w-6 h-6 text-white" />
+              <ShoppingCart className={`w-6 h-6 ${isActive('/cart') ? 'text-[#820210]' : 'text-white'}`} />
               {totalItems > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-white text-[#820210] text-xs font-bold rounded-full flex items-center justify-center">
                   {totalItems}
@@ -141,11 +165,11 @@ export function Header() {
       {/* MOBILE MENU */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-[#820210] border-t border-red-800">
-          <nav className="px-4 py-4 space-y-3">
-            <Link href="/" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-white">Home</Link>
-            <Link href="/products" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-white">Products</Link>
-            <Link href="/services" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-white">Services</Link>
-            <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-white">Contact</Link>
+          <nav className="px-4 py-4 space-y-2">
+            <Link href="/" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass('/')}>Home</Link>
+            <Link href="/products" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass('/products')}>Products</Link>
+            <Link href="/services" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass('/services')}>Services</Link>
+            <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass('/contact')}>Contact</Link>
           </nav>
         </div>
       )}
