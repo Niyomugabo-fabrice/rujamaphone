@@ -46,7 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load token from localStorage on mount
+  // Load token from localStorage on mount; cookie auth is checked by fetchUser.
   useEffect(() => {
     const storedToken = localStorage.getItem("auth_token");
     if (storedToken && !isTokenExpired(storedToken)) {
@@ -55,11 +55,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     localStorage.removeItem("auth_token");
-    setIsLoading(false);
+    setToken(null);
   }, []);
 
   const fetchUser = useCallback(async () => {
-    if (!token || isTokenExpired(token)) {
+    if (token && isTokenExpired(token)) {
       localStorage.removeItem("auth_token");
       setToken(null);
       setUser(null);
@@ -70,10 +70,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
 
     try {
+      const headers: HeadersInit = token
+        ? { Authorization: `Bearer ${token}` }
+        : {};
       const response = await fetch("/api/auth/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: "include",
+        headers,
       });
 
       if (response.ok) {
@@ -81,7 +83,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const data = unwrapApiData<{ user: User }>(payload);
         setUser(data.user);
       } else {
-        // Token is invalid, clear it
         localStorage.removeItem("auth_token");
         setToken(null);
         setUser(null);
@@ -98,12 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Fetch user data when token changes
   useEffect(() => {
-    if (token) {
-      fetchUser();
-    } else {
-      setUser(null);
-      setIsLoading(false);
-    }
+    fetchUser();
   }, [fetchUser, token]);
 
   const login = useCallback(async (credentials: LoginCredentials) => {
@@ -158,14 +154,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(async () => {
     try {
-      if (token) {
-        await fetch("/api/auth/logout", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-      }
+      const headers: HeadersInit = token
+        ? { Authorization: `Bearer ${token}` }
+        : {};
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+        headers,
+      });
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
