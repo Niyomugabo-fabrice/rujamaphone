@@ -251,19 +251,27 @@ export function Header() {
   };
 
   const navLinkClass = (path: string) => {
-    const baseClass = "font-medium transition-all duration-200 px-3 py-2 rounded-lg";
+    const baseClass = "group relative px-2 py-3 text-sm font-semibold transition-colors duration-300";
     if (isActive(path)) {
-      return `${baseClass} bg-white text-[#820210] shadow-md`;
+      return `${baseClass} text-white`;
     }
-    return `${baseClass} text-white hover:bg-red-900 hover:text-white`;
+    return `${baseClass} text-white/75 hover:text-white`;
   };
 
   const mobileNavLinkClass = (path: string) => {
-    const baseClass = "block py-3 px-4 rounded-lg transition-all duration-200";
+    const baseClass = "relative flex items-center py-3 pl-5 pr-4 rounded-lg transition-all duration-300";
     if (isActive(path)) {
-      return `${baseClass} bg-white text-[#820210] font-semibold`;
+      return `${baseClass} bg-white/10 text-white font-semibold`;
     }
-    return `${baseClass} text-white hover:bg-red-900 hover:text-white`;
+    return `${baseClass} text-white/75 hover:bg-white/10 hover:text-white`;
+  };
+
+  const navUnderlineClass = (path: string) => {
+    if (isActive(path)) {
+      return "absolute bottom-1 left-1/2 h-0.5 w-8 -translate-x-1/2 rounded-full bg-white opacity-100 shadow-[0_0_12px_rgba(255,255,255,0.75)] transition-all duration-300";
+    }
+
+    return "absolute bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-white/80 opacity-0 transition-all duration-300 group-hover:w-6 group-hover:opacity-100";
   };
 
   return (
@@ -308,18 +316,37 @@ export function Header() {
           <div className="flex items-center space-x-2 md:space-x-6 shrink-0">
             {/* Desktop Nav Links */}
             <nav className="hidden md:flex items-center space-x-2">
-              <Link href="/" className={navLinkClass('/')}>Home</Link>
-              <Link href="/products" className={navLinkClass('/products')}>Products</Link>
-              <Link href="/services" className={navLinkClass('/services')}>Services</Link>
-              <Link href="/contact" className={navLinkClass('/contact')}>Contact</Link>
+              <Link href="/" className={navLinkClass('/')}>
+                <span>Home</span>
+                <span className={navUnderlineClass('/')} />
+              </Link>
+              <Link href="/products" className={navLinkClass('/products')}>
+                <span>Products</span>
+                <span className={navUnderlineClass('/products')} />
+              </Link>
+              <Link href="/services" className={navLinkClass('/services')}>
+                <span>Services</span>
+                <span className={navUnderlineClass('/services')} />
+              </Link>
+              <Link href="/contact" className={navLinkClass('/contact')}>
+                <span>Contact</span>
+                <span className={navUnderlineClass('/contact')} />
+              </Link>
             </nav>
 
             {/* CART */}
             <Link
               href="/cart"
-              className={`relative p-2 rounded-lg transition-all duration-300 ${isActive('/cart') ? 'bg-white' : 'hover:bg-red-900'}`}
+              className={`relative p-2 rounded-lg transition-all duration-300 ${
+                isActive('/cart')
+                  ? 'text-white ring-1 ring-white/45 shadow-[0_0_18px_rgba(255,255,255,0.18)]'
+                  : 'text-white/85 hover:bg-white/10 hover:text-white'
+              }`}
             >
-              <ShoppingCart className={`w-6 h-6 ${isActive('/cart') ? 'text-[#820210]' : 'text-white'}`} />
+              <ShoppingCart className="w-6 h-6" />
+              {isActive('/cart') && (
+                <span className="absolute -bottom-1 left-1/2 h-0.5 w-6 -translate-x-1/2 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.75)]" />
+              )}
               {totalItems > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-white text-[#820210] text-xs font-bold rounded-full flex items-center justify-center">
                   {totalItems}
@@ -353,10 +380,22 @@ export function Header() {
       {mobileMenuOpen && (
         <div className="md:hidden bg-[#820210] border-t border-red-800">
           <nav className="px-4 py-4 space-y-2">
-            <Link href="/" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass('/')}>Home</Link>
-            <Link href="/products" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass('/products')}>Products</Link>
-            <Link href="/services" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass('/services')}>Services</Link>
-            <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass('/contact')}>Contact</Link>
+            <Link href="/" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass('/')}>
+              {isActive('/') && <span className="absolute left-0 top-1/2 h-7 w-1 -translate-y-1/2 rounded-full bg-white" />}
+              Home
+            </Link>
+            <Link href="/products" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass('/products')}>
+              {isActive('/products') && <span className="absolute left-0 top-1/2 h-7 w-1 -translate-y-1/2 rounded-full bg-white" />}
+              Products
+            </Link>
+            <Link href="/services" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass('/services')}>
+              {isActive('/services') && <span className="absolute left-0 top-1/2 h-7 w-1 -translate-y-1/2 rounded-full bg-white" />}
+              Services
+            </Link>
+            <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className={mobileNavLinkClass('/contact')}>
+              {isActive('/contact') && <span className="absolute left-0 top-1/2 h-7 w-1 -translate-y-1/2 rounded-full bg-white" />}
+              Contact
+            </Link>
           </nav>
         </div>
       )}

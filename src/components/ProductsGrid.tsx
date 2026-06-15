@@ -5,6 +5,7 @@ import { Search, SlidersHorizontal, ChevronDown, X } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
 import FilterDrawer from "@/components/FilterDrawer";
 import FilterChips from "@/components/FilterChips";
+import { PriceRangeSlider } from "@/components/PriceRangeSlider";
 import type { Product, ProductFilters, ProductCategory } from "@/types/product";
 // import { useSearchParams } from "next/navigation";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
@@ -254,6 +255,16 @@ function getBrandsForCategory(category?: ProductCategory): string[] {
                 </div>
               </div>
 
+              {/* Price Range Filter */}
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-3">Price Range (RWF)</h3>
+                <PriceRangeSlider
+                  minPrice={filters.minPrice}
+                  maxPrice={filters.maxPrice}
+                  onChange={handleFilterChange}
+                />
+              </div>
+
               {/* Brand Filter */}
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3">Brand</h3>
@@ -291,33 +302,6 @@ function getBrandsForCategory(category?: ProductCategory): string[] {
                       <span>{cond}</span>
                     </label>
                   ))}
-                </div>
-              </div>
-
-              {/* Price Range Filter */}
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Price Range (RWF)</h3>
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-sm text-gray-600">Min Price</label>
-                    <input
-                      type="number"
-                      value={filters.minPrice || ""}
-                      onChange={(e) => handleFilterChange("minPrice", Number(e.target.value))}
-                      className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                      placeholder="0"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-600">Max Price</label>
-                    <input
-                      type="number"
-                      value={filters.maxPrice || ""}
-                      onChange={(e) => handleFilterChange("maxPrice", Number(e.target.value))}
-                      className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                      placeholder="1000000"
-                    />
-                  </div>
                 </div>
               </div>
 

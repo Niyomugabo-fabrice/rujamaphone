@@ -1,0 +1,18 @@
+<svg width="1200" height="720" viewBox="0 0 1200 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="720" fill="#FFF7F7"/>
+  <rect x="68" y="64" width="1064" height="592" rx="48" fill="#820210"/>
+  <circle cx="190" cy="152" r="72" fill="#E11D48" opacity="0.9"/>
+  <circle cx="1032" cy="586" r="96" fill="#FBBF24" opacity="0.45"/>
+  <path d="M256 474C342 384 449 339 577 339C705 339 812 384 898 474" stroke="white" stroke-width="26" stroke-linecap="round"/>
+  <path d="M869 474H988V355" stroke="white" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="242" y="204" width="236" height="316" rx="30" fill="#FFFFFF"/>
+  <rect x="270" y="240" width="180" height="224" rx="18" fill="#111827"/>
+  <rect x="320" y="486" width="80" height="10" rx="5" fill="#CBD5E1"/>
+  <rect x="726" y="162" width="252" height="360" rx="34" fill="#FFFFFF"/>
+  <rect x="758" y="202" width="188" height="256" rx="20" fill="#0F172A"/>
+  <rect x="810" y="482" width="84" height="10" rx="5" fill="#CBD5E1"/>
+  <rect x="520" y="174" width="166" height="84" rx="24" fill="#FBBF24"/>
+  <text x="603" y="228" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" fill="#111827">TOP UP</text>
+  <text x="600" y="596" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="900" fill="#FFFFFF">Upgrade your phone</text>
+  <text x="600" y="636" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="600" fill="#FFE4E8">Trade in, add balance, leave with a better device</text>
+</svg>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X, ChevronDown, ChevronUp } from "lucide-react";
 import type { ProductCategory, ProductFilters } from "@/types/product";
+import { PriceRangeSlider } from "@/components/PriceRangeSlider";
 
 interface FilterDrawerProps {
   isOpen: boolean;
@@ -80,70 +81,6 @@ onFiltersChange({
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-  <div className="border-b pb-4">
-  <button
-    onClick={() => toggleSection("price")}
-    className="flex items-center justify-between w-full py-2"
-  >
-    <span className="font-medium">Price Range</span>
-    {expandedSections.price ? (
-      <ChevronUp className="w-4 h-4" />
-    ) : (
-      <ChevronDown className="w-4 h-4" />
-    )}
-  </button>
-
-  {expandedSections.price && (
-    <div className="mt-4 space-y-4">
-
-      {/* labels like your image */}
-      <div className="flex justify-between text-sm text-gray-600">
-        <span>RF {filters.minPrice ?? 0}</span>
-        <span>RF {filters.maxPrice ?? 1500000}</span>
-      </div>
-
-      {/* slider container */}
-      <div className="relative w-full">
-
-        {/* track background */}
-        <div className="h-1 bg-gray-200 rounded-full" />
-
-        {/* MIN slider */}
-        <input
-          type="range"
-          min={0}
-          max={1500000}
-          step={10000}
-          value={filters.minPrice ?? 0}
-          onChange={(e) =>
-            handleFilterChange(
-              "minPrice",
-              Math.min(Number(e.target.value), filters.maxPrice ?? 1500000)
-            )
-          }
-          className="absolute top-0 w-full appearance-none bg-transparent pointer-events-auto accent-red-600"
-        />
-
-        {/* MAX slider */}
-        <input
-          type="range"
-          min={0}
-          max={1500000}
-          step={10000}
-          value={filters.maxPrice ?? 1500000}
-          onChange={(e) =>
-            handleFilterChange(
-              "maxPrice",
-              Math.max(Number(e.target.value), filters.minPrice ?? 0)
-            )
-          }
-          className="absolute top-0 w-full appearance-none bg-transparent pointer-events-auto accent-red-600"
-        />
-      </div>
-    </div>
-  )}
-</div>
-
           {/* Category */}
           <div className="border-b pb-4">
             <button
@@ -171,6 +108,31 @@ onFiltersChange({
                   <span className="capitalize">{cat.toLowerCase()}</span>
                 </label>
               ))}
+              </div>
+            )}
+          </div>
+
+          {/* Price */}
+          <div className="border-b pb-4">
+            <button
+              onClick={() => toggleSection("price")}
+              className="flex items-center justify-between w-full py-2"
+            >
+              <span className="font-medium">Price Range</span>
+              {expandedSections.price ? (
+                <ChevronUp className="w-4 h-4" />
+              ) : (
+                <ChevronDown className="w-4 h-4" />
+              )}
+            </button>
+
+            {expandedSections.price && (
+              <div className="mt-4">
+                <PriceRangeSlider
+                  minPrice={filters.minPrice}
+                  maxPrice={filters.maxPrice}
+                  onChange={handleFilterChange}
+                />
               </div>
             )}
           </div>
@@ -235,9 +197,6 @@ onFiltersChange({
             )}
           </div>
 
-          {/* Price */}
-
-
           {/* Smartphone */}
           {category === "SMARTPHONE" && (
             <div className="border-b pb-4">
@@ -251,18 +210,24 @@ onFiltersChange({
 
               {expandedSections.storage && (
                 <div className="space-y-2 mt-2">
-                  {["64GB", "128GB", "256GB", "512GB"].map((s) => (
-                    <label key={s} className="flex items-center gap-2">
+                  {[
+                    { label: "64GB", value: "GB64" },
+                    { label: "128GB", value: "GB128" },
+                    { label: "256GB", value: "GB256" },
+                    { label: "512GB", value: "GB512" },
+                    { label: "1TB", value: "TB1" },
+                  ].map((storage) => (
+                    <label key={storage.value} className="flex items-center gap-2">
                       <input
                         type="radio"
                         name="storage"
-                        value={s}
-                        checked={filters.storage === s}
+                        value={storage.value}
+                        checked={filters.storage === storage.value}
                         onChange={(e) =>
                           handleFilterChange("storage", e.target.value)
                         }
                       />
-                      <span>{s}</span>
+                      <span>{storage.label}</span>
                     </label>
                   ))}
                 </div>
@@ -307,7 +272,7 @@ onFiltersChange({
 
               {expandedSections.type && (
                 <div className="space-y-2 mt-2">
-                  {["Cable", "Case", "Charger"].map((t) => (
+                  {["Cable", "Case", "Charger", "Screen Protector", "Headphones", "Other"].map((t) => (
                     <label key={t} className="flex items-center gap-2">
                       <input
                         type="radio"
@@ -344,11 +309,11 @@ onFiltersChange({
 function getBrandsForCategory(category?: ProductCategory): string[] {
   switch (category) {
     case "SMARTPHONE":
-      return ["APPLE", "SAMSUNG", "XIAOMI"];
+      return ["APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS"];
     case "SPEAKER":
-      return ["JBL", "SONY", "BOSE"];
+      return ["JBL", "SONY", "BOSE", "APPLE", "ANKER"];
     case "ACCESSORY":
-      return ["ANKER", "BASEUS"];
+      return ["APPLE", "SAMSUNG", "ANKER", "BASEUS", "GENERIC"];
     default:
       return ["APPLE", "SAMSUNG", "JBL", "SONY", "ANKER"];
   }
