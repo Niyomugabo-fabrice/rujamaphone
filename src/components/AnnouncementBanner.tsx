@@ -10,7 +10,10 @@ type Announcement = {
   title: string;
   message: string;
   kind: AnnouncementKind;
+  updatedAt: string;
 };
+
+const DISMISSED_ANNOUNCEMENTS_KEY = "rujama:dismissed-announcements";
 
 function unwrapApiData<T>(payload: any): T {
   return payload?.success && payload?.data !== undefined ? payload.data : payload;
@@ -28,15 +31,41 @@ function getKindLabel(kind: AnnouncementKind) {
   return "Announcement";
 }
 
+function getAnnouncementDismissKey(announcement: Announcement) {
+  return `${announcement.id}:${announcement.updatedAt}`;
+}
+
+function readDismissedAnnouncements() {
+  try {
+    const stored = window.localStorage.getItem(DISMISSED_ANNOUNCEMENTS_KEY);
+    const parsed = stored ? JSON.parse(stored) : [];
+    return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeDismissedAnnouncements(keys: string[]) {
+  try {
+    window.localStorage.setItem(DISMISSED_ANNOUNCEMENTS_KEY, JSON.stringify(keys));
+  } catch {
+    // Ignore storage failures so announcements still work in private browsing.
+  }
+}
+
 export function AnnouncementBanner() {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  const [dismissedIds, setDismissedIds] = useState<string[]>([]);
+  const [dismissedKeys, setDismissedKeys] = useState<string[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    setDismissedKeys(readDismissedAnnouncements());
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
 
-    fetch("/api/announcements")
+    fetch("/api/announcements", { cache: "no-store" })
       .then((response) => response.json())
       .then((payload) => {
         if (!isMounted) return;
@@ -51,9 +80,22 @@ export function AnnouncementBanner() {
     };
   }, []);
 
+  useEffect(() => {
+    if (announcements.length === 0) return;
+
+    const activeDismissKeys = new Set(announcements.map(getAnnouncementDismissKey));
+    setDismissedKeys((current) => {
+      const next = current.filter((key) => activeDismissKeys.has(key));
+      if (next.length !== current.length) {
+        writeDismissedAnnouncements(next);
+      }
+      return next;
+    });
+  }, [announcements]);
+
   const visibleAnnouncements = useMemo(
-    () => announcements.filter((item) => !dismissedIds.includes(item.id)),
-    [announcements, dismissedIds]
+    () => announcements.filter((item) => !dismissedKeys.includes(getAnnouncementDismissKey(item))),
+    [announcements, dismissedKeys]
   );
 
   useEffect(() => {
@@ -133,7 +175,12 @@ export function AnnouncementBanner() {
         <button
           type="button"
           onClick={() => {
-            setDismissedIds((current) => [...current, primary.id]);
+            const dismissKey = getAnnouncementDismissKey(primary);
+            setDismissedKeys((current) => {
+              const next = Array.from(new Set([...current, dismissKey]));
+              writeDismissedAnnouncements(next);
+              return next;
+            });
             setActiveIndex(0);
           }}
           className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[#820210]/60 transition-colors hover:bg-white hover:text-[#820210]"

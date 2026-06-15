@@ -74,18 +74,23 @@ export function ProductDetail() {
   };
 
   const handleShare = async () => {
+    if (!product) return;
+
+    const shareUrl = `${window.location.origin}/products/${product.id}`;
+    const shareText = `${product.name} at Rujama Phones Shop - ${formatPrice(product.price)}. ${product.description?.trim() || "Tap to view details, photos, and availability."}`;
+
     if (navigator.share && product) {
       try {
         await navigator.share({
-          title: product.name,
-          text: `Check out ${product.name} for ${product.price} RWF`,
-          url: window.location.href,
+          title: `${product.name} | Rujama Phones Shop`,
+          text: shareText,
+          url: shareUrl,
         });
       } catch (error) {
         console.error("Share failed:", error);
       }
     } else {
-      navigator.clipboard.writeText(window.location.href);
+      navigator.clipboard.writeText(shareUrl);
       toast.success("Link copied to clipboard");
     }
   };
