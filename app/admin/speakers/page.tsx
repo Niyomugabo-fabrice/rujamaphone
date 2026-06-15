@@ -25,10 +25,15 @@ export default function SpeakersPage() {
     setTimeout(() => setNotification(null), 5000);
   };
 
+  const readApiData = async (response: Response) => {
+    const payload = await response.json();
+    return payload?.success ? payload.data : payload?.data;
+  };
+
   const fetchSpeakers = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/speakers");
+      const res = await fetch("/api/speakers", { cache: "no-store" });
       const payload = await res.json();
       const result = payload?.success ? payload.data : payload;
       setItemsData(Array.isArray(result) ? result : result?.data || []);
@@ -74,11 +79,14 @@ export default function SpeakersPage() {
       });
 
       if (response.ok) {
+        const createdSpeaker = await readApiData(response);
         setIsCreateOpen(false);
         setSelectedFiles(null);
         setImagePreviews([]);
+        if (createdSpeaker?.id) {
+          setItemsData((current) => [createdSpeaker, ...current]);
+        }
         triggerNotification("success", "Hardware tracking matrix committed successfully.");
-        fetchSpeakers();
       } else {
         const errData = await response.json();
         triggerNotification("error", errData.error || "Failed to commit speaker configuration.");

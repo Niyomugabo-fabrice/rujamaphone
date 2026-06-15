@@ -30,7 +30,7 @@ const services = [
     title: "Pay in Installments",
     subtitle: "Get a smartphone, speaker, or accessory with a clear payment plan that fits your budget.",
     href: "/installment",
-    image: "/image/service-installment-infographic.svg",
+    image: "/image/parts.jpeg",
     icon: Wallet,
     action: "View Installment Plans",
     highlights: [

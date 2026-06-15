@@ -29,6 +29,11 @@ export default function SlidersAdminPage() {
     setTimeout(() => setNotification(null), 5000);
   };
 
+  const readApiData = async (response: Response) => {
+    const payload = await response.json();
+    return payload?.success ? payload.data : payload?.data;
+  };
+
   const fetchSliders = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -84,11 +89,14 @@ export default function SlidersAdminPage() {
       });
 
       if (response.ok) {
+        const createdSliders = await readApiData(response);
         setIsCreateOpen(false);
         setSelectedFiles(null);
         setImagePreviews([]);
+        if (Array.isArray(createdSliders) && createdSliders.length > 0) {
+          setItemsData((current) => [...createdSliders, ...current]);
+        }
         triggerNotification("success", "Slider image(s) uploaded successfully.");
-        fetchSliders();
       } else {
         const errData = await response.json();
         triggerNotification("error", errData.error || "Failed to upload slider image.");
@@ -120,11 +128,16 @@ export default function SlidersAdminPage() {
       });
 
       if (response.ok) {
+        const updatedSlider = await readApiData(response);
         setEditingItem(null);
         setEditFile(null);
         setEditPreview(null);
+        if (updatedSlider?.id) {
+          setItemsData((current) =>
+            current.map((item) => (item.id === updatedSlider.id ? updatedSlider : item))
+          );
+        }
         triggerNotification("success", "Slider image updated successfully.");
-        fetchSliders();
       } else {
         const errData = await response.json();
         triggerNotification("error", errData.error || "Failed to update slider image.");
@@ -147,9 +160,10 @@ export default function SlidersAdminPage() {
       });
 
       if (response.ok) {
+        const deletedId = deletingId;
         setDeletingId(null);
+        setItemsData((current) => current.filter((item) => item.id !== deletedId));
         triggerNotification("success", "Slider image deleted successfully.");
-        fetchSliders();
       } else {
         const errData = await response.json().catch(() => null);
         triggerNotification("error", errData?.error || "Failed to delete slider image.");

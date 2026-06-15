@@ -25,10 +25,15 @@ export default function SmartphonesPage() {
     setTimeout(() => setNotification(null), 5000);
   };
 
+  const readApiData = async (response: Response) => {
+    const payload = await response.json();
+    return payload?.success ? payload.data : payload?.data;
+  };
+
   const fetchSmartphones = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/smartphones");
+      const res = await fetch("/api/smartphones", { cache: "no-store" });
       const payload = await res.json();
       const result = payload?.success ? payload.data : payload;
       setItemsData(Array.isArray(result) ? result : result?.data || []);
@@ -74,11 +79,14 @@ export default function SmartphonesPage() {
       });
 
       if (response.ok) {
+        const createdSmartphone = await readApiData(response);
         setIsCreateOpen(false);
         setSelectedFiles(null);
         setImagePreviews([]);
+        if (createdSmartphone?.id) {
+          setItemsData((current) => [createdSmartphone, ...current]);
+        }
         triggerNotification("success", "Hardware tracking matrix committed successfully.");
-        fetchSmartphones();
       } else {
         const errData = await response.json();
         triggerNotification("error", errData.error || "Failed to commit smartphone configuration.");

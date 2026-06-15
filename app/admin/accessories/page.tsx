@@ -25,10 +25,15 @@ export default function AccessoriesPage() {
     setTimeout(() => setNotification(null), 5000);
   };
 
+  const readApiData = async (response: Response) => {
+    const payload = await response.json();
+    return payload?.success ? payload.data : payload?.data;
+  };
+
   const fetchAccessories = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/accessories");
+      const res = await fetch("/api/accessories", { cache: "no-store" });
       const payload = await res.json();
       const result = payload?.success ? payload.data : payload;
       setItemsData(Array.isArray(result) ? result : result?.data || []);
@@ -74,11 +79,14 @@ export default function AccessoriesPage() {
       });
 
       if (response.ok) {
+        const createdAccessory = await readApiData(response);
         setIsCreateOpen(false);
         setSelectedFiles(null);
         setImagePreviews([]);
+        if (createdAccessory?.id) {
+          setItemsData((current) => [createdAccessory, ...current]);
+        }
         triggerNotification("success", "Hardware tracking matrix committed successfully.");
-        fetchAccessories();
       } else {
         const errData = await response.json();
         triggerNotification("error", errData.error || "Failed to commit accessory configuration.");
