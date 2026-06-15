@@ -22,113 +22,135 @@ export async function GET(request: Request) {
   const skip = (page - 1) * limit;
 
   try {
-    // 2. Build the WHERE clause dynamically
-    const conditions: string[] = [];
-    const params: any[] = [];
-    
-    conditions.push(`price >= $${params.push(minPrice)}`);
-    conditions.push(`price <= $${params.push(maxPrice)}`);
-    
-    if (category) {
-      conditions.push(`category = $${params.push(category)}`);
-    }
-    if (brand) {
-      conditions.push(`brand = $${params.push(brand)}`);
-    }
-    if (condition) {
-      conditions.push(`condition = $${params.push(condition)}`);
-    }
-    if (storage) {
-      conditions.push(`storage = $${params.push(storage)}`);
-    }
-    if (batteryLife) {
-      conditions.push(`"batteryLife" ILIKE $${params.push('%' + batteryLife + '%')}`);
-    }
-    if (type) {
-      conditions.push(`type = $${params.push(type)}`);
-    }
-    
-    // Handle search parameter
-    let rankSelect = "0 as rank";
-    if (search) {
-      const searchParamIdx = params.push(search);
-      const searchLikeIdx = params.push('%' + search + '%');
-      
-      conditions.push(`(
-        name % $${searchParamIdx} OR 
-        name ILIKE $${searchLikeIdx} OR 
-        brand ILIKE $${searchLikeIdx} OR 
-        CAST(price AS TEXT) = $${searchParamIdx}
-      )`);
-      
-      rankSelect = `similarity(name, $${searchParamIdx}) as rank`;
-    }
-    
-    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
-    
-    // Construct search result order
-    let orderByClause = "";
-    const allowedSorts = {
-      "price-asc": `sub.price ASC, sub.name ASC`,
-      "price-desc": `sub.price DESC, sub.name ASC`,
-      "rating-desc": `sub.rating DESC, sub.name ASC`,
-      "createdAt-asc": `sub."createdAt" ASC, sub.name ASC`,
-      "createdAt-desc": `sub."createdAt" DESC, sub.name ASC`,
+    // 2. Build Prisma where clauses for each table
+    const baseWhere: any = {
+      price: { gte: minPrice, lte: maxPrice },
     };
-    
-    if (sort && sort in allowedSorts) {
-      orderByClause = allowedSorts[sort as keyof typeof allowedSorts];
-    } else {
-      if (search) {
-        orderByClause = `CASE WHEN CAST(sub.price AS TEXT) = $${params.indexOf(search) + 1} THEN 1 ELSE 0 END DESC, sub.rank DESC, sub.name ASC`;
-      } else {
-        orderByClause = `sub."createdAt" DESC, sub.name ASC`;
-      }
+
+    if (brand) baseWhere.brand = brand;
+    if (condition) baseWhere.condition = condition;
+
+    // Category-specific filters
+    const smartphoneWhere = { ...baseWhere };
+    const speakerWhere = { ...baseWhere };
+    const accessoryWhere = { ...baseWhere };
+
+    if (category && category !== "SMARTPHONE") smartphoneWhere.brand = undefined;
+    if (category && category !== "SPEAKER") speakerWhere.brand = undefined;
+    if (category && category !== "ACCESSORY") accessoryWhere.brand = undefined;
+
+    if (storage) smartphoneWhere.storage = storage;
+    if (batteryLife) speakerWhere.batteryLife = { contains: batteryLife, mode: "insensitive" };
+    if (type) accessoryWhere.type = type;
+
+    // Search filter
+    if (search) {
+      const searchCondition = {
+        OR: [
+          { name: { contains: search, mode: "insensitive" } },
+          { brand: { contains: search, mode: "insensitive" } },
+        ],
+      };
+      smartphoneWhere.OR = searchCondition.OR;
+      speakerWhere.OR = searchCondition.OR;
+      accessoryWhere.OR = searchCondition.OR;
     }
-    
-    // Pagination parameters
-    const limitParamIdx = params.push(limit);
-    const skipParamIdx = params.push(skip);
-    
-    const query = `
-      SELECT * FROM (
-        SELECT *, ${rankSelect}
-        FROM "SearchableProducts"
-        ${whereClause}
-      ) AS sub
-      ORDER BY ${orderByClause}
-      LIMIT $${limitParamIdx} OFFSET $${skipParamIdx}
-    `;
-    
-    const countQuery = `
-      SELECT COUNT(*)::integer as total
-      FROM "SearchableProducts"
-      ${whereClause}
-    `;
-    
-    // Parameters for count do not include pagination limit/skip
-    const countParams = params.slice(0, params.length - 2);
-    
-    // 3. Execute both queries in parallel for performance
-    const [data, countResult] = await Promise.all([
-      prisma.$queryRawUnsafe(query, ...params),
-      prisma.$queryRawUnsafe(countQuery, ...countParams)
-    ]) as [any[], any[]];
 
-    // 4. Extract count safely
-    const total = Number(countResult[0]?.total || 0);
+    // 3. Fetch from each table in parallel
+    const [smartphones, speakers, accessories] = await Promise.all([
+      category === "SMARTPHONE" || !category
+        ? prisma.smartphone.findMany({
+            where: smartphoneWhere,
+            orderBy: getOrderBy(sort),
+            take: category ? limit : limit * 3,
+            skip: category ? skip : 0,
+          })
+        : [],
+      category === "SPEAKER" || !category
+        ? prisma.speaker.findMany({
+            where: speakerWhere,
+            orderBy: getOrderBy(sort),
+            take: category ? limit : limit * 3,
+            skip: category ? skip : 0,
+          })
+        : [],
+      category === "ACCESSORY" || !category
+        ? prisma.accessory.findMany({
+            where: accessoryWhere,
+            orderBy: getOrderBy(sort),
+            take: category ? limit : limit * 3,
+            skip: category ? skip : 0,
+          })
+        : [],
+    ]);
 
-    return NextResponse.json({ 
-      success: true, 
-      data, 
-      total, 
-      totalPages: Math.ceil(total / limit) 
+    // 4. Combine results and add category field
+    const allProducts = [
+      ...smartphones.map((p) => ({ ...p, category: "SMARTPHONE", batteryLife: null, type: null })),
+      ...speakers.map((p) => ({ ...p, category: "SPEAKER", storage: null, type: null })),
+      ...accessories.map((p) => ({ ...p, category: "ACCESSORY", storage: null, batteryLife: null })),
+    ];
+
+    // 5. Sort combined results if no category filter
+    let sortedProducts = allProducts;
+    if (!category) {
+      sortedProducts = allProducts.sort((a, b) => {
+        const sortFn = getSortFunction(sort);
+        return sortFn(a, b);
+      });
+    }
+
+    // 6. Apply pagination
+    const total = sortedProducts.length;
+    const paginatedProducts = category
+      ? sortedProducts
+      : sortedProducts.slice(skip, skip + limit);
+
+    return NextResponse.json({
+      success: true,
+      data: paginatedProducts,
+      total,
+      totalPages: Math.ceil(total / limit),
     });
   } catch (error) {
     console.error("SEARCH_API_ERROR:", error);
     return NextResponse.json(
-      { success: false, error: "Internal Server Error" }, 
+      { success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }
+}
+
+function getOrderBy(sort: string) {
+  const [field, direction] = sort.split("-");
+  const orderBy: any = {};
+  
+  switch (field) {
+    case "price":
+      orderBy[field] = direction === "asc" ? "asc" : "desc";
+      break;
+    case "rating":
+      orderBy[field] = direction === "asc" ? "asc" : "desc";
+      break;
+    case "createdAt":
+    default:
+      orderBy[field] = direction === "asc" ? "asc" : "desc";
+      break;
+  }
+  
+  return orderBy;
+}
+
+function getSortFunction(sort: string) {
+  const [field, direction] = sort.split("-");
+  const dir = direction === "asc" ? 1 : -1;
+  
+  return (a: any, b: any) => {
+    const aVal = a[field];
+    const bVal = b[field];
+    
+    if (aVal < bVal) return -1 * dir;
+    if (aVal > bVal) return 1 * dir;
+    return 0;
+  };
 }

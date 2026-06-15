@@ -119,28 +119,28 @@ export default function ProfilePage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-background py-12 px-4">
-        <div className="max-w-4xl mx-auto space-y-8">
+      <div className="min-h-screen bg-background py-8 sm:py-12 px-4">
+        <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
           <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Profile</h1>
-            <p className="text-muted-foreground">Manage your account settings</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">Profile</h1>
+            <p className="text-sm sm:text-base text-muted-foreground">Manage your account settings</p>
           </div>
 
         <Card>
-          <CardHeader>
-            <div className="flex items-center gap-4">
-              <Avatar className="h-20 w-20">
+          <CardHeader className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row items-center sm:items-center gap-4">
+              <Avatar className="h-16 w-16 sm:h-20 sm:w-20">
                 <AvatarImage src={user.avatar || undefined} />
-                <AvatarFallback className="text-2xl">{initials}</AvatarFallback>
+                <AvatarFallback className="text-xl sm:text-2xl">{initials}</AvatarFallback>
               </Avatar>
-              <div>
-                <CardTitle>{user.fullName}</CardTitle>
-                <CardDescription>{user.email}</CardDescription>
+              <div className="text-center sm:text-left">
+                <CardTitle className="text-lg sm:text-xl">{user.fullName}</CardTitle>
+                <CardDescription className="text-sm">{user.email}</CardDescription>
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4 text-sm">
+          <CardContent className="space-y-4 p-4 sm:p-6">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
               <div>
                 <p className="text-muted-foreground">Role</p>
                 <p className="font-medium">{user.role}</p>
@@ -162,39 +162,41 @@ export default function ProfilePage() {
         </Card>
 
         <Card>
-          <CardHeader>
-            <CardTitle>Update Profile</CardTitle>
-            <CardDescription>Update your personal information</CardDescription>
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="text-lg sm:text-xl">Update Profile</CardTitle>
+            <CardDescription className="text-sm">Update your personal information</CardDescription>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmitProfile(onProfileUpdate)} className="space-y-4">
+          <CardContent className="p-4 sm:p-6">
+            <form onSubmit={handleSubmitProfile(onProfileUpdate)} className="space-y-3 sm:space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="fullName">Full Name</Label>
+                <Label htmlFor="fullName" className="text-sm sm:text-base">Full Name</Label>
                 <Input
                   id="fullName"
                   {...registerProfile("fullName")}
                   disabled={isUpdatingProfile}
+                  className="h-10"
                 />
                 {profileErrors.fullName && (
-                  <p className="text-sm text-destructive">{profileErrors.fullName.message}</p>
+                  <p className="text-xs sm:text-sm text-destructive">{profileErrors.fullName.message}</p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="avatar">Avatar URL</Label>
+                <Label htmlFor="avatar" className="text-sm sm:text-base">Avatar URL</Label>
                 <Input
                   id="avatar"
                   type="url"
                   placeholder="https://example.com/avatar.jpg"
                   {...registerProfile("avatar")}
                   disabled={isUpdatingProfile}
+                  className="h-10"
                 />
                 {profileErrors.avatar && (
-                  <p className="text-sm text-destructive">{profileErrors.avatar.message}</p>
+                  <p className="text-xs sm:text-sm text-destructive">{profileErrors.avatar.message}</p>
                 )}
               </div>
 
-              <Button type="submit" disabled={isUpdatingProfile}>
+              <Button type="submit" disabled={isUpdatingProfile} className="w-full sm:w-auto h-10">
                 {isUpdatingProfile ? "Updating..." : "Update Profile"}
               </Button>
             </form>
@@ -204,52 +206,55 @@ export default function ProfilePage() {
         <Separator />
 
         <Card>
-          <CardHeader>
-            <CardTitle>Change Password</CardTitle>
-            <CardDescription>Update your password to keep your account secure</CardDescription>
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="text-lg sm:text-xl">Change Password</CardTitle>
+            <CardDescription className="text-sm">Update your password to keep your account secure</CardDescription>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmitPassword(onPasswordChange)} className="space-y-4">
+          <CardContent className="p-4 sm:p-6">
+            <form onSubmit={handleSubmitPassword(onPasswordChange)} className="space-y-3 sm:space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="currentPassword">Current Password</Label>
+                <Label htmlFor="currentPassword" className="text-sm sm:text-base">Current Password</Label>
                 <Input
                   id="currentPassword"
                   type="password"
                   {...registerPassword("currentPassword")}
                   disabled={isChangingPassword}
+                  className="h-10"
                 />
                 {passwordErrors.currentPassword && (
-                  <p className="text-sm text-destructive">{passwordErrors.currentPassword.message}</p>
+                  <p className="text-xs sm:text-sm text-destructive">{passwordErrors.currentPassword.message}</p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="newPassword">New Password</Label>
+                <Label htmlFor="newPassword" className="text-sm sm:text-base">New Password</Label>
                 <Input
                   id="newPassword"
                   type="password"
                   {...registerPassword("newPassword")}
                   disabled={isChangingPassword}
+                  className="h-10"
                 />
                 {passwordErrors.newPassword && (
-                  <p className="text-sm text-destructive">{passwordErrors.newPassword.message}</p>
+                  <p className="text-xs sm:text-sm text-destructive">{passwordErrors.newPassword.message}</p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                <Label htmlFor="confirmPassword" className="text-sm sm:text-base">Confirm New Password</Label>
                 <Input
                   id="confirmPassword"
                   type="password"
                   {...registerPassword("confirmPassword")}
                   disabled={isChangingPassword}
+                  className="h-10"
                 />
                 {passwordErrors.confirmPassword && (
-                  <p className="text-sm text-destructive">{passwordErrors.confirmPassword.message}</p>
+                  <p className="text-xs sm:text-sm text-destructive">{passwordErrors.confirmPassword.message}</p>
                 )}
               </div>
 
-              <Button type="submit" disabled={isChangingPassword}>
+              <Button type="submit" disabled={isChangingPassword} className="w-full sm:w-auto h-10">
                 {isChangingPassword ? "Changing..." : "Change Password"}
               </Button>
             </form>

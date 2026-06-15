@@ -268,22 +268,22 @@ useEffect(() => {
       </section>
 
       {/* 🔥 GALLERY */}
-      <section className="py-16 bg-white">
+      <section className="py-12 sm:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
 
-          <h2 className="text-3xl font-bold text-center mb-10">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-10">
             Product Gallery
           </h2>
 
-          <Masonry columnsCount={4} gutter="16px">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {galleryImages.map((image, i) => (
               <img
                 key={i}
                 src={image[0]}
-                className="rounded-lg hover:scale-105 transition"
+                className="rounded-lg hover:scale-105 transition w-full"
               />
             ))}
-          </Masonry>
+          </div>
 
         </div>
       </section>

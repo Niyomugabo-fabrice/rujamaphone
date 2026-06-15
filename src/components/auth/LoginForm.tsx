@@ -48,37 +48,35 @@ const onSubmit = async (data: LoginFormValues) => {
 }; // <--- Ensure this closing brace exists for the onSubmit function
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email" className="text-sm sm:text-base">Email</Label>
         <Input
           id="email"
           type="email"
-          // placeholder="you@example.com"
           {...register("email")}
           disabled={isLoading}
-          className="border-2 border-neutral-200 shadow-[0_0_10px_2px_rgba(0,0,0,0.05)] focus:outline-none focus:ring-2 focus:ring-neutral-300"
+          className="border-2 border-neutral-200 shadow-[0_0_10px_2px_rgba(0,0,0,0.05)] focus:outline-none focus:ring-2 focus:ring-neutral-300 h-10 sm:h-10"
         />
         {errors.email && (
-          <p className="text-sm text-destructive">{errors.email.message}</p>
+          <p className="text-xs sm:text-sm text-destructive">{errors.email.message}</p>
         )}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password" className="text-sm sm:text-base">Password</Label>
         <PasswordInput
           id="password"
-          // placeholder="••••••••"
           {...register("password")}
           disabled={isLoading}
-          className="border-2 border-neutral-200 shadow-[0_0_10px_2px_rgba(0,0,0,0.05)] focus:outline-none focus:ring-2 focus:ring-neutral-300"
+          className="border-2 border-neutral-200 shadow-[0_0_10px_2px_rgba(0,0,0,0.05)] focus:outline-none focus:ring-2 focus:ring-neutral-300 h-10 sm:h-10"
         />
         {errors.password && (
-          <p className="text-sm text-destructive">{errors.password.message}</p>
+          <p className="text-xs sm:text-sm text-destructive">{errors.password.message}</p>
         )}
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
         <div className="flex items-center space-x-2">
           <Checkbox
             id="remember"
@@ -87,24 +85,24 @@ const onSubmit = async (data: LoginFormValues) => {
           />
           <Label
             htmlFor="remember"
-            className="text-sm font-normal cursor-pointer"
+            className="text-xs sm:text-sm font-normal cursor-pointer"
           >
             Remember me
           </Label>
         </div>
         <Link
           href="/forgot-password"
-          className="text-sm text-primary hover:underline"
+          className="text-xs sm:text-sm text-primary hover:underline"
         >
           Forgot password?
         </Link>
       </div>
 
-      <Button type="submit" className="w-full" disabled={isLoading}>
+      <Button type="submit" className="w-full h-10 sm:h-10" disabled={isLoading}>
         {isLoading ? "Signing in..." : "Sign in"}
       </Button>
 
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="text-center text-xs sm:text-sm text-muted-foreground">
         Don't have an account?{" "}
         <Link href="/signup" className="text-primary hover:underline">
           Sign up

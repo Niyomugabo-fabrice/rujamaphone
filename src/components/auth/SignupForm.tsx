@@ -49,74 +49,67 @@ export function SignupForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="fullName">Full Name</Label>
+        <Label htmlFor="fullName" className="text-sm sm:text-base">Full Name</Label>
         <Input
           id="fullName"
           type="text"
-          // placeholder="Fabrice Niyomugabo"
-
-        className="border-2 border-neutral-200 shadow-[0_0_10px_2px_rgba(0,0,0,0.05)] focus:outline-none focus:ring-2 focus:ring-neutral-300"
           {...register("fullName")}
           disabled={isLoading}
+          className="border-2 border-neutral-200 shadow-[0_0_10px_2px_rgba(0,0,0,0.05)] focus:outline-none focus:ring-2 focus:ring-neutral-300 h-10 sm:h-10"
         />
         {errors.fullName && (
-          <p className="text-sm text-destructive">{errors.fullName.message}</p>
+          <p className="text-xs sm:text-sm text-destructive">{errors.fullName.message}</p>
         )}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email" className="text-sm sm:text-base">Email</Label>
         <Input
           id="email"
           type="email"
-
-          // placeholder="fabriceniyo@gmail.com"
           {...register("email")}
           disabled={isLoading}
-          className="border-2 border-neutral-200 shadow-[0_0_10px_2px_rgba(0,0,0,0.05)] focus:outline-none focus:ring-2 focus:ring-neutral-300"
-
+          className="border-2 border-neutral-200 shadow-[0_0_10px_2px_rgba(0,0,0,0.05)] focus:outline-none focus:ring-2 focus:ring-neutral-300 h-10 sm:h-10"
         />
         {errors.email && (
-          <p className="text-sm text-destructive">{errors.email.message}</p>
+          <p className="text-xs sm:text-sm text-destructive">{errors.email.message}</p>
         )}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password" className="text-sm sm:text-base">Password</Label>
         <PasswordInput
           id="password"
-          
           showStrength
           {...register("password")}
           disabled={isLoading}
-          className="border-2 border-neutral-200 shadow-[0_0_10px_2px_rgba(0,0,0,0.05)] focus:outline-none focus:ring-2 focus:ring-neutral-300"
+          className="border-2 border-neutral-200 shadow-[0_0_10px_2px_rgba(0,0,0,0.05)] focus:outline-none focus:ring-2 focus:ring-neutral-300 h-10 sm:h-10"
         />
         {errors.password && (
-          <p className="text-sm text-destructive">{errors.password.message}</p>
+          <p className="text-xs sm:text-sm text-destructive">{errors.password.message}</p>
         )}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="confirmPassword">Confirm Password</Label>
+        <Label htmlFor="confirmPassword" className="text-sm sm:text-base">Confirm Password</Label>
         <PasswordInput
           id="confirmPassword"
-          // placeholder="••••••••"
           {...register("confirmPassword")}
           disabled={isLoading}
-          className="border-2 border-neutral-200 shadow-[0_0_10px_2px_rgba(0,0,0,0.05)] focus:outline-none focus:ring-2 focus:ring-neutral-300"
+          className="border-2 border-neutral-200 shadow-[0_0_10px_2px_rgba(0,0,0,0.05)] focus:outline-none focus:ring-2 focus:ring-neutral-300 h-10 sm:h-10"
         />
         {errors.confirmPassword && (
-          <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>
+          <p className="text-xs sm:text-sm text-destructive">{errors.confirmPassword.message}</p>
         )}
       </div>
 
-      <Button type="submit" className="w-full" disabled={isLoading}>
+      <Button type="submit" className="w-full h-10 sm:h-10" disabled={isLoading}>
         {isLoading ? "Creating account..." : "Sign up"}
       </Button>
 
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="text-center text-xs sm:text-sm text-muted-foreground">
         Already have an account?{" "}
         <Link href="/login" className="text-primary hover:underline">
           Sign in
