@@ -1,30 +1,74 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
-  // 1. Get the path
-  const path = request.nextUrl.pathname;
+function decodeJwtPayload(token: string): { exp?: number } | null {
+  try {
+    const payload = token.split('.')[1];
+    if (!payload) return null;
 
-  // 2. Define public routes that don't need protection
-  const isPublicPath = path === '/login' || path === '/signup';
+    const normalized = payload.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), '=');
 
-  // 3. Get the token from cookies (assuming you store your JWT in a cookie)
-  const token = request.cookies.get('token')?.value || '';
-
-  // 4. Redirect Logic
-  if (isPublicPath && token) {
-    return NextResponse.redirect(new URL('/admin', request.nextUrl));
-  }
-
-  if (!isPublicPath && !token) {
-    return NextResponse.redirect(new URL('/login', request.nextUrl));
+    return JSON.parse(atob(padded));
+  } catch {
+    return null;
   }
 }
 
-// 5. Configure which paths this middleware applies to
+function isTokenExpired(token: string) {
+  const payload = decodeJwtPayload(token);
+  if (!payload?.exp) return true;
+
+  return payload.exp <= Math.floor(Date.now() / 1000);
+}
+
+function redirectToLogin(request: NextRequest) {
+  const response = NextResponse.redirect(new URL('/login', request.nextUrl));
+  response.cookies.set('token', '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    expires: new Date(0),
+    path: '/',
+  });
+  return response;
+}
+
+export function middleware(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+  const isPublicPath = path === '/login' || path === '/signup';
+  const token = request.cookies.get('token')?.value || '';
+  const hasValidToken = Boolean(token) && !isTokenExpired(token);
+
+  if (token && !hasValidToken) {
+    if (isPublicPath) {
+      const response = NextResponse.next();
+      response.cookies.set('token', '', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        expires: new Date(0),
+        path: '/',
+      });
+      return response;
+    }
+
+    return redirectToLogin(request);
+  }
+
+  if (isPublicPath && hasValidToken) {
+    return NextResponse.redirect(new URL('/admin', request.nextUrl));
+  }
+
+  if (!isPublicPath && !hasValidToken) {
+    return redirectToLogin(request);
+  }
+}
+
 export const config = {
   matcher: [
-    '/admin/:path*'
-    
+    '/admin/:path*',
+    '/login',
+    '/signup',
   ],
 };

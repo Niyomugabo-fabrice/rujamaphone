@@ -20,6 +20,27 @@ function unwrapApiData<T>(payload: any): T {
   return payload?.success && payload?.data !== undefined ? payload.data : payload;
 }
 
+function decodeJwtPayload(token: string): { exp?: number } | null {
+  try {
+    const payload = token.split(".")[1];
+    if (!payload) return null;
+
+    const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), "=");
+
+    return JSON.parse(window.atob(padded));
+  } catch {
+    return null;
+  }
+}
+
+function isTokenExpired(token: string) {
+  const payload = decodeJwtPayload(token);
+  if (!payload?.exp) return true;
+
+  return payload.exp <= Math.floor(Date.now() / 1000);
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
@@ -28,13 +49,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Load token from localStorage on mount
   useEffect(() => {
     const storedToken = localStorage.getItem("auth_token");
-    if (storedToken) {
+    if (storedToken && !isTokenExpired(storedToken)) {
       setToken(storedToken);
+      return;
     }
+
+    localStorage.removeItem("auth_token");
     setIsLoading(false);
   }, []);
 
   const fetchUser = useCallback(async () => {
+    if (!token || isTokenExpired(token)) {
+      localStorage.removeItem("auth_token");
+      setToken(null);
+      setUser(null);
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
+
     try {
       const response = await fetch("/api/auth/me", {
         headers: {
@@ -57,6 +91,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem("auth_token");
       setToken(null);
       setUser(null);
+    } finally {
+      setIsLoading(false);
     }
   }, [token]);
 
@@ -66,6 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       fetchUser();
     } else {
       setUser(null);
+      setIsLoading(false);
     }
   }, [fetchUser, token]);
 
