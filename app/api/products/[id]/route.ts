@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import type { Product } from "@/types/product";
+import { fail, handleApiError, ok, parseRouteParams } from "@/lib/api";
+import { idSchema } from "@/lib/schemas";
 
 const detailCacheHeaders = {
   "Cache-Control": "public, s-maxage=120, stale-while-revalidate=600",
@@ -24,6 +26,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    idSchema.parse({ id });
 
     // Try to find the product in all three models
     const [smartphone, speaker, accessory] = await Promise.all([
@@ -97,15 +100,11 @@ export async function GET(
     }
 
     if (!product) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+      return fail("Product not found", 404);
     }
 
-    return NextResponse.json(product, { headers: detailCacheHeaders });
+    return ok(product, 200, { headers: detailCacheHeaders });
   } catch (error) {
-    console.error("GET_PRODUCT_ERROR:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch product" },
-      { status: 500 }
-    );
+    return handleApiError("products.id.GET", error);
   }
 }

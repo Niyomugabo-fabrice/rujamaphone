@@ -1,50 +1,64 @@
-import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { comparePassword } from "@/lib/password";
 import { generateToken } from "@/lib/jwt";
 import { loginSchema } from "@/lib/schemas";
+import { fail, handleApiError, ok, parseJson } from "@/lib/api";
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const validatedData = loginSchema.parse(body);
-    
+    const validatedData = await parseJson(request, loginSchema);
+
     const user = await prisma.user.findUnique({
       where: { email: validatedData.email },
-    });
-    
-    if (!user || user.status !== "ACTIVE") {
-      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
-    }
-    
-    const isPasswordValid = await comparePassword(validatedData.password, user.password);
-    if (!isPasswordValid) {
-      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
-    }
-    
-    const token = generateToken({ userId: user.id, email: user.email, role: user.role });
-    
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { lastLogin: new Date() },
-    });
-    
-    const response = NextResponse.json({
-      user: { id: user.id, fullName: user.fullName, email: user.email, role: user.role },
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        password: true,
+        avatar: true,
+        emailVerified: true,
+        createdAt: true,
+        updatedAt: true,
+        lastLogin: true,
+      },
     });
 
-    // SET THE COOKIE
+    if (!user) {
+      return fail("Invalid credentials", 401);
+    }
+
+    const isPasswordValid = await comparePassword(validatedData.password, user.password);
+    if (!isPasswordValid) {
+      return fail("Invalid credentials", 401);
+    }
+
+    const token = generateToken({ userId: user.id, email: user.email });
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: { lastLogin: new Date() },
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        avatar: true,
+        emailVerified: true,
+        createdAt: true,
+        updatedAt: true,
+        lastLogin: true,
+      },
+    });
+
+    const response = ok({ user: updatedUser, token });
     response.cookies.set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 60 * 60 * 24, // 24 hours
+      maxAge: 60 * 60 * 24,
     });
-    
+
     return response;
   } catch (error) {
-    console.error("LOGIN_ERROR:", error);
-    return NextResponse.json({ error: "Failed to login" }, { status: 500 });
+    return handleApiError("auth.login", error);
   }
 }

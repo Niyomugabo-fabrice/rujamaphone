@@ -142,14 +142,6 @@ export default function ProfilePage() {
           <CardContent className="space-y-4 p-4 sm:p-6">
             <div className="grid grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
               <div>
-                <p className="text-muted-foreground">Role</p>
-                <p className="font-medium">{user.role}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">Status</p>
-                <p className="font-medium">{user.status}</p>
-              </div>
-              <div>
                 <p className="text-muted-foreground">Email Verified</p>
                 <p className="font-medium">{user.emailVerified ? "Yes" : "No"}</p>
               </div>

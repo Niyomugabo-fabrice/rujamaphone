@@ -1,144 +1,115 @@
-import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import prisma from "@/lib/prisma";
-import { checkAuth } from "@/lib/auth-check";
-import { handleApiError } from "@/lib/util/errorhandle";
+import { deleteByIdQuerySchema, speakerFormSchema, speakerQuerySchema } from "@/lib/schemas";
+import { fail, handleApiError, ok, parseSearchParams, requireAdminAuth } from "@/lib/api";
 
-import type {
-  SpeakerBrand,
-  Condition,
-} from "@/types/speaker";
+const speakerSelect = {
+  id: true,
+  name: true,
+  price: true,
+  image: true,
+  description: true,
+  rating: true,
+  reviews: true,
+  condition: true,
+  brand: true,
+  batteryLife: true,
+  createdAt: true,
+  updatedAt: true,
+};
 
-// READ: Fetch speakers (Public access usually okay, but checking auth if needed)
+function configureCloudinary() {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+}
+
+async function uploadImages(files: File[]) {
+  return (await Promise.all(files.filter((file) => file.size > 0).map(async (file) => {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const uploadResult = await new Promise<any>((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        { folder: "rujamaphone/speakers" },
+        (error, result) => (error ? reject(error) : resolve(result))
+      ).end(buffer);
+    });
+    return uploadResult?.secure_url as string | undefined;
+  }))).filter((url): url is string => Boolean(url));
+}
+
 export async function GET(request: Request) {
   try {
-    await checkAuth();
-    const { searchParams } = new URL(request.url);
-    const page = Math.max(Number(searchParams.get("page") || "1"), 1);
-    const limit = Math.max(Number(searchParams.get("limit") || "10"), 1);
-    const search = searchParams.get("search")?.trim() || "";
-    const brand = searchParams.get("brand")?.trim() || "";
-    const condition = searchParams.get("condition")?.trim() || "";
-    const minPrice = Number(searchParams.get("minPrice") || "0");
-    const maxPrice = Number(searchParams.get("maxPrice") || "0");
+    const session = await requireAdminAuth(request);
+    if (!session) return fail("Unauthorized", 401);
 
-    const filters: any = { AND: [] };
+    const { page, limit, search, brand, condition, minPrice, maxPrice } =
+      parseSearchParams(request, speakerQuerySchema);
+    const AND: any[] = [];
+    if (search) AND.push({ name: { contains: search, mode: "insensitive" } });
+    if (brand) AND.push({ brand });
+    if (condition) AND.push({ condition });
+    if (minPrice > 0) AND.push({ price: { gte: minPrice } });
+    if (maxPrice > 0) AND.push({ price: { lte: maxPrice } });
 
-    if (search) {
-      filters.AND.push({
-        OR: [
-          { name: { contains: search, mode: "insensitive" } },
-          { brand: { contains: search, mode: "insensitive" } },
-        ],
-      });
-    }
+    const where = AND.length > 0 ? { AND } : undefined;
+    const skip = (page - 1) * limit;
+    const [total, speakers] = await Promise.all([
+      prisma.speaker.count({ where }),
+      prisma.speaker.findMany({
+        where,
+        select: speakerSelect,
+        orderBy: { createdAt: "desc" },
+        skip,
+        take: limit,
+      }),
+    ]);
 
-    if (brand) filters.AND.push({ brand });
-    if (condition) filters.AND.push({ condition });
-    if (minPrice > 0) filters.AND.push({ price: { gte: minPrice } });
-    if (maxPrice > 0) filters.AND.push({ price: { lte: maxPrice } });
-
-    const where = filters.AND.length > 0 ? { AND: filters.AND } : undefined;
-
-    const total = await prisma.speaker.count({ where });
-    const totalPages = Math.max(Math.ceil(total / limit), 1);
-    const offset = (page - 1) * limit;
-
-    const speakers = await prisma.speaker.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      skip: offset,
-      take: limit,
-    });
-
-    return NextResponse.json({ data: speakers, total, page, totalPages }, { status: 200 });
-  } catch (error: any) {
-    return handleApiError(error);
+    return ok({ data: speakers, total, page, totalPages: Math.max(Math.ceil(total / limit), 1) });
+  } catch (error) {
+    return handleApiError("speakers.GET", error);
   }
 }
 
-// CREATE: Process speaker creation entry
 export async function POST(request: Request) {
   try {
-    await checkAuth(); // Ensure auth is checked first
+    const session = await requireAdminAuth(request);
+    if (!session) return fail("Unauthorized", 401);
 
-    cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
-    });
-
+    configureCloudinary();
     const formData = await request.formData();
-    
-    // Log raw form data for inspection
-    const rawData = Object.fromEntries(formData.entries());
-    console.log("RECEIVED FORM DATA:", rawData);
-
-    const name = formData.get("name") as string;
-    const priceRaw = formData.get("price") as string;
-    const description = formData.get("description") as string | null;
-    const brand = formData.get("brand") as SpeakerBrand;
-    const condition = formData.get("condition") as Condition;
-    const batteryLife = formData.get("batteryLife") as string | null;
-    const files = formData.getAll("images") as File[];
-
-    console.log("EXTRACTED FIELDS:", { name, priceRaw, brand, condition, fileCount: files.length });
-
-    if (!name || !priceRaw || !brand || !condition) {
-      throw new Error("Missing required product fields: name, price, brand, or condition");
-    }
-
-    const uploadedImageUrls: string[] = [];
-    for (const file of files) {
-      if (file.size > 0) {
-        const arrayBuffer = await file.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
-
-        const uploadResult = await new Promise<any>((resolve, reject) => {
-          cloudinary.uploader.upload_stream(
-            { folder: "rujamaphone/speakers" },
-            (error, result) => (error ? reject(error) : resolve(result))
-          ).end(buffer);
-        });
-        if (uploadResult?.secure_url) uploadedImageUrls.push(uploadResult.secure_url);
-      }
-    }
-
-    const payload = {
-      name,
-      price: parseInt(priceRaw, 10),
-      description,
-      brand, // Ensure this matches your Prisma Enum exactly
-      condition, // Ensure this matches your Prisma Enum exactly
-      batteryLife,
-      image: uploadedImageUrls,
-    };
-
-    console.log("FINAL PRISMA PAYLOAD:", payload);
+    const validated = speakerFormSchema.parse({
+      name: formData.get("name"),
+      price: formData.get("price"),
+      description: formData.get("description") || null,
+      brand: formData.get("brand"),
+      condition: formData.get("condition"),
+      batteryLife: formData.get("batteryLife") || null,
+    });
+    const image = await uploadImages(formData.getAll("images") as File[]);
+    if (image.length === 0) return fail("At least one image is required", 400);
 
     const newSpeaker = await prisma.speaker.create({
-      data: payload,
+      data: { ...validated, image },
+      select: speakerSelect,
     });
 
-    return NextResponse.json(newSpeaker, { status: 201 });
-  } catch (error: any) {
-    console.error("POST_SPEAKER_ERROR:", error);
-    return handleApiError(error);
+    return ok(newSpeaker, 201);
+  } catch (error) {
+    return handleApiError("speakers.POST", error);
   }
 }
 
-// DELETE: Remove speaker item
 export async function DELETE(request: Request) {
   try {
-    await checkAuth(); // Protect route
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get("id");
+    const session = await requireAdminAuth(request);
+    if (!session) return fail("Unauthorized", 401);
 
-    if (!id) throw new Error("Missing id parameter");
-
-    await prisma.speaker.delete({ where: { id } });
-    return NextResponse.json({ message: "Speaker tracking record deleted" }, { status: 200 });
-  } catch (error: any) {
-    return handleApiError(error);
+    const { id } = parseSearchParams(request, deleteByIdQuerySchema);
+    await prisma.speaker.delete({ where: { id }, select: { id: true } });
+    return ok({ message: "Speaker tracking record deleted" });
+  } catch (error) {
+    return handleApiError("speakers.DELETE", error);
   }
 }

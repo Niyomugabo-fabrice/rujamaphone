@@ -1,77 +1,94 @@
 export const runtime = "nodejs";
-import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
-import { checkAuth } from "@/lib/auth-check";
-import { handleApiError } from "@/lib/util/errorhandle";
 
-// GET: Single item
+import prisma from "@/lib/prisma";
+import { idSchema, productImagesSchema, smartphoneFormSchema } from "@/lib/schemas";
+import {
+  fail,
+  handleApiError,
+  ok,
+  parseJson,
+  parseRouteParams,
+  requireAdminAuth,
+} from "@/lib/api";
+import { z } from "zod";
+
+const smartphoneSelect = {
+  id: true,
+  name: true,
+  price: true,
+  image: true,
+  description: true,
+  rating: true,
+  reviews: true,
+  storage: true,
+  condition: true,
+  brand: true,
+  createdAt: true,
+  updatedAt: true,
+};
+
+const smartphonePatchSchema = smartphoneFormSchema.partial().extend({
+  image: productImagesSchema.optional(),
+}).refine((data) => Object.keys(data).length > 0, {
+  message: "At least one field is required",
+});
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await checkAuth();
-    const { id } = await params;
+    const session = await requireAdminAuth(request);
+    if (!session) return fail("Unauthorized", 401);
 
+    const { id } = await parseRouteParams(params, idSchema);
     const item = await prisma.smartphone.findUnique({
       where: { id },
+      select: smartphoneSelect,
     });
 
-    return item
-      ? NextResponse.json(item)
-      : NextResponse.json({ error: "Item not found" }, { status: 404 });
-  } catch (error: any) {
-    return handleApiError(error);
+    return item ? ok(item) : fail("Item not found", 404);
+  } catch (error) {
+    return handleApiError("smartphones.id.GET", error);
   }
 }
 
-// PATCH: Update item
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await checkAuth();
-    const { id } = await params;
-    const body = await request.json();
+    const session = await requireAdminAuth(request);
+    if (!session) return fail("Unauthorized", 401);
 
-    // Whitelist only valid fields
-    const data = {
-      name: body.name,
-      brand: body.brand,
-      storage: body.storage,
-      condition: body.condition,
-      description: body.description,
-      price: body.price,
-      image: body.image,
-    };
+    const { id } = await parseRouteParams(params, idSchema);
+    const data = await parseJson(request, smartphonePatchSchema as z.ZodTypeAny);
 
     const updated = await prisma.smartphone.update({
       where: { id },
-      data,
+      data: data as any,
+      select: smartphoneSelect,
     });
 
-    return NextResponse.json(updated);
-  } catch (error: any) {
-    return handleApiError(error);
+    return ok(updated);
+  } catch (error) {
+    return handleApiError("smartphones.id.PATCH", error);
   }
 }
 
-// DELETE: Remove item
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await checkAuth();
-    const { id } = await params;
+    const session = await requireAdminAuth(request);
+    if (!session) return fail("Unauthorized", 401);
 
-    await prisma.smartphone.delete({
-      where: { id },
-    });
+    const { id } = await parseRouteParams(params, idSchema);
+    await prisma.smartphone.delete({ where: { id }, select: { id: true } });
 
-    return NextResponse.json({ message: "Deleted successfully" });
-  } catch (error: any) {
-    return handleApiError(error);
+    return ok({ message: "Deleted successfully" });
+  } catch (error) {
+    return handleApiError("smartphones.id.DELETE", error);
   }
 }

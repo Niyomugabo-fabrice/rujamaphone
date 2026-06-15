@@ -1,84 +1,47 @@
-import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
 import { generateToken } from "@/lib/jwt";
 import { signupSchema } from "@/lib/schemas";
-import type { AuthResponse } from "@/types/auth";
+import { handleApiError, ok, parseJson, fail } from "@/lib/api";
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    
-    // Validate input
-    const validatedData = signupSchema.parse(body);
-    
-    // Check if user already exists
+    const validatedData = await parseJson(request, signupSchema);
+
     const existingUser = await prisma.user.findUnique({
       where: { email: validatedData.email },
+      select: { id: true },
     });
-    
+
     if (existingUser) {
-      return NextResponse.json(
-        { error: "Email already registered" },
-        { status: 400 }
-      );
+      return fail("Email already registered", 409);
     }
-    
-    // Hash password
+
     const hashedPassword = await hashPassword(validatedData.password);
-    
-    // Create user
+    const now = new Date();
+
     const user = await prisma.user.create({
       data: {
         fullName: validatedData.fullName,
         email: validatedData.email,
         password: hashedPassword,
+        lastLogin: now,
+      },
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        avatar: true,
+        emailVerified: true,
+        createdAt: true,
+        updatedAt: true,
+        lastLogin: true,
       },
     });
-    
-    // Generate token
-    const token = generateToken({
-      userId: user.id,
-      email: user.email,
-      role: user.role,
-    });
-    
-    // Update last login
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { lastLogin: new Date() },
-    });
-    
-    const authResponse: AuthResponse = {
-      user: {
-        id: user.id,
-        fullName: user.fullName,
-        email: user.email,
-        role: user.role,
-        avatar: user.avatar,
-        emailVerified: user.emailVerified,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-        lastLogin: user.lastLogin,
-        status: user.status,
-      },
-      token,
-    };
-    
-    return NextResponse.json(authResponse, { status: 201 });
+
+    const token = generateToken({ userId: user.id, email: user.email });
+    return ok({ user, token }, 201);
   } catch (error) {
-    console.error("SIGNUP_ERROR:", error);
-    
-    if (error instanceof Error && error.name === "ZodError") {
-      return NextResponse.json(
-        { error: "Invalid input data" },
-        { status: 400 }
-      );
-    }
-    
-    return NextResponse.json(
-      { error: "Failed to create account" },
-      { status: 500 }
-    );
+    return handleApiError("auth.signup", error);
   }
 }

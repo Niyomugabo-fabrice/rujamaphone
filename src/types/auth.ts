@@ -1,16 +1,12 @@
-import { UserRole, UserStatus } from "../../prisma/generated/client";
-
 export interface User {
   id: string;
   fullName: string;
   email: string;
-  role: UserRole;
   avatar?: string | null;
   emailVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
   lastLogin?: Date | null;
-  status: UserStatus;
 }
 
 export interface AuthResponse {
@@ -21,7 +17,6 @@ export interface AuthResponse {
 export interface JWTPayload {
   userId: string;
   email: string;
-  role: UserRole;
   iat?: number;
   exp?: number;
 }

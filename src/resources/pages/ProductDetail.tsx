@@ -40,7 +40,7 @@ export function ProductDetail() {
     try {
       const response = await fetch(`/api/products/${id}`);
       const data = await response.json();
-      setProduct(data);
+      setProduct(data?.success ? data.data : data);
     } catch (error) {
       console.error("Failed to fetch product:", error);
     } finally {
@@ -58,7 +58,7 @@ export function ProductDetail() {
       
       const response = await fetch(`/api/products?${params.toString()}`);
       const data = await response.json();
-      setRelatedProducts((data.data || []).filter((p: Product) => p.id !== product.id));
+      setRelatedProducts(((data?.data || []) as Product[]).filter((p: Product) => p.id !== product.id));
     } catch (error) {
       console.error("Failed to fetch related products:", error);
     }

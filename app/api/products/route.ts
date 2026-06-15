@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { normalizeSearchText, rankProducts } from "@/lib/search";
+import { handleApiError, parseSearchParams } from "@/lib/api";
+import { publicProductsQuerySchema } from "@/lib/schemas";
 
 const productCacheHeaders = {
   "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
@@ -21,27 +23,24 @@ const baseProductSelect = {
 };
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  
-  // 1. Sanitize and Extract Inputs
-  const search = normalizeSearchText(searchParams.get("search") || "");
-  const category = searchParams.get("category");
-  const brand = searchParams.get("brand");
-  const condition = searchParams.get("condition");
-  const storage = searchParams.get("storage");
-  const batteryLife = searchParams.get("batteryLife");
-  const type = searchParams.get("type");
-  const sort = searchParams.get("sort") || "createdAt-desc";
-  const isSuggestionsRequest = searchParams.get("suggestions") === "1";
-  
-  const minPrice = Number(searchParams.get("minPrice")) || 0;
-  const maxPrice = Number(searchParams.get("maxPrice")) || 999999999;
-  
-  const page = Math.max(Number(searchParams.get("page") || "1"), 1);
-  const limit = Math.min(Math.max(Number(searchParams.get("limit") || "12"), 1), 50);
-  const skip = (page - 1) * limit;
-
   try {
+    const query = parseSearchParams(request, publicProductsQuerySchema);
+    const search = normalizeSearchText(query.search);
+    const {
+      category,
+      brand,
+      condition,
+      storage,
+      batteryLife,
+      type,
+      sort,
+      minPrice,
+      maxPrice,
+      page,
+      limit,
+    } = query;
+    const isSuggestionsRequest = query.suggestions === "1";
+    const skip = (page - 1) * limit;
     // 2. Build Prisma where clauses for each table
     const baseWhere: any = {
       price: { gte: minPrice, lte: maxPrice },
@@ -142,11 +141,7 @@ export async function GET(request: Request) {
       { headers: productCacheHeaders }
     );
   } catch (error) {
-    console.error("SEARCH_API_ERROR:", error);
-    return NextResponse.json(
-      { success: false, error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return handleApiError("products.GET", error);
   }
 }
 

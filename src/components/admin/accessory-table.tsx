@@ -72,10 +72,11 @@ export default function AccessoryTable({ data, onViewProduct }: AccessoryTablePr
         return;
       }
 
-      setLocalData(payload.data || []);
-      setTotalItems(payload.total || 0);
-      setTotalPages(payload.totalPages || 1);
-      setPage(payload.page || 1);
+      const result = payload?.success ? payload.data : payload;
+      setLocalData(result?.data || []);
+      setTotalItems(result?.total || 0);
+      setTotalPages(result?.totalPages || 1);
+      setPage(result?.page || 1);
     } catch (error) {
       console.error("Fetch error", error);
     } finally {
@@ -205,7 +206,8 @@ export default function AccessoryTable({ data, onViewProduct }: AccessoryTablePr
       });
 
       if (response.ok) {
-        const updated = await response.json();
+        const payload = await response.json();
+        const updated = payload?.success ? payload.data : payload;
         setViewingItem(updated);
         setSelectedDetailImages([]);
         setIsEditingImages(false);

@@ -51,35 +51,18 @@ enum AccessoryBrand {
 }
 
 // ==========================================
-// AUTHENTICATION ENUMS
-// ==========================================
-
-enum UserRole {
-  USER
-  ADMIN
-}
-
-enum UserStatus {
-  ACTIVE
-  INACTIVE
-  SUSPENDED
-}
-
-// ==========================================
 // USER MODEL
 // ==========================================
 
 model User {
-  id            String     @id @default(uuid())
+  id            String    @id @default(uuid())
   fullName      String
-  email         String     @unique
+  email         String    @unique
   password      String
-  role          UserRole   @default(USER)
   avatar        String?
-  emailVerified Boolean    @default(false)
-  status        UserStatus @default(ACTIVE)
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  emailVerified Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   lastLogin     DateTime?
 
   // Password reset token
@@ -87,7 +70,6 @@ model User {
   resetTokenExpires DateTime?
 
   @@index([email])
-  @@index([status])
 }
 
 // ==========================================
@@ -113,6 +95,8 @@ model Smartphone {
 
   @@index([brand])
   @@index([price])
+  @@index([createdAt])
+  @@index([brand, price])
 }
 
 model Speaker {
@@ -134,6 +118,8 @@ model Speaker {
 
   @@index([brand])
   @@index([price])
+  @@index([createdAt])
+  @@index([brand, price])
 }
 
 model Accessory {
@@ -155,6 +141,8 @@ model Accessory {
 
   @@index([brand])
   @@index([price])
+  @@index([createdAt])
+  @@index([brand, price])
 }
 
 model SliderImage {

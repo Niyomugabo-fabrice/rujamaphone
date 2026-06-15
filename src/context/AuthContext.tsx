@@ -16,6 +16,10 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+function unwrapApiData<T>(payload: any): T {
+  return payload?.success && payload?.data !== undefined ? payload.data : payload;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
@@ -39,7 +43,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       if (response.ok) {
-        const data = await response.json();
+        const payload = await response.json();
+        const data = unwrapApiData<{ user: User }>(payload);
         setUser(data.user);
       } else {
         // Token is invalid, clear it
@@ -79,7 +84,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error(error.error || "Login failed");
       }
 
-      const data = await response.json();
+      const payload = await response.json();
+      const data = unwrapApiData<{ user: User; token: string }>(payload);
       setToken(data.token);
       setUser(data.user);
       localStorage.setItem("auth_token", data.token);
@@ -103,7 +109,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error(error.error || "Signup failed");
       }
 
-      const data = await response.json();
+      const payload = await response.json();
+      const data = unwrapApiData<{ user: User; token: string }>(payload);
       setToken(data.token);
       setUser(data.user);
       localStorage.setItem("auth_token", data.token);

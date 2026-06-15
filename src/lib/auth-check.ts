@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { verifyToken } from "@/lib/jwt";
+import prisma from "@/lib/prisma";
 
-// lib/auth-check.ts
 export async function checkAuth() {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
@@ -9,9 +9,12 @@ export async function checkAuth() {
   if (!token) throw new Error("Unauthorized: No token provided");
 
   const payload = verifyToken(token);
-  
-  // ADD THIS LOG TO SEE WHAT IS COMING FROM YOUR TOKEN
-  console.log("TOKEN_PAYLOAD_DEBUG:", payload);
+  const user = await prisma.user.findUnique({
+    where: { id: payload.userId },
+    select: { id: true, email: true, fullName: true },
+  });
 
-  return payload;
+  if (!user) throw new Error("Unauthorized: Invalid session");
+
+  return { payload, user };
 }

@@ -30,7 +30,8 @@ export default function AccessoriesPage() {
     try {
       const res = await fetch("/api/accessories");
       const payload = await res.json();
-      setItemsData(Array.isArray(payload) ? payload : payload.data || []);
+      const result = payload?.success ? payload.data : payload;
+      setItemsData(Array.isArray(result) ? result : result?.data || []);
     } catch (err) {
       console.error("Failed to load accessories:", err);
       triggerNotification("error", "Failed to retrieve live item catalog streams.");

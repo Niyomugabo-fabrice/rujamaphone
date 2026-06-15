@@ -34,7 +34,7 @@ export default function SlidersAdminPage() {
     try {
       const res = await fetch("/api/sliders");
       const payload = await res.json();
-      setItemsData(payload.data || []);
+      setItemsData(payload?.success ? payload.data || [] : payload.data || []);
     } catch (err) {
       console.error("Failed to load sliders:", err);
       triggerNotification("error", "Failed to retrieve live slider records.");

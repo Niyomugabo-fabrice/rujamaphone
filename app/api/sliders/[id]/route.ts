@@ -1,37 +1,33 @@
-import { NextResponse } from "next/server";
-import { v2 as cloudinary } from "cloudinary";
-import prisma from "@/lib/prisma";
-import { checkAuth } from "@/lib/auth-check";
-import { handleApiError } from "@/lib/util/errorhandle";
-
 export const runtime = "nodejs";
 
-// PATCH: Update/Replace a slider image
+import { v2 as cloudinary } from "cloudinary";
+import prisma from "@/lib/prisma";
+import { idSchema } from "@/lib/schemas";
+import { fail, handleApiError, ok, parseRouteParams, requireAdminAuth } from "@/lib/api";
+
+function configureCloudinary() {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+}
+
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await checkAuth();
-    const { id } = await params;
+    const session = await requireAdminAuth(request);
+    if (!session) return fail("Unauthorized", 401);
+
+    const { id } = await parseRouteParams(params, idSchema);
+    configureCloudinary();
     const formData = await request.formData();
-    
-    cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
-    });
+    const files = (formData.getAll("images") as File[]).filter((file) => file.size > 0);
+    if (files.length === 0) return fail("No image file provided for editing", 400);
 
-    const files = formData.getAll("images") as File[];
-    
-    if (!files || files.length === 0 || files[0].size === 0) {
-      throw new Error("No image file provided for editing");
-    }
-
-    const file = files[0];
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
+    const buffer = Buffer.from(await files[0].arrayBuffer());
     const uploadResult = await new Promise<any>((resolve, reject) => {
       cloudinary.uploader.upload_stream(
         { folder: "rujamaphone/sliders" },
@@ -39,19 +35,21 @@ export async function PATCH(
       ).end(buffer);
     });
 
-    if (!uploadResult?.secure_url) {
-      throw new Error("Cloudinary upload failed");
-    }
+    if (!uploadResult?.secure_url) return fail("Cloudinary upload failed", 500);
 
     const updated = await prisma.sliderImage.update({
       where: { id },
-      data: {
-        image: uploadResult.secure_url,
+      data: { image: uploadResult.secure_url },
+      select: {
+        id: true,
+        image: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
 
-    return NextResponse.json({ success: true, data: updated });
-  } catch (error: any) {
-    return handleApiError(error);
+    return ok(updated);
+  } catch (error) {
+    return handleApiError("sliders.id.PATCH", error);
   }
 }
