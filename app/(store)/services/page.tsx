@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -11,6 +12,15 @@ import {
   Store,
   Wallet,
 } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Phone Services",
+  description:
+    "Explore Rujama Phones Shop services in Kigali, including phone upgrades, installment payment plans, device support, and in-store guidance.",
+  alternates: {
+    canonical: "/services",
+  },
+};
 
 const services = [
   {

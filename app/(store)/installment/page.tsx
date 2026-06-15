@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import {
   BadgePercent,
@@ -13,6 +14,15 @@ import {
   Handshake,
   ArrowRight,
 } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Phone Installment Plans",
+  description:
+    "Buy a phone in installments from Rujama Phones Shop in Kigali with daily, weekly, or monthly payment options and clear in-store support.",
+  alternates: {
+    canonical: "/installment",
+  },
+};
 
 const steps = [
   {

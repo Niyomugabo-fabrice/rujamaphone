@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -15,6 +16,15 @@ import {
   Smartphone,
   Store,
 } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Phone Upgrade Service",
+  description:
+    "Upgrade your phone at Rujama Phones Shop in Kigali. Bring your current device, get a fair valuation, top up the difference, and leave with a better phone.",
+  alternates: {
+    canonical: "/upgrade",
+  },
+};
 
 const processCards = [
   {
