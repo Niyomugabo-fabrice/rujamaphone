@@ -4908,7 +4908,7 @@ export namespace Prisma {
     reviews: number
     condition: $Enums.Condition
     brand: string
-    type: string
+    type: string | null
     createdAt: Date
     updatedAt: Date
     _count: AccessoryCountAggregateOutputType | null
@@ -5007,7 +5007,7 @@ export namespace Prisma {
       reviews: number
       condition: $Enums.Condition
       brand: string
-      type: string
+      type: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["accessory"]>
@@ -8361,7 +8361,7 @@ export namespace Prisma {
     reviews?: IntFilter<"Accessory"> | number
     condition?: EnumConditionFilter<"Accessory"> | $Enums.Condition
     brand?: StringFilter<"Accessory"> | string
-    type?: StringFilter<"Accessory"> | string
+    type?: StringNullableFilter<"Accessory"> | string | null
     createdAt?: DateTimeFilter<"Accessory"> | Date | string
     updatedAt?: DateTimeFilter<"Accessory"> | Date | string
   }
@@ -8376,7 +8376,7 @@ export namespace Prisma {
     reviews?: SortOrder
     condition?: SortOrder
     brand?: SortOrder
-    type?: SortOrder
+    type?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -8394,7 +8394,7 @@ export namespace Prisma {
     reviews?: IntFilter<"Accessory"> | number
     condition?: EnumConditionFilter<"Accessory"> | $Enums.Condition
     brand?: StringFilter<"Accessory"> | string
-    type?: StringFilter<"Accessory"> | string
+    type?: StringNullableFilter<"Accessory"> | string | null
     createdAt?: DateTimeFilter<"Accessory"> | Date | string
     updatedAt?: DateTimeFilter<"Accessory"> | Date | string
   }, "id">
@@ -8409,7 +8409,7 @@ export namespace Prisma {
     reviews?: SortOrder
     condition?: SortOrder
     brand?: SortOrder
-    type?: SortOrder
+    type?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: AccessoryCountOrderByAggregateInput
@@ -8432,7 +8432,7 @@ export namespace Prisma {
     reviews?: IntWithAggregatesFilter<"Accessory"> | number
     condition?: EnumConditionWithAggregatesFilter<"Accessory"> | $Enums.Condition
     brand?: StringWithAggregatesFilter<"Accessory"> | string
-    type?: StringWithAggregatesFilter<"Accessory"> | string
+    type?: StringNullableWithAggregatesFilter<"Accessory"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Accessory"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Accessory"> | Date | string
   }
@@ -8874,7 +8874,7 @@ export namespace Prisma {
     reviews?: number
     condition: $Enums.Condition
     brand: string
-    type: string
+    type?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -8889,7 +8889,7 @@ export namespace Prisma {
     reviews?: number
     condition: $Enums.Condition
     brand: string
-    type: string
+    type?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -8904,7 +8904,7 @@ export namespace Prisma {
     reviews?: IntFieldUpdateOperationsInput | number
     condition?: EnumConditionFieldUpdateOperationsInput | $Enums.Condition
     brand?: StringFieldUpdateOperationsInput | string
-    type?: StringFieldUpdateOperationsInput | string
+    type?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8919,7 +8919,7 @@ export namespace Prisma {
     reviews?: IntFieldUpdateOperationsInput | number
     condition?: EnumConditionFieldUpdateOperationsInput | $Enums.Condition
     brand?: StringFieldUpdateOperationsInput | string
-    type?: StringFieldUpdateOperationsInput | string
+    type?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8934,7 +8934,7 @@ export namespace Prisma {
     reviews?: number
     condition: $Enums.Condition
     brand: string
-    type: string
+    type?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -8949,7 +8949,7 @@ export namespace Prisma {
     reviews?: IntFieldUpdateOperationsInput | number
     condition?: EnumConditionFieldUpdateOperationsInput | $Enums.Condition
     brand?: StringFieldUpdateOperationsInput | string
-    type?: StringFieldUpdateOperationsInput | string
+    type?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8964,7 +8964,7 @@ export namespace Prisma {
     reviews?: IntFieldUpdateOperationsInput | number
     condition?: EnumConditionFieldUpdateOperationsInput | $Enums.Condition
     brand?: StringFieldUpdateOperationsInput | string
-    type?: StringFieldUpdateOperationsInput | string
+    type?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

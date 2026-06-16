@@ -20,6 +20,8 @@ export default function SpeakersPage() {
   // Form image streaming states
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]> | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const triggerNotification = (type: "success" | "error", message: string) => {
     setNotification({ type, message });
@@ -79,19 +81,30 @@ export default function SpeakersPage() {
         body: nativeFormData,
       });
 
-      if (response.ok) {
-        const createdSpeaker = await readApiData(response);
-        setIsCreateOpen(false);
-        setSelectedFiles(null);
-        setImagePreviews([]);
-        if (createdSpeaker?.id) {
-          setItemsData((current) => [createdSpeaker, ...current]);
-        }
-        triggerNotification("success", "Hardware tracking matrix committed successfully.");
-      } else {
-        const errData = await response.json();
-        triggerNotification("error", errData.error || "Failed to commit speaker configuration.");
-      }
+     if (response.ok) {
+  const createdSpeaker = await readApiData(response);
+
+  setIsCreateOpen(false);
+  setSelectedFiles(null);
+  setImagePreviews([]);
+  setFieldErrors(null); // clear errors
+
+  if (createdSpeaker?.id) {
+    setItemsData((current) => [createdSpeaker, ...current]);
+  }
+
+  triggerNotification("success", "Hardware tracking matrix committed successfully.");
+} else {
+  const errData = await response.json();
+
+  setFieldErrors(errData.fields || null);
+  setFormError(errData.error || "Validation error occurred");
+
+  triggerNotification(
+    "error",
+    errData.error || "Failed to commit speaker configuration."
+  );
+}
     } catch (err) {
       console.error("Submission processing fault:", err);
       triggerNotification("error", "An unexpected network execution fault occurred.");
@@ -197,16 +210,26 @@ export default function SpeakersPage() {
                   <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1 tracking-wider">Brand</label>
                   <input type="text" name="brand" placeholder="Enter brand" required className="w-full bg-slate-50 border border-red-100 rounded-xl p-2.5 text-sm text-slate-900 font-medium focus:outline-none" />
                 </div>
-                <div>
-                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1 tracking-wider">Price (RWF)</label>
-                  <input
-                    type="number"
-                    name="price"
-                    className="w-full bg-slate-50 border border-red-100 rounded-xl p-2.5 text-sm text-slate-900 focus:outline-none focus:border-[#D90429] focus:ring-1 focus:ring-[#D90429] font-medium"
-                    required
-                  />
-                </div>
+             <div>
+                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1 tracking-wider">
+                  Price (RWF)
+                </label>
+
+                <input
+                  type="number"
+                  name="price"
+                  className="w-full bg-slate-50 border border-red-100 rounded-xl p-2.5 text-sm text-slate-900 focus:outline-none focus:border-[#D90429] focus:ring-1 focus:ring-[#D90429] font-medium"
+                  required
+                />
+
+                {fieldErrors?.price && (
+                  <p className="text-xs text-red-600 mt-1 font-medium">
+                    {fieldErrors.price[0]}
+                  </p>
+                )}
               </div>
+              </div>
+              
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -271,6 +294,14 @@ export default function SpeakersPage() {
                   </div>
                 )}
               </div>
+            {formError && (
+              <div className="p-3 mb-3 rounded-xl border border-red-300 bg-red-50 text-red-700 text-xs font-semibold flex items-center gap-2">
+                <AlertCircle className="w-4 h-4" />
+                {formError}
+              </div>
+            )}
+
+              
 
               <div className="flex justify-end gap-2.5 pt-4 border-t border-red-50">
                 <button

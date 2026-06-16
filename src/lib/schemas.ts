@@ -44,7 +44,8 @@ export const productSchema = z.object({
   price: z.coerce
     .number()
     .positive("Price must be a positive number")
-    .min(1, "Price must be at least 1 RWF"),
+    .min(1, "Price must be at least 1 RWF")
+    .max(2_147_483_647),
 
   description: z.string().optional().or(z.literal("")),
 
@@ -78,8 +79,23 @@ export const accessoryQuerySchema = paginationQuerySchema.extend({
 
 export const smartphoneFormSchema = z.object({
   name: z.string().trim().min(2).max(120),
-  price: z.coerce.number().int().positive(),
-  description: z.string().trim().max(2000).optional().nullable(),
+
+  price: z.coerce
+    .number()
+    .refine((val) => Number.isInteger(val), {
+      message: "Price must be a whole number",
+    })
+    .positive("Price must be greater than 0")
+    .max(1_000_000_000, "Price is too large (max 1B)"),
+
+  description: z
+    .string()
+    .trim()
+    .max(2000)
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
+
   brand: brandSchema,
   storage: storageSchema,
   condition: conditionSchema,
@@ -87,8 +103,15 @@ export const smartphoneFormSchema = z.object({
 
 export const speakerFormSchema = z.object({
   name: z.string().trim().min(2).max(120),
-  price: z.coerce.number().int().positive(),
+
+  price: z.coerce
+  .number()
+  .int("Price must be a whole number")
+  .positive("Price must be greater than 0")
+  .max(1_000_000_000, "Price is too large (max 1B)"),
+
   description: z.string().trim().max(2000).optional().nullable(),
+
   brand: brandSchema,
   condition: conditionSchema,
   batteryLife: z.string().trim().max(80).optional().nullable(),
@@ -96,11 +119,24 @@ export const speakerFormSchema = z.object({
 
 export const accessoryFormSchema = z.object({
   name: z.string().trim().min(2).max(120),
-  price: z.coerce.number().int().positive(),
+
+ price: z.coerce
+  .number()
+  .positive()
+  .max(1_000_000_000, "Price too large"),
+
   description: z.string().trim().max(2000).optional().nullable(),
   brand: brandSchema,
   condition: conditionSchema,
-  type: z.string().trim().max(50).optional(),
+
+  type: z.preprocess(
+    (val) => {
+      if (typeof val !== "string") return val;
+      const trimmed = val.trim();
+      return trimmed === "" ? null : trimmed;
+    },
+    z.string().max(50).nullable().optional()
+  ),
 });
 
 export const productImagesSchema = z.array(z.string().url()).min(1).max(10);

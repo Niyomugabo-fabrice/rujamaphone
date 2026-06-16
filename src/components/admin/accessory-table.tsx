@@ -23,6 +23,8 @@ export default function AccessoryTable({ data, onViewProduct }: AccessoryTablePr
   const [brandFilter, setBrandFilter] = useState("");
   const [conditionFilter, setConditionFilter] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
+  const [formError, setFormError] = useState<string | null>(null);
+const [fieldErrors, setFieldErrors] = useState<Record<string, string[]> | null>(null);
 
   // States for Image Management within the Details Modal
   const [selectedDetailImages, setSelectedDetailImages] = useState<string[]>([]);
@@ -44,6 +46,8 @@ export default function AccessoryTable({ data, onViewProduct }: AccessoryTablePr
     setViewingItem(item);
     setSelectedDetailImages([]);
     setIsEditingImages(false);
+    setFormError(null);
+  setFieldErrors(null);
   };
 
   const buildQueryString = () => {
@@ -66,10 +70,11 @@ export default function AccessoryTable({ data, onViewProduct }: AccessoryTablePr
       const response = await adminFetch(`/api/accessories?${queryString}`);
       const payload = await response.json();
 
-      if (!response.ok) {
-        console.error("Failed fetching accessories", payload);
-        return;
-      }
+     if (!response.ok) {
+          setFormError(payload?.error || "Request failed");
+          setFieldErrors(payload?.fields || null);
+          return;
+        }
 
       const result = payload?.success ? payload.data : payload;
       setLocalData(result?.data || []);
@@ -150,37 +155,45 @@ export default function AccessoryTable({ data, onViewProduct }: AccessoryTablePr
   };
 
   // Handle edit form submission
-  const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!editingItem) return;
+const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  if (!editingItem) return;
 
-    setIsSubmitting(true);
-    try {
-      const formData = new FormData(e.currentTarget);
-      
-      // Add existing images to form data
-      formData.append("existingImages", JSON.stringify(existingImages));
-      
-      // Add new image files
-      for (const { file } of newImageFiles) {
-        formData.append("images", file);
-      }
+  setIsSubmitting(true);
+  setFormError(null);
+  setFieldErrors(null);
 
-      const response = await adminFetch(`/api/accessories/${editingItem.id}`, {
-        method: "PATCH",
-        body: formData,
-      });
+  try {
+    const formData = new FormData(e.currentTarget);
 
-      if (response.ok) {
-        setEditingItem(null);
-        fetchAccessories();
-      }
-    } catch (error) {
-      console.error("Edit error", error);
-    } finally {
-      setIsSubmitting(false);
+    formData.append("existingImages", JSON.stringify(existingImages));
+
+    for (const { file } of newImageFiles) {
+      formData.append("images", file);
     }
-  };
+
+    const response = await adminFetch(`/api/accessories/${editingItem.id}`, {
+      method: "PATCH",
+      body: formData,
+    });
+
+    const payload = await response.json();
+
+    if (!response.ok) {
+      setFormError(payload?.error || "Update failed");
+      setFieldErrors(payload?.fields || null);
+      return;
+    }
+
+    setEditingItem(null);
+    fetchAccessories();
+  } catch (error) {
+    console.error("Edit error", error);
+    setFormError("Unexpected error occurred");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   // Handle removing selected images from detail modal
   const handleRemoveSelectedImagesFromDetail = async () => {
@@ -589,17 +602,12 @@ export default function AccessoryTable({ data, onViewProduct }: AccessoryTablePr
               <div className="grid grid-cols-2 gap-1.5">
                 <div>
                   <label className="block text-[7px] uppercase font-bold text-slate-500 mb-0.5 tracking-wider">Brand</label>
-                  <select
-                    name="brand"
-                    defaultValue={editingItem.brand}
-                    className="w-full bg-slate-50 border border-red-100 rounded p-1 text-xs focus:outline-none text-slate-900 font-medium"
-                  >
-                    <option value="APPLE">APPLE</option>
-                    <option value="SAMSUNG">SAMSUNG</option>
-                    <option value="ANKER">ANKER</option>
-                    <option value="BASEUS">BASEUS</option>
-                    <option value="GENERIC">GENERIC</option>
-                  </select>
+                  <input
+                        type="text"
+                        name="brand"
+                        defaultValue={editingItem.brand}
+                        className="w-full bg-slate-50 border border-red-100 rounded p-1 text-xs focus:outline-none text-slate-900 font-medium"
+                      />
                 </div>
                 <div>
                   <label className="block text-[7px] uppercase font-bold text-slate-500 mb-0.5 tracking-wider">Price</label>
@@ -627,18 +635,12 @@ export default function AccessoryTable({ data, onViewProduct }: AccessoryTablePr
                 </div>
                 <div>
                   <label className="block text-[7px] uppercase font-bold text-slate-500 mb-0.5 tracking-wider">Type</label>
-                  <select
+                                  <input
+                    type="text"
                     name="type"
                     defaultValue={editingItem.type}
                     className="w-full bg-slate-50 border border-red-100 rounded p-1 text-xs focus:outline-none text-slate-900 font-medium"
-                  >
-                    <option value="Cable">Cable</option>
-                    <option value="Case">Case</option>
-                    <option value="Charger">Charger</option>
-                    <option value="Screen Protector">Screen Protector</option>
-                    <option value="Headphones">Headphones</option>
-                    <option value="Other">Other</option>
-                  </select>
+                  />
                 </div>
               </div>
 
@@ -711,6 +713,17 @@ export default function AccessoryTable({ data, onViewProduct }: AccessoryTablePr
                   className="w-full bg-slate-50 border border-red-100 rounded p-1 text-xs focus:outline-none focus:border-[#D90429] focus:ring-1 focus:ring-[#D90429] text-slate-900 font-medium resize-none"
                 />
               </div>
+              <div className="mb-2 space-y-1">
+              {fieldErrors &&
+                Object.entries(fieldErrors).map(([field, errors]) => (
+                  <p key={field} className="text-[10px] text-red-600 font-medium">
+                    <span className="font-bold capitalize">{field}:</span>{" "}
+                    {Array.isArray(errors) ? errors.join(", ") : String(errors)}
+                  </p>
+                ))}
+            </div>
+                        
+              
 
               <div className="flex justify-end gap-1.5 pt-2 border-t border-red-50 sticky bottom-0 bg-white">
                 <button

@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { accessoryFormSchema, idSchema, productImagesSchema } from "@/lib/schemas";
 import { fail, handleApiError, ok, parseJson, parseRouteParams, requireAdminAuth } from "@/lib/api";
 import { z } from "zod";
+import {ApiStatus } from '@/lib/api'
 
 const accessorySelect = {
   id: true,
@@ -74,49 +75,58 @@ export async function PATCH(
 
     const { id } = await parseRouteParams(params, idSchema);
     const contentType = request.headers.get("content-type") || "";
+
+    let updateData: any;
+
+    // 1. Handle JSON
     if (contentType.includes("application/json")) {
-      const data = await parseJson(
-        request,
-        accessoryFormSchema.partial().extend({ image: productImagesSchema.optional() }).refine(
-          (value) => Object.keys(value).length > 0,
-          "At least one field is required"
-        ) as z.ZodTypeAny
-      );
-      const updated = await prisma.accessory.update({
-        where: { id },
-        data: data as any,
-        select: accessorySelect,
-      });
-      return ok(updated);
+      const body = await request.json();
+      updateData = accessoryFormSchema.partial().parse(body);
+    } 
+    // 2. Handle FormData
+    else if (contentType.includes("multipart/form-data")) {
+      const formData = await request.formData();
+      configureCloudinary();
+      
+      const files = formData.getAll("images") as File[];
+      const existingImages = parseExistingImages(formData.get("existingImages"));
+      const uploadedImageUrls = await uploadImages(files);
+      
+      // Construct raw input
+      const rawInput = {
+        name: formData.get("name"),
+        price: formData.get("price") ? parseFloat(formData.get("price") as string) : undefined,
+        description: formData.get("description") || undefined,
+        brand: formData.get("brand"),
+        condition: formData.get("condition"),
+        type: formData.get("type") || "UNKNOWN",
+        image: [...existingImages, ...uploadedImageUrls],
+      };
+
+      // Validate against schema to ensure data integrity
+      updateData = accessoryFormSchema.partial().parse(rawInput);
+    } else {
+      // Ensure 415 is added to your ApiStatus type in @/lib/api.ts
+      return fail("Unsupported Content-Type", 415 as any);
     }
 
-    configureCloudinary();
-    const formData = await request.formData();
-    const validated = accessoryFormSchema.parse({
-      name: formData.get("name"),
-      price: formData.get("price"),
-      description: formData.get("description") || null,
-      brand: formData.get("brand"),
-      condition: formData.get("condition"),
-      type: formData.get("type"),
-    });
-    const existingImages = parseExistingImages(formData.get("existingImages"));
-    const uploadedImageUrls = await uploadImages(formData.getAll("images") as File[]);
-    const image = [...existingImages, ...uploadedImageUrls];
-    if (image.length === 0) return fail("At least one image is required", 400);
+    // Remove undefined fields so Prisma ignores them
+    Object.keys(updateData).forEach(
+      (key) => updateData[key] === undefined && delete updateData[key]
+    );
 
     const updated = await prisma.accessory.update({
       where: { id },
-      data: { ...validated, image },
+      data: updateData,
       select: accessorySelect,
     });
 
     return ok(updated);
-  } catch (error) {
+  } catch (error: any) {
+    console.error("PATCH ERROR:", error);
     return handleApiError("accessories.id.PATCH", error);
   }
 }
-
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }

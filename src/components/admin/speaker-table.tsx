@@ -15,6 +15,8 @@ export default function SpeakerTable({ data, onViewProduct }: SpeakerTableProps)
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditingImages, setIsEditingImages] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]> | null>(null);
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -92,6 +94,9 @@ export default function SpeakerTable({ data, onViewProduct }: SpeakerTableProps)
     setExistingImages(item.image || []);
     setStagedDeletedImages([]);
     setNewImageFiles([]);
+
+    setFormError(null);
+  setFieldErrors(null);
   };
 
   // Trigger delete warning sequence safely without row-click collision
@@ -172,9 +177,16 @@ export default function SpeakerTable({ data, onViewProduct }: SpeakerTableProps)
       });
 
       if (response.ok) {
-        setEditingItem(null);
-        fetchSpeakers();
-      }
+  setEditingItem(null);
+  setFormError(null);
+  setFieldErrors(null);
+  fetchSpeakers();
+} else {
+  const errData = await response.json();
+
+  setFormError(errData.error || "Validation error occurred");
+  setFieldErrors(errData.fields || null);
+}
     } catch (error) {
       console.error("Edit error", error);
     } finally {
@@ -689,6 +701,26 @@ export default function SpeakerTable({ data, onViewProduct }: SpeakerTableProps)
                   className="w-full bg-slate-50 border border-red-100 rounded p-1 text-xs focus:outline-none focus:border-[#D90429] focus:ring-1 focus:ring-[#D90429] text-slate-900 font-medium resize-none"
                 />
               </div>
+              {(formError || fieldErrors) && (
+                <div className="p-2 border border-red-200 bg-red-50 text-red-700 text-[8px] font-semibold rounded space-y-1">
+                  <div className="flex items-center gap-1">
+                    <AlertTriangle className="w-3 h-3 text-red-600" />
+                    <span>{formError || "Please fix the errors below"}</span>
+                  </div>
+
+                  {fieldErrors && (
+                    <ul className="list-disc pl-4 text-[8px] text-red-600">
+                      {Object.entries(fieldErrors).map(([field, messages]) =>
+                        messages.map((msg, i) => (
+                          <li key={`${field}-${i}`}>
+                            <span className="font-bold">{field}:</span> {msg}
+                          </li>
+                        ))
+                      )}
+                    </ul>
+                  )}
+                </div>
+              )}
 
               <div className="flex justify-end gap-1.5 pt-2 border-t border-red-50 sticky bottom-0 bg-white">
                 <button

@@ -132,7 +132,7 @@ const handleAddToCart = useCallback((e: React.MouseEvent) => {
                 }`}
               />
             ))}
-            <span className="text-xs text-gray-500 ml-1">({product.reviews})</span>
+            {/* <span className="text-xs text-gray-500 ml-1">({product.reviews})</span> */}
           </div>
 
           {/* Price and Add to Cart */}
@@ -193,7 +193,7 @@ const handleAddToCart = useCallback((e: React.MouseEvent) => {
                       }`}
                     />
                   ))}
-                  <span className="text-sm text-gray-500 ml-1">({product.reviews} reviews)</span>
+                  {/* <span className="text-sm text-gray-500 ml-1">({product.reviews} reviews)</span> */}
                 </div>
 
                 <div className="text-3xl font-bold text-gray-900">

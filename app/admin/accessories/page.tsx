@@ -10,6 +10,7 @@ export default function AccessoriesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   // Detail view state allocation
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
@@ -88,14 +89,32 @@ export default function AccessoriesPage() {
           setItemsData((current) => [createdAccessory, ...current]);
         }
         triggerNotification("success", "Hardware tracking matrix committed successfully.");
-      } else {
-        const errData = await response.json();
-        triggerNotification("error", errData.error || "Failed to commit accessory configuration.");
-      }
-    } catch (err) {
-      console.error("Submission processing fault:", err);
-      triggerNotification("error", "An unexpected network execution fault occurred.");
-    } finally {
+      }  else {
+  const errData = await response.json();
+
+  // 👇 GLOBAL FORM ERROR
+  setFormError(errData.error || "Validation failed");
+
+  // 👇 FIELD ERRORS (IMPORTANT)
+  if (errData.fields) {
+    const fieldMessages = Object.entries(errData.fields)
+      .map(([field, messages]) => `${field}: ${(messages as string[]).join(", ")}`)
+      .join("\n");
+
+    setFormError(fieldMessages);
+  }
+
+  triggerNotification(
+    "error",
+    errData.error || "Failed to commit accessory configuration."
+  );
+}
+    }catch (err) {
+  console.error("Submission processing fault:", err);
+  setFormError("Unexpected error occurred. Please try again.");
+  triggerNotification("error", "An unexpected network execution fault occurred.");
+}
+finally {
       setIsSubmitting(false);
     }
   };
@@ -134,7 +153,11 @@ export default function AccessoriesPage() {
           </button>
 
           <button
-            onClick={() => setIsCreateOpen(true)}
+            onClick={
+              () => {
+                  setIsCreateOpen(true);
+                  setFormError(null);
+                }}
             className="inline-flex items-center gap-2 bg-gradient-to-r from-[#A60316] to-[#D90429] hover:from-[#D90429] hover:to-[#FB718A] text-white font-bold px-4 py-2.5 rounded-xl text-xs transition-all shadow-md"
           >
             <Plus className="w-3.5 h-3.5" /> Add Accessory
@@ -267,6 +290,13 @@ export default function AccessoriesPage() {
                   </div>
                 )}
               </div>
+                        {formError && (
+              <div className="bg-red-50 border border-red-200 text-red-700 text-xs font-semibold p-3 rounded-xl space-y-1 whitespace-pre-line">
+                {formError}
+              </div>
+            )}
+
+
 
               <div className="flex justify-end gap-2.5 pt-4 border-t border-red-50">
                 <button
@@ -290,6 +320,7 @@ export default function AccessoriesPage() {
                   {isSubmitting ? "Deploying Assets..." : "Save"}
                 </button>
               </div>
+
             </form>
           </div>
         </div>

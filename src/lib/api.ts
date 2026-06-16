@@ -20,8 +20,17 @@ export function ok<T>(data: T, status: 200 | 201 = 200, init?: ResponseInit) {
   return NextResponse.json({ success: true, data }, { ...init, status });
 }
 
-export function fail(message: string, status: ApiStatus = 500, init?: ResponseInit) {
-  return NextResponse.json({ success: false, error: message }, { ...init, status });
+export function fail(message: string, status = 400, data?: any) {
+  return Response.json(
+    {
+      success: false,
+      error: message,
+      ...data, // ✅ put fields INSIDE body
+    },
+    {
+      status,
+    }
+  );
 }
 
 export function logApiError(scope: string, error: unknown, context?: Record<string, unknown>) {
@@ -47,27 +56,55 @@ function getPrismaErrorCode(error: unknown) {
   return typeof code === "string" ? code : null;
 }
 
+
+
 export function handleApiError(scope: string, error: unknown) {
+  // ================================
+  // 1. Custom API errors
+  // ================================
   if (error instanceof ApiError) {
     if (error.status === 401 || error.status === 403) {
       logApiError(scope, error);
     }
+
     return fail(error.message, error.status);
   }
 
+  // ================================
+  // 2. Zod validation errors (IMPORTANT FIX)
+  // ================================
   if (error instanceof ZodError) {
-    return fail("Validation error", 422);
+    return fail("Validation error", 422, {
+      fields: error.flatten().fieldErrors,
+      formErrors: error.flatten().formErrors,
+    });
   }
 
+  // ================================
+  // 3. JSON parse errors
+  // ================================
   if (error instanceof SyntaxError) {
     return fail("Malformed JSON request body", 400);
   }
 
+  // ================================
+  // 4. Prisma known errors
+  // ================================
   const prismaErrorCode = getPrismaErrorCode(error);
-  if (prismaErrorCode === "P2002") return fail("Resource already exists", 409);
-  if (prismaErrorCode === "P2025") return fail("Resource not found", 404);
 
+  if (prismaErrorCode === "P2002") {
+    return fail("Resource already exists", 409);
+  }
+
+  if (prismaErrorCode === "P2025") {
+    return fail("Resource not found", 404);
+  }
+
+  // ================================
+  // 5. Unknown errors (log everything)
+  // ================================
   logApiError(scope, error);
+
   return fail("Internal Server Error", 500);
 }
 

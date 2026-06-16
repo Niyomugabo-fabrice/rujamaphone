@@ -18,6 +18,25 @@ const speakerSelect = {
   updatedAt: true,
 };
 
+function zodErrorResponse(error: ZodError) {
+  const fieldErrors: Record<string, string[]> = {};
+
+  error.issues.forEach((issue) => {
+    const key = issue.path[0] as string;
+    if (!fieldErrors[key]) fieldErrors[key] = [];
+    fieldErrors[key].push(issue.message);
+  });
+
+  return Response.json(
+    {
+      success: false,
+      error: "Validation error",
+      fields: fieldErrors,
+    },
+    { status: 400 }
+  );
+}
+
 function configureCloudinary() {
   cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -72,6 +91,8 @@ export async function GET(request: Request) {
   }
 }
 
+import { ZodError } from "zod";
+
 export async function POST(request: Request) {
   try {
     const session = await requireAdminAuth(request);
@@ -79,6 +100,7 @@ export async function POST(request: Request) {
 
     configureCloudinary();
     const formData = await request.formData();
+
     const validated = speakerFormSchema.parse({
       name: formData.get("name"),
       price: formData.get("price"),
@@ -87,6 +109,7 @@ export async function POST(request: Request) {
       condition: formData.get("condition"),
       batteryLife: formData.get("batteryLife") || null,
     });
+
     const image = await uploadImages(formData.getAll("images") as File[]);
     if (image.length === 0) return fail("At least one image is required", 400);
 
@@ -96,9 +119,33 @@ export async function POST(request: Request) {
     });
 
     return ok(newSpeaker, 201);
-  } catch (error) {
-    return handleApiError("speakers.POST", error);
+
+  } catch (error: any) {
+  // Zod validation error
+  if (error instanceof ZodError) {
+    return zodErrorResponse(error);
   }
+
+  // Prisma known errors (important!)
+  if (error?.name === "PrismaClientKnownRequestError") {
+    return Response.json(
+      {
+        success: false,
+        error: "Database error",
+      },
+      { status: 500 }
+    );
+  }
+
+  // Cloudinary or other errors
+  return Response.json(
+    {
+      success: false,
+      error: error?.message || "Internal server error",
+    },
+    { status: 500 }
+  );
+}
 }
 
 export async function DELETE(request: Request) {
