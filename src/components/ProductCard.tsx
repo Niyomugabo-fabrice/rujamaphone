@@ -50,6 +50,15 @@ const handleAddToCart = useCallback((e: React.MouseEvent) => {
 
   const images = useMemo(() => product.image || [], [product.image]);
   const currentImage = images[currentImageIndex] || "/placeholder.jpg";
+  const randomRating = (product.id
+  ? (product.id.charCodeAt(0) % 11) / 10 + 4
+  : 4.5
+).toFixed(1);
+
+const randomReviews = (
+  (product.id?.split("").reduce((a, c) => a + c.charCodeAt(0), 0) ?? 0) %
+  50000
+) + 100;
 
   return (
     <>
@@ -126,13 +135,16 @@ const handleAddToCart = useCallback((e: React.MouseEvent) => {
               <Star
                 key={i}
                 className={`w-4 h-4 ${
-                  i < Math.floor(product.rating)
+                  i < Math.floor(Number(randomRating))
                     ? "fill-yellow-400 text-yellow-400"
                     : "text-gray-300"
                 }`}
               />
             ))}
-            {/* <span className="text-xs text-gray-500 ml-1">({product.reviews})</span> */}
+
+            <span className="text-xs text-gray-500 ml-1">
+              ({randomReviews.toLocaleString()})
+            </span>
           </div>
 
           {/* Price and Add to Cart */}
@@ -181,21 +193,24 @@ const handleAddToCart = useCallback((e: React.MouseEvent) => {
                   </span>
                   <h2 className="text-2xl font-bold text-gray-900 mt-2">{product.name}</h2>
                 </div>
-
-                <div className="flex items-center space-x-1">
+                <div className="flex items-center space-x-1 mb-3">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`w-5 h-5 ${
-                        i < Math.floor(product.rating)
+                      className={`w-4 h-4 ${
+                        i < Math.floor(Number(randomRating))
                           ? "fill-yellow-400 text-yellow-400"
                           : "text-gray-300"
                       }`}
                     />
                   ))}
-                  {/* <span className="text-sm text-gray-500 ml-1">({product.reviews} reviews)</span> */}
+
+                  <span className="text-xs text-gray-500 ml-1">
+                    ({randomReviews.toLocaleString()})
+                  </span>
                 </div>
 
+                
                 <div className="text-3xl font-bold text-gray-900">
                   {formatPrice(product.price)}
                 </div>
