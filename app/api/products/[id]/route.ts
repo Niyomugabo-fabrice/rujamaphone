@@ -94,7 +94,7 @@ export async function GET(
         condition: accessory.condition,
         rating: accessory.rating,
         reviews: accessory.reviews,
-        type: accessory.type,
+        type: accessory.type ?? undefined,
         description: accessory.description,
       };
     }
