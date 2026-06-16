@@ -19,63 +19,6 @@ enum Condition {
   USED
 }
 
-enum StorageCapacity {
-  GB64
-  GB128
-  GB256
-  GB512
-  TB1
-}
-
-enum SmartphoneBrand {
-  APPLE
-  SAMSUNG
-  GOOGLE
-  XIAOMI
-  ONEPLUS
-  TECNO
-  INFINIX
-}
-
-enum SpeakerBrand {
-  JBL
-  SONY
-  BOSE
-  APPLE
-  ANKER
-  BEATS
-  ULTIMATE_EARS
-  MARSHALL
-  SONOS
-}
-
-enum AccessoryBrand {
-  APPLE
-  SAMSUNG
-  ANKER
-  BASEUS
-  GENERIC
-  ONEPLUS
-  SONY
-  XIAOMI
-  SPIGEN
-  BELKIN
-  OTTERBOX
-  JBL
-  BEATS
-  BOSE
-  MOPHIE
-  CASETIFY
-  GOOGLE
-  UAG
-  JABRA
-  NOMAD
-  NOTHING
-  MOUS
-  SENNHEISER
-  RAVPOWER
-}
-
 enum AnnouncementKind {
   GENERAL
   PROMOTION
@@ -109,21 +52,21 @@ model User {
 // ==========================================
 
 model Smartphone {
-  id          String          @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
-  price       Int             // Value mapped in RWF
-  image       String[]        // Native array of image strings
+  price       Int      // Value mapped in RWF
+  image       String[] // Native array of image strings
   description String?
-  rating      Float           @default(0)
-  reviews     Int             @default(0)
+  rating      Float    @default(0)
+  reviews     Int      @default(0)
   
   // Specific Required Hardware Fields
-  storage     StorageCapacity
+  storage     String   // Flexible storage capacity (e.g., "64GB", "128GB", "256GB", "512GB", "1TB")
   condition   Condition
-  brand       SmartphoneBrand
+  brand       String   // Flexible brand name (e.g., "Apple", "Samsung", "Google", "Xiaomi", etc.)
 
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@index([brand])
   @@index([price])
@@ -132,21 +75,21 @@ model Smartphone {
 }
 
 model Speaker {
-  id          String        @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
-  price       Int           // Value mapped in RWF
+  price       Int      // Value mapped in RWF
   image       String[]
   description String?
-  rating      Float         @default(0)
-  reviews     Int           @default(0)
+  rating      Float    @default(0)
+  reviews     Int      @default(0)
   
   // Specific Required Hardware Fields (No Storage!)
   condition   Condition
-  brand       SpeakerBrand
-  batteryLife String?       // Optional performance metric specific to sound hardware
+  brand       String   // Flexible brand name (e.g., "JBL", "Sony", "Bose", "Apple", etc.)
+  batteryLife String?  // Optional performance metric specific to sound hardware
 
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@index([brand])
   @@index([price])
@@ -155,21 +98,21 @@ model Speaker {
 }
 
 model Accessory {
-  id          String         @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
-  price       Int            // Value mapped in RWF
+  price       Int      // Value mapped in RWF
   image       String[]
   description String?
-  rating      Float          @default(0)
-  reviews     Int            @default(0)
+  rating      Float    @default(0)
+  reviews     Int      @default(0)
   
   // Specific Required Fields (Clean of storage rules)
   condition   Condition
-  brand       AccessoryBrand
-  type        String         // e.g., "Cable", "Case", "Charger", "Screen Protector"
+  brand       String   // Flexible brand name (e.g., "Apple", "Samsung", "Anker", etc.)
+  type        String   // e.g., "Cable", "Case", "Charger", "Screen Protector"
 
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@index([brand])
   @@index([price])

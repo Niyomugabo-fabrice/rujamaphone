@@ -212,66 +212,9 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.StorageCapacity = exports.$Enums.StorageCapacity = {
-  GB64: 'GB64',
-  GB128: 'GB128',
-  GB256: 'GB256',
-  GB512: 'GB512',
-  TB1: 'TB1'
-};
-
 exports.Condition = exports.$Enums.Condition = {
   NEW: 'NEW',
   USED: 'USED'
-};
-
-exports.SmartphoneBrand = exports.$Enums.SmartphoneBrand = {
-  APPLE: 'APPLE',
-  SAMSUNG: 'SAMSUNG',
-  GOOGLE: 'GOOGLE',
-  XIAOMI: 'XIAOMI',
-  ONEPLUS: 'ONEPLUS',
-  TECNO: 'TECNO',
-  INFINIX: 'INFINIX'
-};
-
-exports.SpeakerBrand = exports.$Enums.SpeakerBrand = {
-  JBL: 'JBL',
-  SONY: 'SONY',
-  BOSE: 'BOSE',
-  APPLE: 'APPLE',
-  ANKER: 'ANKER',
-  BEATS: 'BEATS',
-  ULTIMATE_EARS: 'ULTIMATE_EARS',
-  MARSHALL: 'MARSHALL',
-  SONOS: 'SONOS'
-};
-
-exports.AccessoryBrand = exports.$Enums.AccessoryBrand = {
-  APPLE: 'APPLE',
-  SAMSUNG: 'SAMSUNG',
-  ANKER: 'ANKER',
-  BASEUS: 'BASEUS',
-  GENERIC: 'GENERIC',
-  ONEPLUS: 'ONEPLUS',
-  SONY: 'SONY',
-  XIAOMI: 'XIAOMI',
-  SPIGEN: 'SPIGEN',
-  BELKIN: 'BELKIN',
-  OTTERBOX: 'OTTERBOX',
-  JBL: 'JBL',
-  BEATS: 'BEATS',
-  BOSE: 'BOSE',
-  MOPHIE: 'MOPHIE',
-  CASETIFY: 'CASETIFY',
-  GOOGLE: 'GOOGLE',
-  UAG: 'UAG',
-  JABRA: 'JABRA',
-  NOMAD: 'NOMAD',
-  NOTHING: 'NOTHING',
-  MOUS: 'MOUS',
-  SENNHEISER: 'SENNHEISER',
-  RAVPOWER: 'RAVPOWER'
 };
 
 exports.AnnouncementKind = exports.$Enums.AnnouncementKind = {

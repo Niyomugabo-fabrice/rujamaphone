@@ -22,35 +22,6 @@ const baseProductSelect = {
   updatedAt: true,
 };
 
-const smartphoneBrands = ["APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS", "TECNO", "INFINIX"];
-const speakerBrands = ["JBL", "SONY", "BOSE", "APPLE", "ANKER", "BEATS", "ULTIMATE_EARS", "MARSHALL", "SONOS"];
-const accessoryBrands = [
-  "APPLE",
-  "SAMSUNG",
-  "ANKER",
-  "BASEUS",
-  "GENERIC",
-  "ONEPLUS",
-  "SONY",
-  "XIAOMI",
-  "SPIGEN",
-  "BELKIN",
-  "OTTERBOX",
-  "JBL",
-  "BEATS",
-  "BOSE",
-  "MOPHIE",
-  "CASETIFY",
-  "GOOGLE",
-  "UAG",
-  "JABRA",
-  "NOMAD",
-  "NOTHING",
-  "MOUS",
-  "SENNHEISER",
-  "RAVPOWER",
-];
-
 export async function GET(request: Request) {
   try {
     const query = parseSearchParams(request, publicProductsQuerySchema);
@@ -74,7 +45,6 @@ export async function GET(request: Request) {
       tableCategory: "SMARTPHONE",
       selectedCategory: category,
       brand,
-      validBrands: smartphoneBrands,
       condition,
       minPrice,
       maxPrice,
@@ -86,7 +56,6 @@ export async function GET(request: Request) {
       tableCategory: "SPEAKER",
       selectedCategory: category,
       brand,
-      validBrands: speakerBrands,
       condition,
       minPrice,
       maxPrice,
@@ -98,7 +67,6 @@ export async function GET(request: Request) {
       tableCategory: "ACCESSORY",
       selectedCategory: category,
       brand,
-      validBrands: accessoryBrands,
       condition,
       minPrice,
       maxPrice,
@@ -194,7 +162,6 @@ type BuildWhereOptions = {
   tableCategory: "SMARTPHONE" | "SPEAKER" | "ACCESSORY";
   selectedCategory?: "SMARTPHONE" | "SPEAKER" | "ACCESSORY";
   brand?: string;
-  validBrands: string[];
   condition?: string;
   minPrice: number;
   maxPrice: number;
@@ -207,7 +174,6 @@ function buildProductWhere({
   tableCategory,
   selectedCategory,
   brand,
-  validBrands,
   condition,
   minPrice,
   maxPrice,
@@ -216,7 +182,6 @@ function buildProductWhere({
   type,
 }: BuildWhereOptions) {
   if (selectedCategory && selectedCategory !== tableCategory) return null;
-  if (brand && !validBrands.includes(brand)) return null;
   if (storage && tableCategory !== "SMARTPHONE") return null;
   if (batteryLife && tableCategory !== "SPEAKER") return null;
   if (type && tableCategory !== "ACCESSORY") return null;
@@ -225,15 +190,7 @@ function buildProductWhere({
     price: { gte: minPrice, lte: maxPrice },
   };
 
-  if (brand) where.brand = brand;
-  if (condition) where.condition = condition;
-  if (tableCategory === "SMARTPHONE" && storage) where.storage = storage;
-  if (tableCategory === "SPEAKER" && batteryLife) {
-    where.batteryLife = { contains: batteryLife, mode: "insensitive" };
-  }
-  if (tableCategory === "ACCESSORY" && type) where.type = type;
-
-  return where;
+  if (brand) where.brand = { contains: brand, mode: "insensitive" };
 }
 
 function getOrderBy(sort: string) {

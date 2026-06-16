@@ -121,7 +121,7 @@ export default function SmartphonesPage() {
       {/* HEADER SECTION */}
       <div className="flex items-center justify-between border-b border-red-200/60 pb-5">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight uppercase">Smartphones Catalog</h1>
+          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight uppercase">Smartphones List</h1>
           <p className="text-xs text-red-900/60 mt-0.5 font-medium">Isolated Hardware Sub-schema Storage Records</p>
         </div>
         
@@ -196,29 +196,11 @@ export default function SmartphonesPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1 tracking-wider">Brand</label>
-                  <select 
-                    name="brand" 
-                    className="w-full bg-slate-50 border border-red-100 rounded-xl p-2.5 text-sm text-slate-900 font-medium focus:outline-none"
-                  >
-                    <option value="APPLE">APPLE</option>
-                    <option value="SAMSUNG">SAMSUNG</option>
-                    <option value="GOOGLE">GOOGLE</option>
-                    <option value="XIAOMI">XIAOMI</option>
-                    <option value="ONEPLUS">ONEPLUS</option>
-                  </select>
+                    <input type="text" name="brand" placeholder="Enter brand" required className="w-full bg-slate-50 border border-red-100 rounded-xl p-2.5 text-sm text-slate-900 font-medium focus:outline-none" />
                 </div>
                 <div>
                   <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1 tracking-wider">Storage Matrix</label>
-                  <select 
-                    name="storage" 
-                    className="w-full bg-slate-50 border border-red-100 rounded-xl p-2.5 text-sm text-slate-900 font-medium focus:outline-none"
-                  >
-                    <option value="GB64">64 GB</option>
-                    <option value="GB128">128 GB</option>
-                    <option value="GB256">256 GB</option>
-                    <option value="GB512">512 GB</option>
-                    <option value="TB1">1 TB</option>
-                  </select>
+                    <input type="text" name="storage" placeholder="Enter storage" className="w-full bg-slate-50 border border-red-100 rounded-xl p-2.5 text-sm text-slate-900 font-medium focus:outline-none" />
                 </div>
               </div>
 

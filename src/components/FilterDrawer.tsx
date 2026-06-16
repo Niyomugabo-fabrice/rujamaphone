@@ -154,45 +154,13 @@ export default function FilterDrawer({
             )}
           </div>
 
-          {/* Brand */}
-          <div className="border-b pb-4">
-            <button
-              onClick={() => toggleSection("brand")}
-              className="flex items-center justify-between w-full py-2"
-            >
-              <span className="font-medium">Brand</span>
-              {expandedSections.brand ? <ChevronUp /> : <ChevronDown />}
-            </button>
-
-            {expandedSections.brand && (
-              <div className="space-y-2 mt-2">
-                {getBrandsForCategory(category).map((brand) => (
-                  <label key={brand} className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name="brand"
-                      value={brand}
-                      checked={filters.brand === brand}
-                      onChange={(e) =>
-                        handleFilterChange("brand", e.target.value)
-                      }
-                    />
-                    <span>{brand}</span>
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Condition */}
-          <div className="border-b pb-4">
-            <button
-              onClick={() => toggleSection("condition")}
-              className="flex items-center justify-between w-full py-2"
-            >
-              <span className="font-medium">Condition</span>
-              {expandedSections.condition ? <ChevronUp /> : <ChevronDown />}
-            </button>
+                <button
+                  onClick={() => toggleSection("condition")}
+                  className="flex items-center justify-between w-full py-2"
+                >
+                  <span className="font-medium">Condition</span>
+                  {expandedSections.condition ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                </button>
 
             {expandedSections.condition && (
               <div className="space-y-2 mt-2">

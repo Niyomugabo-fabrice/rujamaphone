@@ -4,35 +4,8 @@ export const idSchema = z.object({
 });
 
 export const conditionSchema = z.enum(["NEW", "USED"]);
-export const smartphoneBrandSchema = z.enum(["APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS", "TECNO", "INFINIX"]);
-export const speakerBrandSchema = z.enum(["JBL", "SONY", "BOSE", "APPLE", "ANKER", "BEATS", "ULTIMATE_EARS", "MARSHALL", "SONOS"]);
-export const accessoryBrandSchema = z.enum([
-  "APPLE",
-  "SAMSUNG",
-  "ANKER",
-  "BASEUS",
-  "GENERIC",
-  "ONEPLUS",
-  "SONY",
-  "XIAOMI",
-  "SPIGEN",
-  "BELKIN",
-  "OTTERBOX",
-  "JBL",
-  "BEATS",
-  "BOSE",
-  "MOPHIE",
-  "CASETIFY",
-  "GOOGLE",
-  "UAG",
-  "JABRA",
-  "NOMAD",
-  "NOTHING",
-  "MOUS",
-  "SENNHEISER",
-  "RAVPOWER",
-]);
-export const storageSchema = z.enum(["GB64", "GB128", "GB256", "GB512", "TB1"]);
+export const brandSchema = z.string().trim().min(1, "Brand is required").max(50, "Brand name too long");
+export const storageSchema = z.string().trim().min(1, "Storage is required").max(20, "Storage value too long");
 export const accessoryTypeSchema = z.enum(["Cable", "Case", "Charger", "Screen Protector", "Headphones", "Other"]);
 
 export const paginationQuerySchema = z.object({
@@ -54,7 +27,7 @@ export const publicProductsQuerySchema = z.object({
   category: z.enum(["SMARTPHONE", "SPEAKER", "ACCESSORY"]).optional(),
   brand: z.string().trim().max(40).optional(),
   condition: conditionSchema.optional(),
-  storage: storageSchema.optional(),
+  storage: z.string().trim().max(20).optional(),
   batteryLife: z.string().trim().max(80).optional(),
   type: accessoryTypeSchema.optional(),
   sort: z.enum(["createdAt-desc", "createdAt-asc", "price-asc", "price-desc", "rating-desc", "rating-asc"]).optional().default("createdAt-desc"),
@@ -75,7 +48,7 @@ export const productSchema = z.object({
 
   description: z.string().optional().or(z.literal("")),
 
-  brand: smartphoneBrandSchema,
+  brand: brandSchema,
   condition: conditionSchema,
   storage: storageSchema.optional().nullable(),
 
@@ -87,18 +60,18 @@ export const productSchema = z.object({
 export type ProductFormValues = z.infer<typeof productSchema>;
 
 export const smartphoneQuerySchema = paginationQuerySchema.extend({
-  brand: smartphoneBrandSchema.optional().or(z.literal("")).default(""),
+  brand: brandSchema.optional().or(z.literal("")).default(""),
   condition: conditionSchema.optional().or(z.literal("")).default(""),
   storage: storageSchema.optional().or(z.literal("")).default(""),
 });
 
 export const speakerQuerySchema = paginationQuerySchema.extend({
-  brand: speakerBrandSchema.optional().or(z.literal("")).default(""),
+  brand: brandSchema.optional().or(z.literal("")).default(""),
   condition: conditionSchema.optional().or(z.literal("")).default(""),
 });
 
 export const accessoryQuerySchema = paginationQuerySchema.extend({
-  brand: accessoryBrandSchema.optional().or(z.literal("")).default(""),
+  brand: brandSchema.optional().or(z.literal("")).default(""),
   condition: conditionSchema.optional().or(z.literal("")).default(""),
   type: accessoryTypeSchema.optional().or(z.literal("")).default(""),
 });
@@ -107,7 +80,7 @@ export const smartphoneFormSchema = z.object({
   name: z.string().trim().min(2).max(120),
   price: z.coerce.number().int().positive(),
   description: z.string().trim().max(2000).optional().nullable(),
-  brand: smartphoneBrandSchema,
+  brand: brandSchema,
   storage: storageSchema,
   condition: conditionSchema,
 });
@@ -116,7 +89,7 @@ export const speakerFormSchema = z.object({
   name: z.string().trim().min(2).max(120),
   price: z.coerce.number().int().positive(),
   description: z.string().trim().max(2000).optional().nullable(),
-  brand: speakerBrandSchema,
+  brand: brandSchema,
   condition: conditionSchema,
   batteryLife: z.string().trim().max(80).optional().nullable(),
 });
@@ -125,7 +98,7 @@ export const accessoryFormSchema = z.object({
   name: z.string().trim().min(2).max(120),
   price: z.coerce.number().int().positive(),
   description: z.string().trim().max(2000).optional().nullable(),
-  brand: accessoryBrandSchema,
+  brand: brandSchema,
   condition: conditionSchema,
   type: accessoryTypeSchema,
 });

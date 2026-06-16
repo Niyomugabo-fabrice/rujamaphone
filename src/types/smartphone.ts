@@ -1,17 +1,1 @@
-export type SmartphoneBrand =
-  | "APPLE"
-  | "SAMSUNG"
-  | "GOOGLE"
-  | "XIAOMI"
-  | "ONEPLUS"
-  | "TECNO"
-  | "INFINIX";
-
-export type StorageCapacity =
-  | "GB64"
-  | "GB128"
-  | "GB256"
-  | "GB512"
-  | "TB1";
-
-export type Condition = "NEW" | "USED";
+// Enum types removed – brand and storage are now strings in the Prisma schema.

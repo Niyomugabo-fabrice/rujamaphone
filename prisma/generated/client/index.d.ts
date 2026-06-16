@@ -56,75 +56,6 @@ export namespace $Enums {
 export type Condition = (typeof Condition)[keyof typeof Condition]
 
 
-export const StorageCapacity: {
-  GB64: 'GB64',
-  GB128: 'GB128',
-  GB256: 'GB256',
-  GB512: 'GB512',
-  TB1: 'TB1'
-};
-
-export type StorageCapacity = (typeof StorageCapacity)[keyof typeof StorageCapacity]
-
-
-export const SmartphoneBrand: {
-  APPLE: 'APPLE',
-  SAMSUNG: 'SAMSUNG',
-  GOOGLE: 'GOOGLE',
-  XIAOMI: 'XIAOMI',
-  ONEPLUS: 'ONEPLUS',
-  TECNO: 'TECNO',
-  INFINIX: 'INFINIX'
-};
-
-export type SmartphoneBrand = (typeof SmartphoneBrand)[keyof typeof SmartphoneBrand]
-
-
-export const SpeakerBrand: {
-  JBL: 'JBL',
-  SONY: 'SONY',
-  BOSE: 'BOSE',
-  APPLE: 'APPLE',
-  ANKER: 'ANKER',
-  BEATS: 'BEATS',
-  ULTIMATE_EARS: 'ULTIMATE_EARS',
-  MARSHALL: 'MARSHALL',
-  SONOS: 'SONOS'
-};
-
-export type SpeakerBrand = (typeof SpeakerBrand)[keyof typeof SpeakerBrand]
-
-
-export const AccessoryBrand: {
-  APPLE: 'APPLE',
-  SAMSUNG: 'SAMSUNG',
-  ANKER: 'ANKER',
-  BASEUS: 'BASEUS',
-  GENERIC: 'GENERIC',
-  ONEPLUS: 'ONEPLUS',
-  SONY: 'SONY',
-  XIAOMI: 'XIAOMI',
-  SPIGEN: 'SPIGEN',
-  BELKIN: 'BELKIN',
-  OTTERBOX: 'OTTERBOX',
-  JBL: 'JBL',
-  BEATS: 'BEATS',
-  BOSE: 'BOSE',
-  MOPHIE: 'MOPHIE',
-  CASETIFY: 'CASETIFY',
-  GOOGLE: 'GOOGLE',
-  UAG: 'UAG',
-  JABRA: 'JABRA',
-  NOMAD: 'NOMAD',
-  NOTHING: 'NOTHING',
-  MOUS: 'MOUS',
-  SENNHEISER: 'SENNHEISER',
-  RAVPOWER: 'RAVPOWER'
-};
-
-export type AccessoryBrand = (typeof AccessoryBrand)[keyof typeof AccessoryBrand]
-
-
 export const AnnouncementKind: {
   GENERAL: 'GENERAL',
   PROMOTION: 'PROMOTION',
@@ -138,22 +69,6 @@ export type AnnouncementKind = (typeof AnnouncementKind)[keyof typeof Announceme
 export type Condition = $Enums.Condition
 
 export const Condition: typeof $Enums.Condition
-
-export type StorageCapacity = $Enums.StorageCapacity
-
-export const StorageCapacity: typeof $Enums.StorageCapacity
-
-export type SmartphoneBrand = $Enums.SmartphoneBrand
-
-export const SmartphoneBrand: typeof $Enums.SmartphoneBrand
-
-export type SpeakerBrand = $Enums.SpeakerBrand
-
-export const SpeakerBrand: typeof $Enums.SpeakerBrand
-
-export type AccessoryBrand = $Enums.AccessoryBrand
-
-export const AccessoryBrand: typeof $Enums.AccessoryBrand
 
 export type AnnouncementKind = $Enums.AnnouncementKind
 
@@ -2545,9 +2460,9 @@ export namespace Prisma {
     description: string | null
     rating: number | null
     reviews: number | null
-    storage: $Enums.StorageCapacity | null
+    storage: string | null
     condition: $Enums.Condition | null
-    brand: $Enums.SmartphoneBrand | null
+    brand: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2559,9 +2474,9 @@ export namespace Prisma {
     description: string | null
     rating: number | null
     reviews: number | null
-    storage: $Enums.StorageCapacity | null
+    storage: string | null
     condition: $Enums.Condition | null
-    brand: $Enums.SmartphoneBrand | null
+    brand: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2733,9 +2648,9 @@ export namespace Prisma {
     description: string | null
     rating: number
     reviews: number
-    storage: $Enums.StorageCapacity
+    storage: string
     condition: $Enums.Condition
-    brand: $Enums.SmartphoneBrand
+    brand: string
     createdAt: Date
     updatedAt: Date
     _count: SmartphoneCountAggregateOutputType | null
@@ -2832,9 +2747,9 @@ export namespace Prisma {
       description: string | null
       rating: number
       reviews: number
-      storage: $Enums.StorageCapacity
+      storage: string
       condition: $Enums.Condition
-      brand: $Enums.SmartphoneBrand
+      brand: string
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["smartphone"]>
@@ -3267,9 +3182,9 @@ export namespace Prisma {
     readonly description: FieldRef<"Smartphone", 'String'>
     readonly rating: FieldRef<"Smartphone", 'Float'>
     readonly reviews: FieldRef<"Smartphone", 'Int'>
-    readonly storage: FieldRef<"Smartphone", 'StorageCapacity'>
+    readonly storage: FieldRef<"Smartphone", 'String'>
     readonly condition: FieldRef<"Smartphone", 'Condition'>
-    readonly brand: FieldRef<"Smartphone", 'SmartphoneBrand'>
+    readonly brand: FieldRef<"Smartphone", 'String'>
     readonly createdAt: FieldRef<"Smartphone", 'DateTime'>
     readonly updatedAt: FieldRef<"Smartphone", 'DateTime'>
   }
@@ -3675,7 +3590,7 @@ export namespace Prisma {
     rating: number | null
     reviews: number | null
     condition: $Enums.Condition | null
-    brand: $Enums.SpeakerBrand | null
+    brand: string | null
     batteryLife: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3689,7 +3604,7 @@ export namespace Prisma {
     rating: number | null
     reviews: number | null
     condition: $Enums.Condition | null
-    brand: $Enums.SpeakerBrand | null
+    brand: string | null
     batteryLife: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3863,7 +3778,7 @@ export namespace Prisma {
     rating: number
     reviews: number
     condition: $Enums.Condition
-    brand: $Enums.SpeakerBrand
+    brand: string
     batteryLife: string | null
     createdAt: Date
     updatedAt: Date
@@ -3962,7 +3877,7 @@ export namespace Prisma {
       rating: number
       reviews: number
       condition: $Enums.Condition
-      brand: $Enums.SpeakerBrand
+      brand: string
       batteryLife: string | null
       createdAt: Date
       updatedAt: Date
@@ -4397,7 +4312,7 @@ export namespace Prisma {
     readonly rating: FieldRef<"Speaker", 'Float'>
     readonly reviews: FieldRef<"Speaker", 'Int'>
     readonly condition: FieldRef<"Speaker", 'Condition'>
-    readonly brand: FieldRef<"Speaker", 'SpeakerBrand'>
+    readonly brand: FieldRef<"Speaker", 'String'>
     readonly batteryLife: FieldRef<"Speaker", 'String'>
     readonly createdAt: FieldRef<"Speaker", 'DateTime'>
     readonly updatedAt: FieldRef<"Speaker", 'DateTime'>
@@ -4804,7 +4719,7 @@ export namespace Prisma {
     rating: number | null
     reviews: number | null
     condition: $Enums.Condition | null
-    brand: $Enums.AccessoryBrand | null
+    brand: string | null
     type: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -4818,7 +4733,7 @@ export namespace Prisma {
     rating: number | null
     reviews: number | null
     condition: $Enums.Condition | null
-    brand: $Enums.AccessoryBrand | null
+    brand: string | null
     type: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -4992,7 +4907,7 @@ export namespace Prisma {
     rating: number
     reviews: number
     condition: $Enums.Condition
-    brand: $Enums.AccessoryBrand
+    brand: string
     type: string
     createdAt: Date
     updatedAt: Date
@@ -5091,7 +5006,7 @@ export namespace Prisma {
       rating: number
       reviews: number
       condition: $Enums.Condition
-      brand: $Enums.AccessoryBrand
+      brand: string
       type: string
       createdAt: Date
       updatedAt: Date
@@ -5526,7 +5441,7 @@ export namespace Prisma {
     readonly rating: FieldRef<"Accessory", 'Float'>
     readonly reviews: FieldRef<"Accessory", 'Int'>
     readonly condition: FieldRef<"Accessory", 'Condition'>
-    readonly brand: FieldRef<"Accessory", 'AccessoryBrand'>
+    readonly brand: FieldRef<"Accessory", 'String'>
     readonly type: FieldRef<"Accessory", 'String'>
     readonly createdAt: FieldRef<"Accessory", 'DateTime'>
     readonly updatedAt: FieldRef<"Accessory", 'DateTime'>
@@ -8143,20 +8058,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'StorageCapacity'
-   */
-  export type EnumStorageCapacityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StorageCapacity'>
-    
-
-
-  /**
-   * Reference to a field of type 'StorageCapacity[]'
-   */
-  export type ListEnumStorageCapacityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StorageCapacity[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Condition'
    */
   export type EnumConditionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Condition'>
@@ -8167,48 +8068,6 @@ export namespace Prisma {
    * Reference to a field of type 'Condition[]'
    */
   export type ListEnumConditionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Condition[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'SmartphoneBrand'
-   */
-  export type EnumSmartphoneBrandFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SmartphoneBrand'>
-    
-
-
-  /**
-   * Reference to a field of type 'SmartphoneBrand[]'
-   */
-  export type ListEnumSmartphoneBrandFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SmartphoneBrand[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'SpeakerBrand'
-   */
-  export type EnumSpeakerBrandFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SpeakerBrand'>
-    
-
-
-  /**
-   * Reference to a field of type 'SpeakerBrand[]'
-   */
-  export type ListEnumSpeakerBrandFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SpeakerBrand[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'AccessoryBrand'
-   */
-  export type EnumAccessoryBrandFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccessoryBrand'>
-    
-
-
-  /**
-   * Reference to a field of type 'AccessoryBrand[]'
-   */
-  export type ListEnumAccessoryBrandFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccessoryBrand[]'>
     
 
 
@@ -8322,9 +8181,9 @@ export namespace Prisma {
     description?: StringNullableFilter<"Smartphone"> | string | null
     rating?: FloatFilter<"Smartphone"> | number
     reviews?: IntFilter<"Smartphone"> | number
-    storage?: EnumStorageCapacityFilter<"Smartphone"> | $Enums.StorageCapacity
+    storage?: StringFilter<"Smartphone"> | string
     condition?: EnumConditionFilter<"Smartphone"> | $Enums.Condition
-    brand?: EnumSmartphoneBrandFilter<"Smartphone"> | $Enums.SmartphoneBrand
+    brand?: StringFilter<"Smartphone"> | string
     createdAt?: DateTimeFilter<"Smartphone"> | Date | string
     updatedAt?: DateTimeFilter<"Smartphone"> | Date | string
   }
@@ -8355,9 +8214,9 @@ export namespace Prisma {
     description?: StringNullableFilter<"Smartphone"> | string | null
     rating?: FloatFilter<"Smartphone"> | number
     reviews?: IntFilter<"Smartphone"> | number
-    storage?: EnumStorageCapacityFilter<"Smartphone"> | $Enums.StorageCapacity
+    storage?: StringFilter<"Smartphone"> | string
     condition?: EnumConditionFilter<"Smartphone"> | $Enums.Condition
-    brand?: EnumSmartphoneBrandFilter<"Smartphone"> | $Enums.SmartphoneBrand
+    brand?: StringFilter<"Smartphone"> | string
     createdAt?: DateTimeFilter<"Smartphone"> | Date | string
     updatedAt?: DateTimeFilter<"Smartphone"> | Date | string
   }, "id">
@@ -8393,9 +8252,9 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Smartphone"> | string | null
     rating?: FloatWithAggregatesFilter<"Smartphone"> | number
     reviews?: IntWithAggregatesFilter<"Smartphone"> | number
-    storage?: EnumStorageCapacityWithAggregatesFilter<"Smartphone"> | $Enums.StorageCapacity
+    storage?: StringWithAggregatesFilter<"Smartphone"> | string
     condition?: EnumConditionWithAggregatesFilter<"Smartphone"> | $Enums.Condition
-    brand?: EnumSmartphoneBrandWithAggregatesFilter<"Smartphone"> | $Enums.SmartphoneBrand
+    brand?: StringWithAggregatesFilter<"Smartphone"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Smartphone"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Smartphone"> | Date | string
   }
@@ -8412,7 +8271,7 @@ export namespace Prisma {
     rating?: FloatFilter<"Speaker"> | number
     reviews?: IntFilter<"Speaker"> | number
     condition?: EnumConditionFilter<"Speaker"> | $Enums.Condition
-    brand?: EnumSpeakerBrandFilter<"Speaker"> | $Enums.SpeakerBrand
+    brand?: StringFilter<"Speaker"> | string
     batteryLife?: StringNullableFilter<"Speaker"> | string | null
     createdAt?: DateTimeFilter<"Speaker"> | Date | string
     updatedAt?: DateTimeFilter<"Speaker"> | Date | string
@@ -8445,7 +8304,7 @@ export namespace Prisma {
     rating?: FloatFilter<"Speaker"> | number
     reviews?: IntFilter<"Speaker"> | number
     condition?: EnumConditionFilter<"Speaker"> | $Enums.Condition
-    brand?: EnumSpeakerBrandFilter<"Speaker"> | $Enums.SpeakerBrand
+    brand?: StringFilter<"Speaker"> | string
     batteryLife?: StringNullableFilter<"Speaker"> | string | null
     createdAt?: DateTimeFilter<"Speaker"> | Date | string
     updatedAt?: DateTimeFilter<"Speaker"> | Date | string
@@ -8483,7 +8342,7 @@ export namespace Prisma {
     rating?: FloatWithAggregatesFilter<"Speaker"> | number
     reviews?: IntWithAggregatesFilter<"Speaker"> | number
     condition?: EnumConditionWithAggregatesFilter<"Speaker"> | $Enums.Condition
-    brand?: EnumSpeakerBrandWithAggregatesFilter<"Speaker"> | $Enums.SpeakerBrand
+    brand?: StringWithAggregatesFilter<"Speaker"> | string
     batteryLife?: StringNullableWithAggregatesFilter<"Speaker"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Speaker"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Speaker"> | Date | string
@@ -8501,7 +8360,7 @@ export namespace Prisma {
     rating?: FloatFilter<"Accessory"> | number
     reviews?: IntFilter<"Accessory"> | number
     condition?: EnumConditionFilter<"Accessory"> | $Enums.Condition
-    brand?: EnumAccessoryBrandFilter<"Accessory"> | $Enums.AccessoryBrand
+    brand?: StringFilter<"Accessory"> | string
     type?: StringFilter<"Accessory"> | string
     createdAt?: DateTimeFilter<"Accessory"> | Date | string
     updatedAt?: DateTimeFilter<"Accessory"> | Date | string
@@ -8534,7 +8393,7 @@ export namespace Prisma {
     rating?: FloatFilter<"Accessory"> | number
     reviews?: IntFilter<"Accessory"> | number
     condition?: EnumConditionFilter<"Accessory"> | $Enums.Condition
-    brand?: EnumAccessoryBrandFilter<"Accessory"> | $Enums.AccessoryBrand
+    brand?: StringFilter<"Accessory"> | string
     type?: StringFilter<"Accessory"> | string
     createdAt?: DateTimeFilter<"Accessory"> | Date | string
     updatedAt?: DateTimeFilter<"Accessory"> | Date | string
@@ -8572,7 +8431,7 @@ export namespace Prisma {
     rating?: FloatWithAggregatesFilter<"Accessory"> | number
     reviews?: IntWithAggregatesFilter<"Accessory"> | number
     condition?: EnumConditionWithAggregatesFilter<"Accessory"> | $Enums.Condition
-    brand?: EnumAccessoryBrandWithAggregatesFilter<"Accessory"> | $Enums.AccessoryBrand
+    brand?: StringWithAggregatesFilter<"Accessory"> | string
     type?: StringWithAggregatesFilter<"Accessory"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Accessory"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Accessory"> | Date | string
@@ -8803,9 +8662,9 @@ export namespace Prisma {
     description?: string | null
     rating?: number
     reviews?: number
-    storage: $Enums.StorageCapacity
+    storage: string
     condition: $Enums.Condition
-    brand: $Enums.SmartphoneBrand
+    brand: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -8818,9 +8677,9 @@ export namespace Prisma {
     description?: string | null
     rating?: number
     reviews?: number
-    storage: $Enums.StorageCapacity
+    storage: string
     condition: $Enums.Condition
-    brand: $Enums.SmartphoneBrand
+    brand: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -8833,9 +8692,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     rating?: FloatFieldUpdateOperationsInput | number
     reviews?: IntFieldUpdateOperationsInput | number
-    storage?: EnumStorageCapacityFieldUpdateOperationsInput | $Enums.StorageCapacity
+    storage?: StringFieldUpdateOperationsInput | string
     condition?: EnumConditionFieldUpdateOperationsInput | $Enums.Condition
-    brand?: EnumSmartphoneBrandFieldUpdateOperationsInput | $Enums.SmartphoneBrand
+    brand?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8848,9 +8707,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     rating?: FloatFieldUpdateOperationsInput | number
     reviews?: IntFieldUpdateOperationsInput | number
-    storage?: EnumStorageCapacityFieldUpdateOperationsInput | $Enums.StorageCapacity
+    storage?: StringFieldUpdateOperationsInput | string
     condition?: EnumConditionFieldUpdateOperationsInput | $Enums.Condition
-    brand?: EnumSmartphoneBrandFieldUpdateOperationsInput | $Enums.SmartphoneBrand
+    brand?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8863,9 +8722,9 @@ export namespace Prisma {
     description?: string | null
     rating?: number
     reviews?: number
-    storage: $Enums.StorageCapacity
+    storage: string
     condition: $Enums.Condition
-    brand: $Enums.SmartphoneBrand
+    brand: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -8878,9 +8737,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     rating?: FloatFieldUpdateOperationsInput | number
     reviews?: IntFieldUpdateOperationsInput | number
-    storage?: EnumStorageCapacityFieldUpdateOperationsInput | $Enums.StorageCapacity
+    storage?: StringFieldUpdateOperationsInput | string
     condition?: EnumConditionFieldUpdateOperationsInput | $Enums.Condition
-    brand?: EnumSmartphoneBrandFieldUpdateOperationsInput | $Enums.SmartphoneBrand
+    brand?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8893,9 +8752,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     rating?: FloatFieldUpdateOperationsInput | number
     reviews?: IntFieldUpdateOperationsInput | number
-    storage?: EnumStorageCapacityFieldUpdateOperationsInput | $Enums.StorageCapacity
+    storage?: StringFieldUpdateOperationsInput | string
     condition?: EnumConditionFieldUpdateOperationsInput | $Enums.Condition
-    brand?: EnumSmartphoneBrandFieldUpdateOperationsInput | $Enums.SmartphoneBrand
+    brand?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8909,7 +8768,7 @@ export namespace Prisma {
     rating?: number
     reviews?: number
     condition: $Enums.Condition
-    brand: $Enums.SpeakerBrand
+    brand: string
     batteryLife?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -8924,7 +8783,7 @@ export namespace Prisma {
     rating?: number
     reviews?: number
     condition: $Enums.Condition
-    brand: $Enums.SpeakerBrand
+    brand: string
     batteryLife?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -8939,7 +8798,7 @@ export namespace Prisma {
     rating?: FloatFieldUpdateOperationsInput | number
     reviews?: IntFieldUpdateOperationsInput | number
     condition?: EnumConditionFieldUpdateOperationsInput | $Enums.Condition
-    brand?: EnumSpeakerBrandFieldUpdateOperationsInput | $Enums.SpeakerBrand
+    brand?: StringFieldUpdateOperationsInput | string
     batteryLife?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8954,7 +8813,7 @@ export namespace Prisma {
     rating?: FloatFieldUpdateOperationsInput | number
     reviews?: IntFieldUpdateOperationsInput | number
     condition?: EnumConditionFieldUpdateOperationsInput | $Enums.Condition
-    brand?: EnumSpeakerBrandFieldUpdateOperationsInput | $Enums.SpeakerBrand
+    brand?: StringFieldUpdateOperationsInput | string
     batteryLife?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8969,7 +8828,7 @@ export namespace Prisma {
     rating?: number
     reviews?: number
     condition: $Enums.Condition
-    brand: $Enums.SpeakerBrand
+    brand: string
     batteryLife?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -8984,7 +8843,7 @@ export namespace Prisma {
     rating?: FloatFieldUpdateOperationsInput | number
     reviews?: IntFieldUpdateOperationsInput | number
     condition?: EnumConditionFieldUpdateOperationsInput | $Enums.Condition
-    brand?: EnumSpeakerBrandFieldUpdateOperationsInput | $Enums.SpeakerBrand
+    brand?: StringFieldUpdateOperationsInput | string
     batteryLife?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8999,7 +8858,7 @@ export namespace Prisma {
     rating?: FloatFieldUpdateOperationsInput | number
     reviews?: IntFieldUpdateOperationsInput | number
     condition?: EnumConditionFieldUpdateOperationsInput | $Enums.Condition
-    brand?: EnumSpeakerBrandFieldUpdateOperationsInput | $Enums.SpeakerBrand
+    brand?: StringFieldUpdateOperationsInput | string
     batteryLife?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9014,7 +8873,7 @@ export namespace Prisma {
     rating?: number
     reviews?: number
     condition: $Enums.Condition
-    brand: $Enums.AccessoryBrand
+    brand: string
     type: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9029,7 +8888,7 @@ export namespace Prisma {
     rating?: number
     reviews?: number
     condition: $Enums.Condition
-    brand: $Enums.AccessoryBrand
+    brand: string
     type: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9044,7 +8903,7 @@ export namespace Prisma {
     rating?: FloatFieldUpdateOperationsInput | number
     reviews?: IntFieldUpdateOperationsInput | number
     condition?: EnumConditionFieldUpdateOperationsInput | $Enums.Condition
-    brand?: EnumAccessoryBrandFieldUpdateOperationsInput | $Enums.AccessoryBrand
+    brand?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9059,7 +8918,7 @@ export namespace Prisma {
     rating?: FloatFieldUpdateOperationsInput | number
     reviews?: IntFieldUpdateOperationsInput | number
     condition?: EnumConditionFieldUpdateOperationsInput | $Enums.Condition
-    brand?: EnumAccessoryBrandFieldUpdateOperationsInput | $Enums.AccessoryBrand
+    brand?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9074,7 +8933,7 @@ export namespace Prisma {
     rating?: number
     reviews?: number
     condition: $Enums.Condition
-    brand: $Enums.AccessoryBrand
+    brand: string
     type: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9089,7 +8948,7 @@ export namespace Prisma {
     rating?: FloatFieldUpdateOperationsInput | number
     reviews?: IntFieldUpdateOperationsInput | number
     condition?: EnumConditionFieldUpdateOperationsInput | $Enums.Condition
-    brand?: EnumAccessoryBrandFieldUpdateOperationsInput | $Enums.AccessoryBrand
+    brand?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9104,7 +8963,7 @@ export namespace Prisma {
     rating?: FloatFieldUpdateOperationsInput | number
     reviews?: IntFieldUpdateOperationsInput | number
     condition?: EnumConditionFieldUpdateOperationsInput | $Enums.Condition
-    brand?: EnumAccessoryBrandFieldUpdateOperationsInput | $Enums.AccessoryBrand
+    brand?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9449,25 +9308,11 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type EnumStorageCapacityFilter<$PrismaModel = never> = {
-    equals?: $Enums.StorageCapacity | EnumStorageCapacityFieldRefInput<$PrismaModel>
-    in?: $Enums.StorageCapacity[] | ListEnumStorageCapacityFieldRefInput<$PrismaModel>
-    notIn?: $Enums.StorageCapacity[] | ListEnumStorageCapacityFieldRefInput<$PrismaModel>
-    not?: NestedEnumStorageCapacityFilter<$PrismaModel> | $Enums.StorageCapacity
-  }
-
   export type EnumConditionFilter<$PrismaModel = never> = {
     equals?: $Enums.Condition | EnumConditionFieldRefInput<$PrismaModel>
     in?: $Enums.Condition[] | ListEnumConditionFieldRefInput<$PrismaModel>
     notIn?: $Enums.Condition[] | ListEnumConditionFieldRefInput<$PrismaModel>
     not?: NestedEnumConditionFilter<$PrismaModel> | $Enums.Condition
-  }
-
-  export type EnumSmartphoneBrandFilter<$PrismaModel = never> = {
-    equals?: $Enums.SmartphoneBrand | EnumSmartphoneBrandFieldRefInput<$PrismaModel>
-    in?: $Enums.SmartphoneBrand[] | ListEnumSmartphoneBrandFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SmartphoneBrand[] | ListEnumSmartphoneBrandFieldRefInput<$PrismaModel>
-    not?: NestedEnumSmartphoneBrandFilter<$PrismaModel> | $Enums.SmartphoneBrand
   }
 
   export type SmartphoneCountOrderByAggregateInput = {
@@ -9557,16 +9402,6 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type EnumStorageCapacityWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.StorageCapacity | EnumStorageCapacityFieldRefInput<$PrismaModel>
-    in?: $Enums.StorageCapacity[] | ListEnumStorageCapacityFieldRefInput<$PrismaModel>
-    notIn?: $Enums.StorageCapacity[] | ListEnumStorageCapacityFieldRefInput<$PrismaModel>
-    not?: NestedEnumStorageCapacityWithAggregatesFilter<$PrismaModel> | $Enums.StorageCapacity
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumStorageCapacityFilter<$PrismaModel>
-    _max?: NestedEnumStorageCapacityFilter<$PrismaModel>
-  }
-
   export type EnumConditionWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.Condition | EnumConditionFieldRefInput<$PrismaModel>
     in?: $Enums.Condition[] | ListEnumConditionFieldRefInput<$PrismaModel>
@@ -9575,23 +9410,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumConditionFilter<$PrismaModel>
     _max?: NestedEnumConditionFilter<$PrismaModel>
-  }
-
-  export type EnumSmartphoneBrandWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.SmartphoneBrand | EnumSmartphoneBrandFieldRefInput<$PrismaModel>
-    in?: $Enums.SmartphoneBrand[] | ListEnumSmartphoneBrandFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SmartphoneBrand[] | ListEnumSmartphoneBrandFieldRefInput<$PrismaModel>
-    not?: NestedEnumSmartphoneBrandWithAggregatesFilter<$PrismaModel> | $Enums.SmartphoneBrand
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumSmartphoneBrandFilter<$PrismaModel>
-    _max?: NestedEnumSmartphoneBrandFilter<$PrismaModel>
-  }
-
-  export type EnumSpeakerBrandFilter<$PrismaModel = never> = {
-    equals?: $Enums.SpeakerBrand | EnumSpeakerBrandFieldRefInput<$PrismaModel>
-    in?: $Enums.SpeakerBrand[] | ListEnumSpeakerBrandFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SpeakerBrand[] | ListEnumSpeakerBrandFieldRefInput<$PrismaModel>
-    not?: NestedEnumSpeakerBrandFilter<$PrismaModel> | $Enums.SpeakerBrand
   }
 
   export type SpeakerCountOrderByAggregateInput = {
@@ -9649,23 +9467,6 @@ export namespace Prisma {
     reviews?: SortOrder
   }
 
-  export type EnumSpeakerBrandWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.SpeakerBrand | EnumSpeakerBrandFieldRefInput<$PrismaModel>
-    in?: $Enums.SpeakerBrand[] | ListEnumSpeakerBrandFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SpeakerBrand[] | ListEnumSpeakerBrandFieldRefInput<$PrismaModel>
-    not?: NestedEnumSpeakerBrandWithAggregatesFilter<$PrismaModel> | $Enums.SpeakerBrand
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumSpeakerBrandFilter<$PrismaModel>
-    _max?: NestedEnumSpeakerBrandFilter<$PrismaModel>
-  }
-
-  export type EnumAccessoryBrandFilter<$PrismaModel = never> = {
-    equals?: $Enums.AccessoryBrand | EnumAccessoryBrandFieldRefInput<$PrismaModel>
-    in?: $Enums.AccessoryBrand[] | ListEnumAccessoryBrandFieldRefInput<$PrismaModel>
-    notIn?: $Enums.AccessoryBrand[] | ListEnumAccessoryBrandFieldRefInput<$PrismaModel>
-    not?: NestedEnumAccessoryBrandFilter<$PrismaModel> | $Enums.AccessoryBrand
-  }
-
   export type AccessoryCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -9719,16 +9520,6 @@ export namespace Prisma {
     price?: SortOrder
     rating?: SortOrder
     reviews?: SortOrder
-  }
-
-  export type EnumAccessoryBrandWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.AccessoryBrand | EnumAccessoryBrandFieldRefInput<$PrismaModel>
-    in?: $Enums.AccessoryBrand[] | ListEnumAccessoryBrandFieldRefInput<$PrismaModel>
-    notIn?: $Enums.AccessoryBrand[] | ListEnumAccessoryBrandFieldRefInput<$PrismaModel>
-    not?: NestedEnumAccessoryBrandWithAggregatesFilter<$PrismaModel> | $Enums.AccessoryBrand
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumAccessoryBrandFilter<$PrismaModel>
-    _max?: NestedEnumAccessoryBrandFilter<$PrismaModel>
   }
 
   export type SliderImageCountOrderByAggregateInput = {
@@ -9850,16 +9641,8 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type EnumStorageCapacityFieldUpdateOperationsInput = {
-    set?: $Enums.StorageCapacity
-  }
-
   export type EnumConditionFieldUpdateOperationsInput = {
     set?: $Enums.Condition
-  }
-
-  export type EnumSmartphoneBrandFieldUpdateOperationsInput = {
-    set?: $Enums.SmartphoneBrand
   }
 
   export type SpeakerCreateimageInput = {
@@ -9871,10 +9654,6 @@ export namespace Prisma {
     push?: string | string[]
   }
 
-  export type EnumSpeakerBrandFieldUpdateOperationsInput = {
-    set?: $Enums.SpeakerBrand
-  }
-
   export type AccessoryCreateimageInput = {
     set: string[]
   }
@@ -9882,10 +9661,6 @@ export namespace Prisma {
   export type AccessoryUpdateimageInput = {
     set?: string[]
     push?: string | string[]
-  }
-
-  export type EnumAccessoryBrandFieldUpdateOperationsInput = {
-    set?: $Enums.AccessoryBrand
   }
 
   export type EnumAnnouncementKindFieldUpdateOperationsInput = {
@@ -10050,25 +9825,11 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type NestedEnumStorageCapacityFilter<$PrismaModel = never> = {
-    equals?: $Enums.StorageCapacity | EnumStorageCapacityFieldRefInput<$PrismaModel>
-    in?: $Enums.StorageCapacity[] | ListEnumStorageCapacityFieldRefInput<$PrismaModel>
-    notIn?: $Enums.StorageCapacity[] | ListEnumStorageCapacityFieldRefInput<$PrismaModel>
-    not?: NestedEnumStorageCapacityFilter<$PrismaModel> | $Enums.StorageCapacity
-  }
-
   export type NestedEnumConditionFilter<$PrismaModel = never> = {
     equals?: $Enums.Condition | EnumConditionFieldRefInput<$PrismaModel>
     in?: $Enums.Condition[] | ListEnumConditionFieldRefInput<$PrismaModel>
     notIn?: $Enums.Condition[] | ListEnumConditionFieldRefInput<$PrismaModel>
     not?: NestedEnumConditionFilter<$PrismaModel> | $Enums.Condition
-  }
-
-  export type NestedEnumSmartphoneBrandFilter<$PrismaModel = never> = {
-    equals?: $Enums.SmartphoneBrand | EnumSmartphoneBrandFieldRefInput<$PrismaModel>
-    in?: $Enums.SmartphoneBrand[] | ListEnumSmartphoneBrandFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SmartphoneBrand[] | ListEnumSmartphoneBrandFieldRefInput<$PrismaModel>
-    not?: NestedEnumSmartphoneBrandFilter<$PrismaModel> | $Enums.SmartphoneBrand
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -10103,16 +9864,6 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type NestedEnumStorageCapacityWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.StorageCapacity | EnumStorageCapacityFieldRefInput<$PrismaModel>
-    in?: $Enums.StorageCapacity[] | ListEnumStorageCapacityFieldRefInput<$PrismaModel>
-    notIn?: $Enums.StorageCapacity[] | ListEnumStorageCapacityFieldRefInput<$PrismaModel>
-    not?: NestedEnumStorageCapacityWithAggregatesFilter<$PrismaModel> | $Enums.StorageCapacity
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumStorageCapacityFilter<$PrismaModel>
-    _max?: NestedEnumStorageCapacityFilter<$PrismaModel>
-  }
-
   export type NestedEnumConditionWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.Condition | EnumConditionFieldRefInput<$PrismaModel>
     in?: $Enums.Condition[] | ListEnumConditionFieldRefInput<$PrismaModel>
@@ -10121,50 +9872,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumConditionFilter<$PrismaModel>
     _max?: NestedEnumConditionFilter<$PrismaModel>
-  }
-
-  export type NestedEnumSmartphoneBrandWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.SmartphoneBrand | EnumSmartphoneBrandFieldRefInput<$PrismaModel>
-    in?: $Enums.SmartphoneBrand[] | ListEnumSmartphoneBrandFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SmartphoneBrand[] | ListEnumSmartphoneBrandFieldRefInput<$PrismaModel>
-    not?: NestedEnumSmartphoneBrandWithAggregatesFilter<$PrismaModel> | $Enums.SmartphoneBrand
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumSmartphoneBrandFilter<$PrismaModel>
-    _max?: NestedEnumSmartphoneBrandFilter<$PrismaModel>
-  }
-
-  export type NestedEnumSpeakerBrandFilter<$PrismaModel = never> = {
-    equals?: $Enums.SpeakerBrand | EnumSpeakerBrandFieldRefInput<$PrismaModel>
-    in?: $Enums.SpeakerBrand[] | ListEnumSpeakerBrandFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SpeakerBrand[] | ListEnumSpeakerBrandFieldRefInput<$PrismaModel>
-    not?: NestedEnumSpeakerBrandFilter<$PrismaModel> | $Enums.SpeakerBrand
-  }
-
-  export type NestedEnumSpeakerBrandWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.SpeakerBrand | EnumSpeakerBrandFieldRefInput<$PrismaModel>
-    in?: $Enums.SpeakerBrand[] | ListEnumSpeakerBrandFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SpeakerBrand[] | ListEnumSpeakerBrandFieldRefInput<$PrismaModel>
-    not?: NestedEnumSpeakerBrandWithAggregatesFilter<$PrismaModel> | $Enums.SpeakerBrand
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumSpeakerBrandFilter<$PrismaModel>
-    _max?: NestedEnumSpeakerBrandFilter<$PrismaModel>
-  }
-
-  export type NestedEnumAccessoryBrandFilter<$PrismaModel = never> = {
-    equals?: $Enums.AccessoryBrand | EnumAccessoryBrandFieldRefInput<$PrismaModel>
-    in?: $Enums.AccessoryBrand[] | ListEnumAccessoryBrandFieldRefInput<$PrismaModel>
-    notIn?: $Enums.AccessoryBrand[] | ListEnumAccessoryBrandFieldRefInput<$PrismaModel>
-    not?: NestedEnumAccessoryBrandFilter<$PrismaModel> | $Enums.AccessoryBrand
-  }
-
-  export type NestedEnumAccessoryBrandWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.AccessoryBrand | EnumAccessoryBrandFieldRefInput<$PrismaModel>
-    in?: $Enums.AccessoryBrand[] | ListEnumAccessoryBrandFieldRefInput<$PrismaModel>
-    notIn?: $Enums.AccessoryBrand[] | ListEnumAccessoryBrandFieldRefInput<$PrismaModel>
-    not?: NestedEnumAccessoryBrandWithAggregatesFilter<$PrismaModel> | $Enums.AccessoryBrand
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumAccessoryBrandFilter<$PrismaModel>
-    _max?: NestedEnumAccessoryBrandFilter<$PrismaModel>
   }
 
   export type NestedEnumAnnouncementKindFilter<$PrismaModel = never> = {

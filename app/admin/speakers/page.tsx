@@ -121,7 +121,7 @@ export default function SpeakersPage() {
       {/* HEADER SECTION */}
       <div className="flex items-center justify-between border-b border-red-200/60 pb-5">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight uppercase">Speakers Catalog</h1>
+          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight uppercase">Speakers List</h1>
           <p className="text-xs text-red-900/60 mt-0.5 font-medium">Acoustic Audio Systems Storage Records</p>
         </div>
 
@@ -195,16 +195,7 @@ export default function SpeakersPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1 tracking-wider">Brand</label>
-                  <select
-                    name="brand"
-                    className="w-full bg-slate-50 border border-red-100 rounded-xl p-2.5 text-sm text-slate-900 font-medium focus:outline-none"
-                  >
-                    <option value="JBL">JBL</option>
-                    <option value="SONY">SONY</option>
-                    <option value="BOSE">BOSE</option>
-                    <option value="APPLE">APPLE</option>
-                    <option value="ANKER">ANKER</option>
-                  </select>
+                  <input type="text" name="brand" placeholder="Enter brand" required className="w-full bg-slate-50 border border-red-100 rounded-xl p-2.5 text-sm text-slate-900 font-medium focus:outline-none" />
                 </div>
                 <div>
                   <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1 tracking-wider">Price (RWF)</label>
