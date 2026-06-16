@@ -50,7 +50,7 @@ export function useDebouncedSearch({
           limit: String(limit),
           suggestions: "1",
         });
-        const response = await fetch(`/api/products?${params.toString()}`, {
+        const response = await fetch(`/api/search?${params.toString()}`, {
           signal: controller.signal,
         });
 

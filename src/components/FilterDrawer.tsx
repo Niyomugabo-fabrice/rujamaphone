@@ -153,7 +153,7 @@ export default function FilterDrawer({
               </div>
             )}
           </div>
-
+              <div className="border-b pb-4">
                 <button
                   onClick={() => toggleSection("condition")}
                   className="flex items-center justify-between w-full py-2"
