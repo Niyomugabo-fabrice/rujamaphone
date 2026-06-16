@@ -22,10 +22,15 @@ const baseProductSelect = {
   updatedAt: true,
 };
 
+// ===============================
+// MAIN GET ROUTE
+// ===============================
 export async function GET(request: Request) {
   try {
     const query = parseSearchParams(request, publicProductsQuerySchema);
+
     const search = normalizeSearchText(query.search);
+
     const {
       category,
       brand,
@@ -39,110 +44,142 @@ export async function GET(request: Request) {
       page,
       limit,
     } = query;
+
     const isSuggestionsRequest = query.suggestions === "1";
-    const skip = (page - 1) * limit;
-    const smartphoneWhere = buildProductWhere({
-      tableCategory: "SMARTPHONE",
-      selectedCategory: category,
-      brand,
-      condition,
-      minPrice,
-      maxPrice,
-      storage,
-      batteryLife,
-      type,
-    });
-    const speakerWhere = buildProductWhere({
-      tableCategory: "SPEAKER",
-      selectedCategory: category,
-      brand,
-      condition,
-      minPrice,
-      maxPrice,
-      storage,
-      batteryLife,
-      type,
-    });
-    const accessoryWhere = buildProductWhere({
-      tableCategory: "ACCESSORY",
-      selectedCategory: category,
-      brand,
-      condition,
-      minPrice,
-      maxPrice,
-      storage,
-      batteryLife,
-      type,
-    });
 
-    // 3. Fetch from each table in parallel
-    const shouldRankSearch = Boolean(search);
-    const candidateTake = shouldRankSearch ? 250 : limit * 3;
-    const categoryTake = shouldRankSearch ? 250 : limit;
-    const categorySkip = shouldRankSearch ? 0 : skip;
+    const skip = (Number(page) - 1) * Number(limit);
 
-    const [smartphones, speakers, accessories] = await Promise.all([
-      smartphoneWhere
-        ? prisma.smartphone.findMany({
-            where: smartphoneWhere,
-            select: {
-              ...baseProductSelect,
-              storage: true,
-            },
-            orderBy: getOrderBy(sort),
-            take: category ? categoryTake : candidateTake,
-            skip: category ? categorySkip : 0,
-          })
-        : [],
-      speakerWhere
-        ? prisma.speaker.findMany({
-            where: speakerWhere,
-            select: {
-              ...baseProductSelect,
-              batteryLife: true,
-            },
-            orderBy: getOrderBy(sort),
-            take: category ? categoryTake : candidateTake,
-            skip: category ? categorySkip : 0,
-          })
-        : [],
-      accessoryWhere
-        ? prisma.accessory.findMany({
-            where: accessoryWhere,
-            select: {
-              ...baseProductSelect,
-              type: true,
-            },
-            orderBy: getOrderBy(sort),
-            take: category ? categoryTake : candidateTake,
-            skip: category ? categorySkip : 0,
-          })
-        : [],
-    ]);
+    const cleanBrand = brand?.trim();
+    const cleanStorage = storage?.trim();
+    const cleanBattery = batteryLife?.trim();
+    const cleanType = type?.trim();
 
-    // 4. Combine results and add category field
-    const allProducts = [
-      ...smartphones.map((p) => ({ ...p, category: "SMARTPHONE", batteryLife: null, type: null })),
-      ...speakers.map((p) => ({ ...p, category: "SPEAKER", storage: null, type: null })),
-      ...accessories.map((p) => ({ ...p, category: "ACCESSORY", storage: null, batteryLife: null })),
-    ];
+    // ===============================
+    // SAFE WHERE BUILDER
+    // ===============================
+    function buildProductWhere(tableCategory: "SMARTPHONE" | "SPEAKER" | "ACCESSORY") {
+      if (category && category !== tableCategory) return null;
 
-    // 5. Sort combined results if no category filter
-    let sortedProducts = allProducts as any[];
-    if (search) {
-      sortedProducts = rankProducts(sortedProducts, search).map((result) => result.item);
-    } else if (!category) {
-      sortedProducts = allProducts.sort((a, b) => {
-        const sortFn = getSortFunction(sort);
-        return sortFn(a, b);
-      });
+      if (cleanStorage && tableCategory !== "SMARTPHONE") return null;
+      if (cleanBattery && tableCategory !== "SPEAKER") return null;
+      if (cleanType && tableCategory !== "ACCESSORY") return null;
+
+      const where: any = {
+        price: {
+          gte: Number(minPrice) || 0,
+          lte: Number(maxPrice) || 999999999,
+        },
+      };
+
+      if (cleanBrand) {
+        where.brand = {
+          contains: cleanBrand,
+          mode: "insensitive",
+        };
+      }
+
+      if (condition) {
+        where.condition = condition;
+      }
+
+      return where;
     }
 
-    // 6. Apply pagination
-    const total = sortedProducts.length;
+    // ===============================
+    // BUILD QUERIES
+    // ===============================
+    const smartphoneWhere = buildProductWhere("SMARTPHONE");
+    const speakerWhere = buildProductWhere("SPEAKER");
+    const accessoryWhere = buildProductWhere("ACCESSORY");
+
+    const shouldRankSearch = Boolean(search);
+    const candidateTake = shouldRankSearch ? 250 : limit * 3;
+
+    // ===============================
+    // FETCH DATA
+    // ===============================
+    const [smartphones, speakers, accessories] = await Promise.all([
+      prisma.smartphone.findMany({
+        where: smartphoneWhere ?? undefined,
+        select: {
+          ...baseProductSelect,
+          storage: true,
+        },
+        orderBy: getOrderBy(sort),
+        take: candidateTake,
+        skip: 0,
+      }),
+
+      prisma.speaker.findMany({
+        where: speakerWhere ?? undefined,
+        select: {
+          ...baseProductSelect,
+          batteryLife: true,
+        },
+        orderBy: getOrderBy(sort),
+        take: candidateTake,
+        skip: 0,
+      }),
+
+      prisma.accessory.findMany({
+        where: accessoryWhere ?? undefined,
+        select: {
+          ...baseProductSelect,
+          type: true,
+        },
+        orderBy: getOrderBy(sort),
+        take: candidateTake,
+        skip: 0,
+      }),
+    ]);
+
+    // ===============================
+    // MERGE RESULTS
+    // ===============================
+    let allProducts = [
+      ...smartphones.map((p) => ({
+        ...p,
+        category: "SMARTPHONE",
+        batteryLife: null,
+        type: null,
+      })),
+      ...speakers.map((p) => ({
+        ...p,
+        category: "SPEAKER",
+        storage: null,
+        type: null,
+      })),
+      ...accessories.map((p) => ({
+        ...p,
+        category: "ACCESSORY",
+        storage: null,
+        batteryLife: null,
+      })),
+    ];
+
+    // ===============================
+    // SEARCH RANKING
+    // ===============================
+    if (search) {
+      allProducts = rankProducts(allProducts, search).map((r) => r.item);
+    }
+
+    // ===============================
+    // SORTING
+    // ===============================
+    if (!search && !category) {
+      const sortFn = getSortFunction(sort);
+      allProducts.sort(sortFn);
+    }
+
+    // ===============================
+    // PAGINATION
+    // ===============================
+    const total = allProducts.length;
+
     const paginatedProducts = isSuggestionsRequest
-      ? sortedProducts.slice(0, limit)
-      : sortedProducts.slice(skip, skip + limit);
+      ? allProducts.slice(0, limit)
+      : allProducts.slice(skip, skip + limit);
 
     return NextResponse.json(
       {
@@ -158,69 +195,24 @@ export async function GET(request: Request) {
   }
 }
 
-type BuildWhereOptions = {
-  tableCategory: "SMARTPHONE" | "SPEAKER" | "ACCESSORY";
-  selectedCategory?: "SMARTPHONE" | "SPEAKER" | "ACCESSORY";
-  brand?: string;
-  condition?: string;
-  minPrice: number;
-  maxPrice: number;
-  storage?: string;
-  batteryLife?: string;
-  type?: string;
-};
-
-function buildProductWhere({
-  tableCategory,
-  selectedCategory,
-  brand,
-  condition,
-  minPrice,
-  maxPrice,
-  storage,
-  batteryLife,
-  type,
-}: BuildWhereOptions) {
-  if (selectedCategory && selectedCategory !== tableCategory) return null;
-  if (storage && tableCategory !== "SMARTPHONE") return null;
-  if (batteryLife && tableCategory !== "SPEAKER") return null;
-  if (type && tableCategory !== "ACCESSORY") return null;
-
-  const where: any = {
-    price: { gte: minPrice, lte: maxPrice },
-  };
-
-  if (brand) where.brand = { contains: brand, mode: "insensitive" };
-}
-
+// ===============================
+// SORT FUNCTIONS
+// ===============================
 function getOrderBy(sort: string) {
   const [field, direction] = sort.split("-");
-  const orderBy: any = {};
-  
-  switch (field) {
-    case "price":
-      orderBy[field] = direction === "asc" ? "asc" : "desc";
-      break;
-    case "rating":
-      orderBy[field] = direction === "asc" ? "asc" : "desc";
-      break;
-    case "createdAt":
-    default:
-      orderBy[field] = direction === "asc" ? "asc" : "desc";
-      break;
-  }
-  
-  return orderBy;
+  return {
+    [field]: direction === "asc" ? "asc" : "desc",
+  };
 }
 
 function getSortFunction(sort: string) {
   const [field, direction] = sort.split("-");
   const dir = direction === "asc" ? 1 : -1;
-  
+
   return (a: any, b: any) => {
     const aVal = a[field];
     const bVal = b[field];
-    
+
     if (aVal < bVal) return -1 * dir;
     if (aVal > bVal) return 1 * dir;
     return 0;

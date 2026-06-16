@@ -100,7 +100,7 @@ export const accessoryFormSchema = z.object({
   description: z.string().trim().max(2000).optional().nullable(),
   brand: brandSchema,
   condition: conditionSchema,
-  type: accessoryTypeSchema,
+  type: z.string().trim().max(50).optional(),
 });
 
 export const productImagesSchema = z.array(z.string().url()).min(1).max(10);

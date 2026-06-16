@@ -221,7 +221,7 @@ export default function AccessoriesPage() {
                 </div>
                 <div>
                   <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1 tracking-wider">Type</label>
-                    <input type="text" name="type" placeholder="Enter type" required className="w-full bg-slate-50 border border-red-100 rounded-xl p-2.5 text-sm text-slate-900 font-medium focus:outline-none" />
+                    <input type="text" name="type" placeholder="Enter type"  className="w-full bg-slate-50 border border-red-100 rounded-xl p-2.5 text-sm text-slate-900 font-medium focus:outline-none" />
                 </div>
               </div>
 
@@ -337,7 +337,10 @@ export default function AccessoriesPage() {
               <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-red-100">
                 <div>
                   <span className="block text-[9px] uppercase font-bold text-slate-400 tracking-wider">Brand Group</span>
-                  <span className="text-sm font-bold text-slate-800">{selectedProduct.brand}</span>
+                  <span className="text-sm font-bold text-slate-800">
+                    {selectedProduct.type || ""}
+                  </span>
+
                 </div>
                 <div>
                   <span className="block text-[9px] uppercase font-bold text-slate-400 tracking-wider">Condition</span>

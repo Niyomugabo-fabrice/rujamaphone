@@ -92,9 +92,12 @@ export async function POST(request: Request) {
     if (image.length === 0) return fail("At least one image is required", 400);
 
     const newAccessory = await prisma.accessory.create({
-      data: { ...validated, image },
-      select: accessorySelect,
-    });
+  data: {
+    ...validated,
+    image,
+    type: validated.type ?? "Other", // fallback value
+  },
+});
 
     return ok(newAccessory, 201);
   } catch (error) {

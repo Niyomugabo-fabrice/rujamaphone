@@ -109,7 +109,7 @@ model Accessory {
   // Specific Required Fields (Clean of storage rules)
   condition   Condition
   brand       String   // Flexible brand name (e.g., "Apple", "Samsung", "Anker", etc.)
-  type        String   // e.g., "Cable", "Case", "Charger", "Screen Protector"
+  type        String?   // e.g., "Cable", "Case", "Charger", "Screen Protector"
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
