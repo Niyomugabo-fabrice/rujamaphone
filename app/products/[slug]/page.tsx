@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
@@ -73,9 +74,23 @@ async function getProductForMetadata(identifier: string) {
   return smartphone || speaker || accessory;
 }
 
+async function getCanonicalProductUrl(identifier: string) {
+  const where = buildWhereClause(identifier);
+  const [smartphone, speaker, accessory] = await Promise.all([
+    prisma.smartphone.findUnique({ where, select: { id: true, slug: true } }),
+    prisma.speaker.findUnique({ where, select: { id: true, slug: true } }),
+    prisma.accessory.findUnique({ where, select: { id: true, slug: true } }),
+  ]);
+
+  const product = smartphone || speaker || accessory;
+  if (!product) return null;
+  return product.slug ? `/products/${product.slug}` : `/products/${product.id}`;
+}
+
 export async function generateMetadata({ params }: ProductDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProductForMetadata(slug);
+  const canonicalUrl = await getCanonicalProductUrl(slug);
 
   if (!product) {
     return {
@@ -86,7 +101,7 @@ export async function generateMetadata({ params }: ProductDetailPageProps): Prom
 
   const title = `${product.name} | Rujama Phones Shop`;
   const description = buildDescription(product);
-  const productUrl = `${baseUrl}/products/${slug}`;
+  const productUrl = canonicalUrl ? `${baseUrl}${canonicalUrl}` : `${baseUrl}/products/${slug}`;
   const firstImage = Array.isArray(product.image) ? product.image[0] : product.image;
   const imageUrl = absoluteUrl(firstImage);
 
@@ -120,7 +135,14 @@ export async function generateMetadata({ params }: ProductDetailPageProps): Prom
   };
 }
 
-export default function ProductDetailPage() {
+export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
+  const { slug } = await params;
+  const canonicalUrl = await getCanonicalProductUrl(slug);
+
+  if (canonicalUrl && canonicalUrl !== `/products/${slug}`) {
+    redirect(canonicalUrl);
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />

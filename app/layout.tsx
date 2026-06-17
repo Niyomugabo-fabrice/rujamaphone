@@ -3,6 +3,7 @@ import './globals.css';
 import { CartProvider } from '@/context/CartContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { Toaster } from 'sonner';
+import { GlobalNavbar } from '@/components/GlobalNavbar';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.rujamaphonesshop.com'),
@@ -101,6 +102,7 @@ export default function RootLayout({
       <body className="font-sans">
         <AuthProvider>
           <CartProvider>
+            <GlobalNavbar />
             {children}
             <Toaster position="top-right" />
           </CartProvider>
