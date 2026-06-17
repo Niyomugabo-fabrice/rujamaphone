@@ -61,10 +61,14 @@ export function Footer() {
             {/* Brand Info */}
             <div>
               <div className="flex items-center space-x-3 mb-5">
-                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-lg">
-                  <span className="text-[#820210] text-2xl font-bold">
-                    R
-                  </span>
+                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-lg overflow-hidden">
+                  <Image
+                    src="/image/logo.jpeg"
+                    alt="Rujama Phones Shop logo"
+                    width={40}
+                    height={40}
+                    className="rounded-full object-cover"
+                  />
                 </div>
 
                 <div>
