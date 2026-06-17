@@ -19,72 +19,26 @@ export function Contact() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="bg-white rounded-lg border border-border p-8">
-            <h2 className="text-2xl font-bold text-accent mb-6">Send us a Message</h2>
-            <form className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-4 py-2 bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                  placeholder=""
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  className="w-full px-4 py-2 bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                  placeholder="078 XXX XXX"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Email (Optional)
-                </label>
-                <input
-                  type="email"
-                  className="w-full px-4 py-2 bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                  
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Message
-                </label>
-                <textarea
-                  rows={5}
-                  className="w-full px-4 py-2 bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
-                  placeholder="Tell us how we can help you..."
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-lg font-semibold transition-all"
-              >
-                Send Message
-              </button>
-            </form>
-          </div>
-
+        <div className="grid gap-10 lg:grid-cols-[1.3fr_0.9fr]">
           <div className="space-y-6">
-            <div className="bg-white rounded-lg border border-border p-8">
-              <h2 className="text-2xl font-bold text-accent mb-6">Contact Information</h2>
+            <div className="bg-white rounded-[32px] border border-border p-10 shadow-[0_20px_60px_rgba(0,0,0,0.04)]">
+              <h2 className="text-3xl font-bold text-accent mb-6 text-center block mx-auto max-w-max">
+                Contact Information
+              </h2>
+              <p className="max-w-2xl text-muted-foreground mb-8 mx-auto text-center">
+                Reach out to us any time through phone or WhatsApp. We are here to help with product questions, orders, and support.
+              </p>
+
               <div className="space-y-4">
                 <a
                   href="tel:0788773754"
-                  className="flex items-start space-x-4 p-4 hover:bg-secondary rounded-lg transition-colors"
+                  className="flex items-center gap-4 rounded-3xl border border-border/80 bg-secondary p-5 transition hover:border-primary hover:bg-primary/5"
                 >
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Phone className="w-6 h-6 text-primary" />
+                  <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-primary/10 text-primary">
+                    <Phone className="w-6 h-6" />
                   </div>
                   <div>
-                    <div className="font-semibold text-accent mb-1">Phone</div>
+                    <div className="font-semibold text-accent">Phone</div>
                     <div className="text-muted-foreground">0788773754</div>
                   </div>
                 </a>
@@ -93,34 +47,34 @@ export function Contact() {
                   href="https://wa.me/250788773758"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-start space-x-4 p-4 hover:bg-secondary rounded-lg transition-colors"
+                  className="flex items-center gap-4 rounded-3xl border border-border/80 bg-secondary p-5 transition hover:border-emerald-500 hover:bg-emerald-50"
                 >
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <MessageCircle className="w-6 h-6 text-green-600" />
+                  <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-green-100 text-green-600">
+                    <MessageCircle className="w-6 h-6" />
                   </div>
                   <div>
-                    <div className="font-semibold text-accent mb-1">WhatsApp</div>
+                    <div className="font-semibold text-accent">WhatsApp</div>
                     <div className="text-muted-foreground">Chat with us instantly</div>
                   </div>
                 </a>
 
-                <div className="flex items-start space-x-4 p-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <MapPin className="w-6 h-6 text-primary" />
+                <div className="flex items-center gap-4 rounded-3xl border border-border/80 bg-secondary p-5">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-primary/10 text-primary">
+                    <MapPin className="w-6 h-6" />
                   </div>
                   <div>
-                    <div className="font-semibold text-accent mb-1">Location</div>
+                    <div className="font-semibold text-accent">Location</div>
                     <div className="text-muted-foreground">Nyarugenge, Carfreezone</div>
                     <div className="text-muted-foreground">Kigali, Rwanda</div>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4 p-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Clock className="w-6 h-6 text-primary" />
+                <div className="flex items-center gap-4 rounded-3xl border border-border/80 bg-secondary p-5">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-primary/10 text-primary">
+                    <Clock className="w-6 h-6" />
                   </div>
                   <div>
-                    <div className="font-semibold text-accent mb-1">Business Hours</div>
+                    <div className="font-semibold text-accent">Business Hours</div>
                     <div className="text-muted-foreground">Mon - Sat: 8:00 AM - 8:00 PM</div>
                     <div className="text-muted-foreground">Sunday: 10:00 AM - 6:00 PM</div>
                   </div>
@@ -128,75 +82,60 @@ export function Contact() {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg border border-border p-8">
-              <h2 className="text-2xl font-bold text-accent mb-6">Follow Us</h2>
-              <div className="flex flex-wrap gap-3">
+            <div className="bg-white rounded-[32px] border border-border p-10 shadow-[0_20px_60px_rgba(0,0,0,0.04)]">
+              <h2 className="text-3xl font-bold text-accent mb-6">Quick Response Guarantee</h2>
+              <p className="text-muted-foreground leading-7">
+                We typically respond to all inquiries within 2 hours during business hours. For urgent matters, WhatsApp is the fastest way to reach us.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="bg-white rounded-[32px] border border-border p-10 shadow-[0_20px_60px_rgba(0,0,0,0.04)]">
+              <h2 className="text-3xl font-bold text-accent mb-6 text-center block mx-auto max-w-max">
+                Follow Us
+              </h2>
+              <p className="text-muted-foreground mb-6 text-center mx-auto max-w-2xl">
+                Stay updated with our latest offers and product news on social media.
+              </p>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                 <a
                   href="https://web.facebook.com/search/top?q=rujama_phones_shop"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors"
+                  className="flex h-16 items-center justify-center rounded-3xl bg-blue-600 text-white transition hover:bg-blue-700"
                   aria-label="Facebook"
                 >
-                  <Facebook className="w-7 h-7 text-white" />
+                  <Facebook className="w-7 h-7" />
                 </a>
                 <a
                   href="https://www.instagram.com/rujama_phones_shop/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-14 h-14 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-full flex items-center justify-center hover:opacity-90 transition-opacity"
+                  className="flex h-16 items-center justify-center rounded-3xl bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 text-white transition hover:opacity-90"
                   aria-label="Instagram"
                 >
-                  <Instagram className="w-7 h-7 text-white" />
+                  <Instagram className="w-7 h-7" />
                 </a>
                 <a
                   href="https://www.tiktok.com/@rujamaphones"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-14 h-14 bg-black rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
+                  className="flex h-16 items-center justify-center rounded-3xl bg-black text-white transition hover:bg-gray-800"
                   aria-label="TikTok"
                 >
-                  <TikTokIcon className="w-7 h-7 text-white" />
+                  <TikTokIcon className="w-7 h-7" />
                 </a>
                 <a
                   href="https://wa.me/250788773758"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-14 h-14 bg-green-600 rounded-full flex items-center justify-center hover:bg-green-700 transition-colors"
+                  className="flex h-16 items-center justify-center rounded-3xl bg-green-600 text-white transition hover:bg-green-700"
                   aria-label="WhatsApp"
                 >
-                  <MessageCircle className="w-7 h-7 text-white" />
+                  <MessageCircle className="w-7 h-7" />
                 </a>
               </div>
-            </div>
-
-            <div className="bg-white rounded-lg border border-border p-8">
-              <h2 className="text-2xl font-bold text-accent mb-6">Visit Our Store</h2>
-              <div className="aspect-video w-full rounded-lg overflow-hidden mb-4">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.5154812803776!2d30.0588!3d-1.9536!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMcKwNTcnMTMuMCJTIDMwwrAwMycxOS43IkU!5e0!3m2!1sen!2srw!4v1234567890!5m2!1sen!2srw"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Rujama Phones Shop Location"
-                />
-              </div>
-              <p className="text-sm text-muted-foreground">
-                <strong className="text-accent">Rujama Phones Shop</strong><br />
-                Nyarugenge, Carfreezone<br />
-                Kigali, Rwanda
-              </p>
-            </div>
-
-            <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg border border-border p-8">
-              <h3 className="text-xl font-bold text-accent mb-3">Quick Response Guarantee</h3>
-              <p className="text-muted-foreground">
-                We typically respond to all inquiries within 2 hours during business hours.
-                For urgent matters, WhatsApp is the fastest way to reach us!
-              </p>
             </div>
           </div>
         </div>
