@@ -1,13 +1,12 @@
 "use client";
 
-import { useCallback, useMemo, useState, useEffect } from "react";
-import { Search, SlidersHorizontal, ChevronDown, X } from "lucide-react";
+import { useCallback, useState, useEffect } from "react";
+import { SlidersHorizontal, ChevronDown, X } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
 import FilterDrawer from "@/components/FilterDrawer";
 import FilterChips from "@/components/FilterChips";
 import { PriceRangeSlider } from "@/components/PriceRangeSlider";
 import type { Product, ProductFilters, ProductCategory } from "@/types/product";
-// import { useSearchParams } from "next/navigation";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 interface ProductsGridProps {
@@ -16,20 +15,25 @@ interface ProductsGridProps {
 
 export default function ProductsGrid({ initialCategory }: ProductsGridProps) {
   const searchParams = useSearchParams();
+  const defaultLimit = 24;
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [limit, setLimit] = useState(defaultLimit);
   const [total, setTotal] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
   const [filters, setFilters] = useState<ProductFilters>({
-  category: initialCategory,
-});
+    category: initialCategory,
+  });
 
   const [tempFilters, setTempFilters] = useState<ProductFilters>({
-  category: initialCategory,
-});
+    category: initialCategory,
+  });
+
+  const handleMobileFiltersChange = useCallback((nextFilters: ProductFilters) => {
+    setTempFilters(nextFilters);
+  }, []);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [ignoreUrlSearch, setIgnoreUrlSearch] = useState(false);
@@ -38,6 +42,8 @@ export default function ProductsGrid({ initialCategory }: ProductsGridProps) {
   const pathname = usePathname();
   const searchParamValue = searchParams.get("search") || "";
   const effectiveSearch = ignoreUrlSearch ? "" : searchParamValue;
+  const isDefaultGroupedView =
+    !effectiveSearch && !filters.category && !filters.minPrice && !filters.maxPrice;
 
   useEffect(() => {
     if (initialCategory) {
@@ -58,7 +64,6 @@ const clearUrlSearch = useCallback(() => {
   setIgnoreUrlSearch(true);
   const params = new URLSearchParams(searchParams.toString());
   params.delete("search");
-  params.delete("page");
 
   const queryString = params.toString();
   router.replace(queryString ? `${pathname}?${queryString}` : pathname, { scroll: false });
@@ -67,63 +72,62 @@ const clearUrlSearch = useCallback(() => {
 const fetchProducts = useCallback(async (signal?: AbortSignal) => {
   setIsLoading(true);
   try {
-    // 1. Build parameters from current state and URL
-    const params = new URLSearchParams();
-    
-    // Pagination and Sorting
-    params.set("page", String(page));
-    params.set("limit", "12");
-    params.set("sort", sortBy);
+    let response: Response;
+    let data: any;
 
-    // Search Query (Directly from URL)
-    if (effectiveSearch) params.set("search", effectiveSearch);
+    if (isDefaultGroupedView) {
+      response = await fetch(
+        "/api/products/preview?smartphoneLimit=9&speakerLimit=6&accessoryLimit=9",
+        { signal }
+      );
+      if (!response.ok) throw new Error("Failed to fetch products preview");
+      data = await response.json();
 
-    // Standard Filters
-    if (filters.category) params.set("category", filters.category);
-    if (filters.brand) params.set("brand", filters.brand);
-    if (filters.condition) params.set("condition", filters.condition);
-    if (filters.minPrice) params.set("minPrice", String(filters.minPrice));
-    if (filters.maxPrice) params.set("maxPrice", String(filters.maxPrice));
-    
-    // Category-specific filters
-    if (filters.storage) params.set("storage", filters.storage);
-    if (filters.batteryLife) params.set("batteryLife", filters.batteryLife);
-    if (filters.type) params.set("type", filters.type);
+      const smartphones = Array.isArray(data.data?.smartphones) ? data.data.smartphones : [];
+      const speakers = Array.isArray(data.data?.speakers) ? data.data.speakers : [];
+      const accessories = Array.isArray(data.data?.accessories) ? data.data.accessories : [];
+      const combined = [...smartphones, ...speakers, ...accessories];
 
-    // 2. Execute fetch
-    const response = await fetch(`/api/products?${params.toString()}`, { signal });
-    
-    if (!response.ok) throw new Error("Failed to fetch products");
-    
-    const data = await response.json();
+      setProducts(combined);
+      setTotal(combined.length);
+      setHasMore(false);
+    } else {
+      const params = new URLSearchParams();
+      params.set("page", String(page));
+      params.set("limit", String(limit));
+      params.set("sort", sortBy);
 
-    // 3. Update state
-    setProducts(data.data || []);
-    setTotal(data.total || 0);
-    setTotalPages(data.totalPages || 1);
-    
+      if (effectiveSearch) params.set("search", effectiveSearch);
+      if (filters.category) params.set("category", filters.category);
+      if (filters.minPrice) params.set("minPrice", String(filters.minPrice));
+      if (filters.maxPrice) params.set("maxPrice", String(filters.maxPrice));
+
+      response = await fetch(`/api/products?${params.toString()}`, { signal });
+      if (!response.ok) throw new Error("Failed to fetch products");
+      data = await response.json();
+
+      setProducts(Array.isArray(data.data) ? data.data : []);
+      setTotal(typeof data.total === "number" ? data.total : 0);
+      setHasMore(typeof data.total === "number" ? data.total > (data.data?.length ?? 0) : false);
+    }
   } catch (error) {
     if ((error as DOMException).name === "AbortError") return;
     console.error("SEARCH_API_ERROR:", error);
     setProducts([]);
+    setTotal(0);
+    setHasMore(false);
   } finally {
     if (!signal?.aborted) {
       setIsLoading(false);
     }
   }
-}, [effectiveSearch, filters, page, sortBy]);
+}, [effectiveSearch, filters, isDefaultGroupedView, limit, sortBy, page]);
 
-  useEffect(() => {
-    const controller = new AbortController();
-    fetchProducts(controller.signal);
-    return () => controller.abort();
-  }, [fetchProducts]);
-
-const handleMobileFiltersChange = useCallback((newFilters: ProductFilters) => {
-  setTempFilters(newFilters); // ONLY TEMP
-}, []);
-
-
+useEffect(() => {
+  const controller = new AbortController();
+  fetchProducts(controller.signal);
+  return () => controller.abort();
+}, [fetchProducts]);
 
 
  const handleFilterChange = useCallback(<K extends keyof ProductFilters,>(key: K, value: ProductFilters[K]) => {
@@ -143,6 +147,7 @@ const handleMobileFiltersChange = useCallback((newFilters: ProductFilters) => {
       [key]: value,
     };
   });
+  setLimit(defaultLimit);
   setPage(1);
 }, [clearUrlSearch]);
 
@@ -151,12 +156,15 @@ const handleMobileFiltersChange = useCallback((newFilters: ProductFilters) => {
     const newFilters = { ...filters };
     delete newFilters[key];
     setFilters(newFilters);
+    setLimit(defaultLimit);
     setPage(1);
   }, [clearUrlSearch, filters]);
 
  
 const handleClearAll = useCallback(() => {
   setFilters({ category: initialCategory });
+  setTempFilters({ category: initialCategory });
+  setLimit(defaultLimit);
   setPage(1);
   router.push(pathname);
 }, [initialCategory, pathname, router]);
@@ -169,31 +177,7 @@ const formatPrice = (price: number) => {
   }).format(price);
 };
 
-const brandOptions = useMemo(() => getBrandsForCategory(filters.category), [filters.category]);
 
-function getBrandsForCategory(category?: ProductCategory): string[] {
-  switch (category) {
-    case "SMARTPHONE":
-      return ["APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS", "TECNO", "INFINIX"];
-    case "SPEAKER":
-      return ["JBL", "SONY", "BOSE", "APPLE", "ANKER", "BEATS", "ULTIMATE_EARS", "MARSHALL", "SONOS"];
-    case "ACCESSORY":
-      return [
-        "APPLE", "SAMSUNG", "ANKER", "BASEUS", "GENERIC", "ONEPLUS", "SONY",
-        "XIAOMI", "SPIGEN", "BELKIN", "OTTERBOX", "JBL", "BEATS", "BOSE",
-        "MOPHIE", "CASETIFY", "GOOGLE", "UAG", "JABRA", "NOMAD", "NOTHING",
-        "MOUS", "SENNHEISER", "RAVPOWER",
-      ];
-    default:
-      return [
-        "APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS", "TECNO", "INFINIX",
-        "JBL", "SONY", "BOSE", "ANKER", "BEATS", "ULTIMATE_EARS", "MARSHALL",
-        "SONOS", "BASEUS", "GENERIC", "SPIGEN", "BELKIN", "OTTERBOX", "MOPHIE",
-        "CASETIFY", "UAG", "JABRA", "NOMAD", "NOTHING", "MOUS", "SENNHEISER",
-        "RAVPOWER",
-      ];
-  }
-}
 
   return (
     <div className="w-full">
@@ -305,104 +289,6 @@ function getBrandsForCategory(category?: ProductCategory): string[] {
                   onChange={handleFilterChange}
                 />
               </div>
-
-              {/* Brand Filter */}
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Brand</h3>
-                <div className="space-y-2 max-h-48 overflow-y-auto">
-                  {brandOptions.map((brand) => (
-                    <label key={brand} className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="brand"
-                        value={brand}
-                        checked={filters.brand === brand}
-                        onChange={(e) => handleFilterChange("brand", e.target.value)}
-                        className="w-4 h-4 text-red-600"
-                      />
-                      <span>{brand}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Condition Filter */}
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Condition</h3>
-                <div className="space-y-2">
-                  {["NEW", "USED"].map((cond) => (
-                    <label key={cond} className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="condition"
-                        value={cond}
-                        checked={filters.condition === cond}
-                        onChange={(e) => handleFilterChange("condition", e.target.value)}
-                        className="w-4 h-4 text-red-600"
-                      />
-                      <span>{cond}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Category-specific filters */}
-              {filters.category === "SMARTPHONE" && (
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">Storage</h3>
-                  <div className="space-y-2">
-                    {["GB64", "GB128", "GB256", "GB512", "TB1"].map((storage) => (
-                      <label key={storage} className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="storage"
-                          value={storage}
-                          checked={filters.storage === storage}
-                          onChange={(e) => handleFilterChange("storage", e.target.value)}
-                          className="w-4 h-4 text-red-600"
-                        />
-                        <span>{storage}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {filters.category === "SPEAKER" && (
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">Battery Life</h3>
-                  <input
-                    type="text"
-                    value={filters.batteryLife || ""}
-                    onChange={(e) => handleFilterChange("batteryLife", e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                    placeholder="e.g., 12 hours"
-                  />
-                </div>
-              )}
-
-              {filters.category === "ACCESSORY" && (
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">Type</h3>
-                  <div className="space-y-2">
-                    {["Cable", "Case", "Charger", "Screen Protector", "Headphones", "Other"].map(
-                      (type) => (
-                        <label key={type} className="flex items-center gap-2 cursor-pointer">
-                          <input
-                            type="radio"
-                            name="type"
-                            value={type}
-                            checked={filters.type === type}
-                            onChange={(e) => handleFilterChange("type", e.target.value)}
-                            className="w-4 h-4 text-red-600"
-                          />
-                          <span>{type}</span>
-                        </label>
-                      )
-                    )}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 
@@ -435,33 +321,70 @@ function getBrandsForCategory(category?: ProductCategory): string[] {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {products.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </div>
+                {isDefaultGroupedView ? (
+                  <div className="space-y-12">
+                    {[
+                      { title: "Smartphones", category: "SMARTPHONE" as const },
+                      { title: "Speakers", category: "SPEAKER" as const },
+                      { title: "Accessories", category: "ACCESSORY" as const },
+                    ].map((section) => {
+                      const sectionProducts = products.filter(
+                        (product) => product.category === section.category
+                      );
 
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <div className="flex items-center justify-center gap-2 mt-8 p-4 border-t border-gray-200">
-                    <button
-                      onClick={() => setPage((p) => Math.max(1, p - 1))}
-                      disabled={page === 1}
-                      className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Previous
-                    </button>
-                    <span className="px-4 py-2">
-                      Page {page} of {totalPages}
-                    </span>
-                    <button
-                      onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                      disabled={page === totalPages}
-                      className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Next
-                    </button>
+                      if (sectionProducts.length === 0) return null;
+
+                      return (
+                        <section key={section.category}>
+                          <div className="mb-6 flex items-center justify-between">
+                            <div>
+                              <h2 className="text-3xl font-bold text-accent">
+                                {section.title}
+                              </h2>
+                              <p className="text-sm text-muted-foreground">
+                                Browse the latest {section.title.toLowerCase()}.
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const params = new URLSearchParams(searchParams.toString());
+                                params.set("category", section.category);
+                                router.push(`${pathname}?${params.toString()}`);
+                              }}
+                              className="text-sm text-primary hover:underline"
+                            >
+                              View all
+                            </button>
+                          </div>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {sectionProducts.map((product) => (
+                              <ProductCard key={product.id} product={product} />
+                            ))}
+                          </div>
+                        </section>
+                      );
+                    })}
                   </div>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {products.map((product) => (
+                        <ProductCard key={product.id} product={product} />
+                      ))}
+                    </div>
+                    {hasMore && (
+                      <div className="flex justify-center mt-8">
+                        <button
+                          type="button"
+                          onClick={() => setLimit((current) => current + defaultLimit)}
+                          className="px-6 py-3 bg-primary text-white rounded-xl shadow hover:bg-primary/90 transition"
+                        >
+                          Load More
+                        </button>
+                      </div>
+                    )}
+                  </>
                 )}
               </>
             )}
@@ -480,7 +403,7 @@ function getBrandsForCategory(category?: ProductCategory): string[] {
           clearUrlSearch();
           setFilters(nextFilters);
           setTempFilters(nextFilters);
-          setPage(1);
+          setLimit(defaultLimit);
         }}
       />
     </div>

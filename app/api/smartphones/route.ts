@@ -1,5 +1,8 @@
 import { v2 as cloudinary } from "cloudinary";
 import prisma from "@/lib/prisma";
+import { ZodError } from "zod";
+
+// 
 import {
   deleteByIdQuerySchema,
   smartphoneFormSchema,
@@ -134,6 +137,12 @@ export async function POST(request: Request) {
 
     return ok(newSmartphone, 201);
   } catch (error) {
+    if (error instanceof ZodError) {
+      return fail("Validation failed", 400, {
+        errors: error.flatten().fieldErrors,
+      });
+    }
+
     return handleApiError("smartphones.POST", error);
   }
 }

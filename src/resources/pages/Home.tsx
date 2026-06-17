@@ -1,20 +1,12 @@
 "use client";
 
-import { useMemo, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowRight, Smartphone, Headphones, Speaker, Zap, Shield, Truck } from 'lucide-react';
 import { ProductCard } from '@/components/ProductCard';
 import Link from 'next/link';
 import Image from 'next/image';
 import { CheckCircle } from "lucide-react";
 import type { Product } from "@/types/product";
-
-
-
-
-// src/types/product.ts
-
-
-
 
 export function Home() {
 
@@ -92,29 +84,32 @@ useEffect(() => {
 
 
 
-const [products, setProducts] = useState<Product[]>([]);
-const featuredProducts = useMemo(() => products.slice(0, 4), [products]);
-const galleryImages = useMemo(
-  () =>
-    products
-      .slice(0, 8)
-      .map((product) => product.image?.[0])
-      .filter((image): image is string => Boolean(image)),
-  [products]
-);
+const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [speakerProducts, setSpeakerProducts] = useState<Product[]>([]);
+  const [accessoryProducts, setAccessoryProducts] = useState<Product[]>([]);
 
 useEffect(() => {
   async function fetchProducts() {
     try {
-      const res = await fetch("/api/products?limit=8");
+      const res = await fetch(
+        "/api/products/preview?smartphoneLimit=9&speakerLimit=6&accessoryLimit=9"
+      );
       const data = await res.json();
 
-      console.log("API RESPONSE:", data);
-
-      setProducts(Array.isArray(data.data) ? data.data : []);
+      if (data.success) {
+        setFeaturedProducts(Array.isArray(data.data.smartphones) ? data.data.smartphones : []);
+        setSpeakerProducts(Array.isArray(data.data.speakers) ? data.data.speakers : []);
+        setAccessoryProducts(Array.isArray(data.data.accessories) ? data.data.accessories : []);
+      } else {
+        setFeaturedProducts([]);
+        setSpeakerProducts([]);
+        setAccessoryProducts([]);
+      }
     } catch (err) {
       console.error(err);
-      setProducts([]);
+      setFeaturedProducts([]);
+      setSpeakerProducts([]);
+      setAccessoryProducts([]);
     }
   }
 
@@ -167,11 +162,11 @@ useEffect(() => {
                     
                     {/* The Core Dot */}
                     <span className="relative inline-flex w-3 h-3 rounded-full bg-primary shadow-[0_0_12px_rgba(130,2,16,0.6)]">
-  <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-75 animate-ping [animation-duration:1s]"></span>
-  <span className="relative inline-flex w-3 h-3 rounded-full bg-primary"></span>
-</span>
-{/* <span className="relative inline-flex w-3 h-3 rounded-full bg-primary shadow-[0_0_12px_rgba(130,2,16,0.6)]"></span> */}
- </span>
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-75 animate-ping [animation-duration:1s]"></span>
+                    <span className="relative inline-flex w-3 h-3 rounded-full bg-primary"></span>
+                  </span>
+                  {/* <span className="relative inline-flex w-3 h-3 rounded-full bg-primary shadow-[0_0_12px_rgba(130,2,16,0.6)]"></span> */}
+                  </span>
 
                   <span>Top Up Services</span>
                 </Link>
@@ -264,39 +259,89 @@ useEffect(() => {
             </h2>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+          <div className="space-y-12">
+            {featuredProducts.length > 0 && (
+              <section className="rounded-3xl bg-white p-8 shadow-sm">
+                <div className="mb-8 text-center">
+                  <span className="inline-flex rounded-full bg-primary/10 px-4 py-1 text-sm font-semibold text-primary">
+                    Smartphone Collection
+                  </span>
+                  <h2 className="mt-4 text-3xl font-bold text-accent">
+                    Latest smartphone deals in Kigali
+                  </h2>
+                  <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground">
+                    Browse top phones with great prices, latest specs, and trusted warranties.
+                  </p>
+                </div>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {featuredProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+                <div className="mt-8 text-center">
+                  <Link href="/products?category=SMARTPHONE" className="text-sm font-semibold text-primary hover:underline">
+                    View all smartphones
+                  </Link>
+                </div>
+              </section>
+            )}
+
+            {speakerProducts.length > 0 && (
+              <section className="rounded-3xl bg-white p-8 shadow-sm">
+                <div className="mb-8 text-center">
+                  <span className="inline-flex rounded-full bg-primary/10 px-4 py-1 text-sm font-semibold text-primary">
+                    Speaker Collection
+                  </span>
+                  <h2 className="mt-4 text-3xl font-bold text-accent">
+                    Top speaker picks for your home and car
+                  </h2>
+                  <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground">
+                    Discover curated speakers with powerful sound, stylish design, and reliable performance for every room and ride.
+                  </p>
+                </div>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {speakerProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+                <div className="mt-8 text-center">
+                  <Link href="/products?category=SPEAKER" className="text-sm font-semibold text-primary hover:underline">
+                    View all speakers
+                  </Link>
+                </div>
+              </section>
+            )}
+
+            {accessoryProducts.length > 0 && (
+              <section className="rounded-3xl bg-white p-8 shadow-sm">
+                <div className="mb-8 text-center">
+                  <span className="inline-flex rounded-full bg-primary/10 px-4 py-1 text-sm font-semibold text-primary">
+                    Accessories Collection
+                  </span>
+                  <h2 className="mt-4 text-3xl font-bold text-accent">
+                    Essential accessories for your device
+                  </h2>
+                  <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground">
+                    Find the perfect charging, protection, and audio accessories to complete your setup.
+                  </p>
+                </div>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {accessoryProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+                <div className="mt-8 text-center">
+                  <Link href="/products?category=ACCESSORY" className="text-sm font-semibold text-primary hover:underline">
+                    View all accessories
+                  </Link>
+                </div>
+              </section>
+            )}
           </div>
 
         </div>
       </section>
 
-      {/* 🔥 GALLERY */}
-      <section className="py-12 sm:py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-
-          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-10">
-            Product Gallery
-          </h2>
-
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-            {galleryImages.map((image, i) => (
-              <div key={image} className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
-              <Image
-                src={image}
-                alt={`Product gallery ${i + 1}`}
-                fill
-                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                className="rounded-lg hover:scale-105 transition w-full"
-              />
-              </div>
-            ))}
-          </div>
-
-        </div>
-      </section>
 
       {/* 🔥 FEATURES */}
       <section className="py-12 bg-white">
@@ -332,159 +377,3 @@ useEffect(() => {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// export function Home() {
-//   const [products, setProducts] = useState<Product[]>([]);
-//   const [isLoading, setIsLoading] = useState(true);
-
-//   useEffect(() => {
-//     // Fetching data from your API
-//     fetch('/api/products?limit=8')
-//       .then((res) => res.json())
-//       .then((data) => {
-//         setProducts(data.data || []);
-//         setIsLoading(false);
-//       })
-//       .catch((err) => {
-//         console.error("Failed to fetch products:", err);
-//         setIsLoading(false);
-//       });
-//   }, []);
-
-//   const featuredProducts = products.slice(0, 4);
-//   const galleryImages = products
-//   .slice(0, 8)
-//   .map((p) => (Array.isArray(p.image) ? p.image[0] : p.image))
-//   .filter((img): img is string => typeof img === 'string');
-
-//   return (
-//     <div>
-//       {/* Hero Section */}
-//     <section className="relative bg-white py-16">
-//   <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
-    
-//     {/* Text Focus */}
-//     <div className="space-y-6">
-//       <h1 className="text-5xl font-extrabold text-gray-900 leading-tight">
-//         Tech for Kigali.<br />
-//         <span className="text-primary">Payment for You.</span>
-//       </h1>
-      
-//       <p className="text-xl text-gray-600">
-//         Premium phones and audio at your fingertips. 
-//         <br className="hidden md:block" />
-//         <strong>Flexible installments</strong> and same-day delivery.
-//       </p>
-
-//       <div className="flex gap-4">
-//         <Link href="/products" className="px-8 py-4 bg-primary text-white rounded-xl font-bold hover:bg-primary/90">
-//           Browse Shop
-//         </Link>
-//         <Link href="/upgrade" className="px-8 py-4 bg-gray-100 text-gray-900 rounded-xl font-bold hover:bg-gray-200">
-//           Installment Plan
-//         </Link>
-//       </div>
-//     </div>
-
-//     {/* Image Focus */}
-//     <div className="relative">
-//       <img 
-//         src="/hero-tech.jpg" 
-//         alt="Premium Gadgets" 
-//         className="rounded-3xl shadow-2xl w-full"
-//       />
-//       <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-gray-100">
-//         <p className="text-sm font-bold text-gray-900">⚡ Instant Trade-in</p>
-//         <p className="text-xs text-gray-500">Upgrade in minutes.</p>
-//       </div>
-//     </div>
-
-//   </div>
-// </section>
-//       {/* Category Links */}
-//       <section className="py-12 bg-white">
-//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-//           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-//             <Link href="/products?category=SMARTPHONE" className="group bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl p-8 hover:shadow-xl transition-all hover:-translate-y-1">
-//               <div className="w-16 h-16 bg-primary rounded-xl flex items-center justify-center mb-4"><Smartphone className="w-8 h-8 text-white" /></div>
-//               <h3 className="text-xl font-bold text-accent mb-2">Smartphones</h3>
-//             </Link>
-//             <Link href="/products?category=ACCESSORY" className="group bg-gradient-to-br from-accent/10 to-accent/5 rounded-xl p-8 hover:shadow-xl transition-all hover:-translate-y-1">
-//               <div className="w-16 h-16 bg-accent rounded-xl flex items-center justify-center mb-4"><Headphones className="w-8 h-8 text-white" /></div>
-//               <h3 className="text-xl font-bold text-accent mb-2">Accessories</h3>
-//             </Link>
-//             <Link href="/products?category=SPEAKER" className="group bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl p-8 hover:shadow-xl transition-all hover:-translate-y-1">
-//               <div className="w-16 h-16 bg-primary rounded-xl flex items-center justify-center mb-4"><Speaker className="w-8 h-8 text-white" /></div>
-//               <h3 className="text-xl font-bold text-accent mb-2">Speakers</h3>
-//             </Link>
-//           </div>
-//         </div>
-//       </section>
-
-//       {/* Featured Products */}
-//       <section className="py-16 bg-secondary">
-//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-//           <div className="text-center mb-12">
-//             <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4">Featured Products</h2>
-//           </div>
-//           {isLoading ? (
-//             <div className="text-center">Loading products...</div>
-//           ) : (
-//             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-//               {featuredProducts.map((product) => (
-//                 <ProductCard key={product.id} product={product} />
-//               ))}
-//             </div>
-//           )}
-//         </div>
-//       </section>
-
-//       {/* Gallery Section - Only renders if there are images */}
-//       {galleryImages.length > 0 && (
-//         <section className="py-16 bg-secondary">
-//           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-//             <div className="text-center mb-12">
-//               <h2 className="text-3xl md:text-4xl font-bold text-accent mb-4">Product Gallery</h2>
-//             </div>
-//             <Masonry columnsCount={4} gutter="16px">
-//               {galleryImages.map((image, index) => (
-//                 <div key={index} className="overflow-hidden rounded-lg hover:shadow-xl transition-all cursor-pointer">
-//                   <img src={image} alt={`Gallery ${index + 1}`} className="w-full h-auto hover:scale-110 transition-transform duration-300" />
-//                 </div>
-//               ))}
-//             </Masonry>
-//           </div>
-//         </section>
-//       )}
-//     </div>
-//   );
-// }

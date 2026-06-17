@@ -17,6 +17,7 @@ export default function SmartphoneTable({ data, onViewProduct }: SmartphoneTable
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditingImages, setIsEditingImages] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -93,6 +94,7 @@ export default function SmartphoneTable({ data, onViewProduct }: SmartphoneTable
   const handleOpenEditModal = (e: React.MouseEvent, item: any) => {
     e.stopPropagation(); // Avoid triggering row-click viewing modal
     setEditingItem(item);
+    setFormError(null);
     setExistingImages(item.image || []);
     setStagedDeletedImages([]);
     setNewImageFiles([]);
@@ -213,7 +215,8 @@ export default function SmartphoneTable({ data, onViewProduct }: SmartphoneTable
   // Submit handler for editing/updating an asset via partial modification (PATCH)
 const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
+  setIsSubmitting(true);
+  setFormError(null);
 
     try {
       const formData = new FormData(e.currentTarget);
@@ -275,9 +278,11 @@ const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       }
 
       newImageFiles.forEach((f) => URL.revokeObjectURL(f.preview));
+      setFormError(null);
       setEditingItem(null);
     } catch (err) {
       console.error("Update synchronization failed:", err);
+      setFormError((err as Error)?.message || "Update synchronization failed");
     } finally {
       setIsSubmitting(false);
     }
@@ -505,6 +510,7 @@ const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                   type="button"
                   onClick={() => {
                     setEditingItem(viewingItem);
+                    setFormError(null);
                     setExistingImages(viewingItem.image || []);
                     setStagedDeletedImages([]);
                     setNewImageFiles([]);
@@ -556,7 +562,7 @@ const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
             {/* Interactive Image Gallery Cluster Interface */}
             <div className="border-t border-slate-100 pt-1.5">
               <div className="flex items-center justify-between gap-1 mb-1">
-                <label className="block text-[7px] uppercase font-bold text-slate-500 tracking-wider flex items-center gap-0.5">
+                <label className="text-[7px] uppercase font-bold text-slate-500 tracking-wider flex items-center gap-0.5">
                   <Image className="w-2.5 h-2.5 text-[#D90429]" /> Photos
                 </label>
 
@@ -670,7 +676,7 @@ const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
               </h3>
               <button 
                 type="button" 
-                onClick={() => setEditingItem(null)} 
+                onClick={() => { setEditingItem(null); setFormError(null); }} 
                 className="text-slate-400 hover:text-slate-600 transition-colors"
               >
                 <X className="w-4 h-4" />
@@ -692,31 +698,23 @@ const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
               <div className="grid grid-cols-2 gap-1.5">
                 <div>
                   <label className="block text-[7px] uppercase font-bold text-slate-500 mb-0.5 tracking-wider">Brand</label>
-                  <select 
-                    name="brand" 
-                    defaultValue={editingItem.brand} 
+                  <input
+                    type="text"
+                    name="brand"
+                    defaultValue={editingItem.brand}
                     className="w-full bg-slate-50 border border-red-100 rounded p-1 text-xs focus:outline-none text-slate-900 font-medium"
-                  >
-                    <option value="APPLE">APPLE</option>
-                    <option value="SAMSUNG">SAMSUNG</option>
-                    <option value="GOOGLE">GOOGLE</option>
-                    <option value="XIAOMI">XIAOMI</option>
-                    <option value="ONEPLUS">ONEPLUS</option>
-                  </select>
+                    placeholder="Brand"
+                  />
                 </div>
                 <div>
                   <label className="block text-[7px] uppercase font-bold text-slate-500 mb-0.5 tracking-wider">Storage</label>
-                  <select 
-                    name="storage" 
-                    defaultValue={editingItem.storage} 
+                  <input
+                    type="text"
+                    name="storage"
+                    defaultValue={editingItem.storage}
                     className="w-full bg-slate-50 border border-red-100 rounded p-1 text-xs focus:outline-none text-slate-900 font-medium"
-                  >
-                    <option value="GB64">64 GB</option>
-                    <option value="GB128">128 GB</option>
-                    <option value="GB256">256 GB</option>
-                    <option value="GB512">512 GB</option>
-                    <option value="TB1">1 TB</option>
-                  </select>
+                    placeholder="e.g. GB128 or 128 GB"
+                  />
                 </div>
               </div>
 
@@ -746,7 +744,7 @@ const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
               {/* --- IMAGE CLUSTER MANAGEMENT ENGINE (EDIT CONTEXT) --- */}
               <div className="border-t border-b border-red-50 py-1.5 my-1.5">
-                <label className="block text-[7px] uppercase font-bold text-slate-500 mb-1 tracking-wider flex items-center gap-1">
+                <label className="text-[7px] uppercase font-bold text-slate-500 mb-1 tracking-wider flex items-center gap-1">
                   <Image className="w-2.5 h-2.5 text-[#D90429]" /> Photos
                 </label>
                 
@@ -812,10 +810,14 @@ const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                 />
               </div>
 
+              {formError && (
+                <div className="text-center text-red-600 text-xs font-bold py-2">{formError}</div>
+              )}
+
               <div className="flex justify-end gap-1.5 pt-2 border-t border-red-50 sticky bottom-0 bg-white">
                 <button 
                   type="button" 
-                  onClick={() => setEditingItem(null)} 
+                  onClick={() => { setEditingItem(null); setFormError(null); }} 
                   className="px-2 py-1 text-[8px] font-bold text-slate-500 hover:text-slate-800 transition-colors"
                 >
                   Cancel

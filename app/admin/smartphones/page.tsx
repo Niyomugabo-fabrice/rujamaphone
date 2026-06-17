@@ -10,6 +10,7 @@ export default function SmartphonesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formErrors, setFormErrors] = useState<Record<string, string[]>>({});
 
   // Detail view state allocation
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);

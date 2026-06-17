@@ -38,6 +38,12 @@ export const publicProductsQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(50).optional().default(12),
 });
 
+export const productsPreviewQuerySchema = z.object({
+  smartphoneLimit: z.coerce.number().int().min(1).max(50).optional().default(9),
+  speakerLimit: z.coerce.number().int().min(1).max(50).optional().default(6),
+  accessoryLimit: z.coerce.number().int().min(1).max(50).optional().default(9),
+});
+
 export const productSchema = z.object({
   name: z.string().min(2, "Product name must be at least 2 characters long"),
 

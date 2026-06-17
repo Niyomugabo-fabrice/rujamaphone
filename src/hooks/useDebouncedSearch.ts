@@ -5,8 +5,12 @@ import type { Product } from "@/types/product";
 import { normalizeSearchText } from "@/lib/search";
 
 type SearchResponse = {
-  success?: boolean;
-  data?: Product[];
+  success: boolean;
+  results: Product[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 };
 
 interface UseDebouncedSearchOptions {
@@ -46,9 +50,8 @@ export function useDebouncedSearch({
 
       try {
         const params = new URLSearchParams({
-          search: normalizedQuery,
+          q: normalizedQuery,
           limit: String(limit),
-          suggestions: "1",
         });
         const response = await fetch(`/api/search?${params.toString()}`, {
           signal: controller.signal,
@@ -58,8 +61,8 @@ export function useDebouncedSearch({
           throw new Error("Search request failed");
         }
 
-        const payload = (await response.json()) as SearchResponse | Product[];
-        const nextResults = Array.isArray(payload) ? payload : payload.data || [];
+        const payload = (await response.json()) as SearchResponse;
+        const nextResults = payload.success ? payload.results : [];
 
         if (!controller.signal.aborted) {
           setResults(nextResults);

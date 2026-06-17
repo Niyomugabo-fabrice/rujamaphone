@@ -21,15 +21,8 @@ export default function FilterChips({
   const formatFilterLabel = (key: string, value: any): string => {
     const labelMap: Record<string, string> = {
       category: "Category",
-      brand: "Brand",
-      condition: "Condition",
       minPrice: "Min Price",
       maxPrice: "Max Price",
-      storage: "Storage",
-      batteryLife: "Battery Life",
-      type: "Type",
-      search: "Search",
-      sort: "Sort",
     };
 
     let displayValue = value;

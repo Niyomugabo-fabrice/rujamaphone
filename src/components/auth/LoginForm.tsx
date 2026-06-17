@@ -102,12 +102,12 @@ const onSubmit = async (data: LoginFormValues) => {
         {isLoading ? "Signing in..." : "Sign in"}
       </Button>
 
-      <p className="text-center text-xs sm:text-sm text-muted-foreground">
+      {/* <p className="text-center text-xs sm:text-sm text-muted-foreground">
         Don't have an account?{" "}
         <Link href="/signup" className="text-primary hover:underline">
           Sign up
         </Link>
-      </p>
+      </p> */}
     </form>
   );
 }

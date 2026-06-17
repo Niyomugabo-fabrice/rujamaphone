@@ -24,12 +24,7 @@ export default function FilterDrawer({
 }: FilterDrawerProps) {
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     category: true,
-    brand: true,
     price: true,
-    condition: true,
-    storage: true,
-    batteryLife: true,
-    type: true,
   });
 
   const toggleSection = (section: string) => {
@@ -50,7 +45,6 @@ export default function FilterDrawer({
         category: nextValue as ProductCategory | undefined,
         minPrice: filters.minPrice,
         maxPrice: filters.maxPrice,
-        condition: filters.condition,
       });
       return;
     }
@@ -153,128 +147,6 @@ export default function FilterDrawer({
               </div>
             )}
           </div>
-              <div className="border-b pb-4">
-                <button
-                  onClick={() => toggleSection("condition")}
-                  className="flex items-center justify-between w-full py-2"
-                >
-                  <span className="font-medium">Condition</span>
-                  {expandedSections.condition ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                </button>
-
-            {expandedSections.condition && (
-              <div className="space-y-2 mt-2">
-                {["NEW", "USED"].map((cond) => (
-                  <label key={cond} className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name="condition"
-                      value={cond}
-                      checked={filters.condition === cond}
-                      onChange={(e) =>
-                        handleFilterChange("condition", e.target.value)
-                      }
-                    />
-                    <span>{cond}</span>
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Smartphone */}
-          {category === "SMARTPHONE" && (
-            <div className="border-b pb-4">
-              <button
-                onClick={() => toggleSection("storage")}
-                className="flex items-center justify-between w-full py-2"
-              >
-                <span>Storage</span>
-                {expandedSections.storage ? <ChevronUp /> : <ChevronDown />}
-              </button>
-
-              {expandedSections.storage && (
-                <div className="space-y-2 mt-2">
-                  {[
-                    { label: "64GB", value: "GB64" },
-                    { label: "128GB", value: "GB128" },
-                    { label: "256GB", value: "GB256" },
-                    { label: "512GB", value: "GB512" },
-                    { label: "1TB", value: "TB1" },
-                  ].map((storage) => (
-                    <label key={storage.value} className="flex items-center gap-2">
-                      <input
-                        type="radio"
-                        name="storage"
-                        value={storage.value}
-                        checked={filters.storage === storage.value}
-                        onChange={(e) =>
-                          handleFilterChange("storage", e.target.value)
-                        }
-                      />
-                      <span>{storage.label}</span>
-                    </label>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Speaker */}
-          {category === "SPEAKER" && (
-            <div className="border-b pb-4">
-              <button
-                onClick={() => toggleSection("batteryLife")}
-                className="flex items-center justify-between w-full py-2"
-              >
-                <span>Battery Life</span>
-                {expandedSections.batteryLife ? <ChevronUp /> : <ChevronDown />}
-              </button>
-
-              {expandedSections.batteryLife && (
-                <input
-                  type="text"
-                  placeholder="e.g. 12 hours"
-                  value={filters.batteryLife || ""}
-                  onChange={(e) =>
-                    handleFilterChange("batteryLife", e.target.value)
-                  }
-                />
-              )}
-            </div>
-          )}
-
-          {/* Accessory */}
-          {category === "ACCESSORY" && (
-            <div className="border-b pb-4">
-              <button
-                onClick={() => toggleSection("type")}
-                className="flex items-center justify-between w-full py-2"
-              >
-                <span>Type</span>
-                {expandedSections.type ? <ChevronUp /> : <ChevronDown />}
-              </button>
-
-              {expandedSections.type && (
-                <div className="space-y-2 mt-2">
-                  {["Cable", "Case", "Charger", "Screen Protector", "Headphones", "Other"].map((t) => (
-                    <label key={t} className="flex items-center gap-2">
-                      <input
-                        type="radio"
-                        name="type"
-                        value={t}
-                        checked={filters.type === t}
-                        onChange={(e) =>
-                          handleFilterChange("type", e.target.value)
-                        }
-                      />
-                      <span>{t}</span>
-                    </label>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
         </div>
 
         {/* Footer */}
@@ -289,28 +161,4 @@ export default function FilterDrawer({
       </div>
     </div>
   );
-}
-
-function getBrandsForCategory(category?: ProductCategory): string[] {
-  switch (category) {
-    case "SMARTPHONE":
-      return ["APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS", "TECNO", "INFINIX"];
-    case "SPEAKER":
-      return ["JBL", "SONY", "BOSE", "APPLE", "ANKER", "BEATS", "ULTIMATE_EARS", "MARSHALL", "SONOS"];
-    case "ACCESSORY":
-      return [
-        "APPLE", "SAMSUNG", "ANKER", "BASEUS", "GENERIC", "ONEPLUS", "SONY",
-        "XIAOMI", "SPIGEN", "BELKIN", "OTTERBOX", "JBL", "BEATS", "BOSE",
-        "MOPHIE", "CASETIFY", "GOOGLE", "UAG", "JABRA", "NOMAD", "NOTHING",
-        "MOUS", "SENNHEISER", "RAVPOWER",
-      ];
-    default:
-      return [
-        "APPLE", "SAMSUNG", "GOOGLE", "XIAOMI", "ONEPLUS", "TECNO", "INFINIX",
-        "JBL", "SONY", "BOSE", "ANKER", "BEATS", "ULTIMATE_EARS", "MARSHALL",
-        "SONOS", "BASEUS", "GENERIC", "SPIGEN", "BELKIN", "OTTERBOX", "MOPHIE",
-        "CASETIFY", "UAG", "JABRA", "NOMAD", "NOTHING", "MOUS", "SENNHEISER",
-        "RAVPOWER",
-      ];
-  }
 }

@@ -72,13 +72,15 @@ function SearchBar({ className, isMobile, onSearchSubmit }: SearchBarProps) {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (activeIndex >= 0 && results[activeIndex]) {
-      selectProduct(results[activeIndex]);
+    const resultsArray = Array.isArray(results) ? results : [];
+
+    if (activeIndex >= 0 && resultsArray[activeIndex]) {
+      selectProduct(resultsArray[activeIndex]);
       return;
     }
 
-    if (results.length > 0) {
-      selectProduct(results[0]);
+    if (resultsArray.length > 0) {
+      selectProduct(resultsArray[0]);
       return;
     }
 
@@ -99,9 +101,11 @@ function SearchBar({ className, isMobile, onSearchSubmit }: SearchBarProps) {
 
     if (!showSuggestions) return;
 
+    const resultsArray = Array.isArray(results) ? results : [];
+
     if (event.key === "ArrowDown") {
       event.preventDefault();
-      setActiveIndex((current) => Math.min(current + 1, results.length - 1));
+      setActiveIndex((current) => Math.min(current + 1, resultsArray.length - 1));
     }
 
     if (event.key === "ArrowUp") {
@@ -148,7 +152,7 @@ function SearchBar({ className, isMobile, onSearchSubmit }: SearchBarProps) {
             </div>
           ) : error ? (
             <div className="px-4 py-3 text-sm text-red-600">{error}</div>
-          ) : results.length === 0 ? (
+          ) : !Array.isArray(results) || results.length === 0 ? (
             <div className="px-4 py-3 text-sm text-gray-500">No results found</div>
           ) : (
             results.map((product, index) => (
