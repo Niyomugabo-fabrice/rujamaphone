@@ -227,13 +227,13 @@ useEffect(() => {
         <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-6 px-4">
 
           {[
-            { title: "Smartphones", icon: Smartphone },
-            { title: "Accessories", icon: Headphones },
-            { title: "Speakers", icon: Speaker },
+            { title: "Smartphones", key: "SMARTPHONE", icon: Smartphone },
+            { title: "Accessories", key: "ACCESSORY", icon: Headphones },
+            { title: "Speakers", key: "SPEAKER", icon: Speaker },
           ].map((item, i) => (
             <Link
               key={i}
-              href={`/products?category=${item.title}`}
+              href={`/products?category=${item.key}`}
               className="group bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl p-8 hover:shadow-xl hover:-translate-y-1 transition"
             >
               <div className="w-16 h-16 bg-primary rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition">

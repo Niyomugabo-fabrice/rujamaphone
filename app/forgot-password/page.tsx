@@ -74,7 +74,7 @@ export default function ForgotPasswordPage() {
             <Input
               id="email"
               type="email"
-              placeholder="you@example.com"
+              placeholder="Enter registered email"
               {...register("email")}
               disabled={isLoading}
             />
