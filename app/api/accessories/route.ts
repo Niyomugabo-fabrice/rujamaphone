@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import prisma from "@/lib/prisma";
+import { generateProductSlug } from "@/lib/slug";
 import {
   accessoryFormSchema,
   accessoryQuerySchema,
@@ -110,22 +111,17 @@ export async function POST(request: Request) {
     }
 
     // 🔥 FIX: SAFE DB PAYLOAD (NO NULL CRASH)
-    const dbPayload = {
-      name: validated.name,
-      price: validated.price,
-      description: validated.description ?? "",
-      brand: validated.brand,
-      condition: validated.condition,
-
-      //
-      type: validated.type ?? "UNKNOWN",
-
-      image,
-    };
-
-
     const newAccessory = await prisma.accessory.create({
-      data: dbPayload,
+      data: {
+        name: validated.name,
+        price: validated.price,
+        description: validated.description ?? "",
+        brand: validated.brand,
+        condition: validated.condition,
+        type: validated.type ?? "UNKNOWN",
+        image,
+        slug: generateProductSlug(validated.name),
+      },
     });
 
     

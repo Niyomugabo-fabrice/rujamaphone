@@ -7,6 +7,7 @@ import { Search, ShoppingCart, Menu, X, Loader2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import Image from "next/image";
 import { useDebouncedSearch } from "@/hooks/useDebouncedSearch";
+import { getProductUrl } from "@/lib/product-url";
 import type { Product } from "@/types/product";
 
 interface SearchBarProps {
@@ -66,8 +67,8 @@ function SearchBar({ className, isMobile, onSearchSubmit }: SearchBarProps) {
     setSearchQuery("");
     closeSearch();
     onSearchSubmit?.();
-    router.push(`/products/${product.id}`);
-  }, [closeSearch, onSearchSubmit, router, setSearchQuery]);
+    router.push(getProductUrl(product.slug ?? product.id));
+  }, [closeSearch, getProductUrl, onSearchSubmit, router, setSearchQuery]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

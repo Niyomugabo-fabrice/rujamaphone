@@ -2456,6 +2456,7 @@ export namespace Prisma {
   export type SmartphoneMinAggregateOutputType = {
     id: string | null
     name: string | null
+    slug: string | null
     price: number | null
     description: string | null
     rating: number | null
@@ -2470,6 +2471,7 @@ export namespace Prisma {
   export type SmartphoneMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    slug: string | null
     price: number | null
     description: string | null
     rating: number | null
@@ -2484,6 +2486,7 @@ export namespace Prisma {
   export type SmartphoneCountAggregateOutputType = {
     id: number
     name: number
+    slug: number
     price: number
     image: number
     description: number
@@ -2513,6 +2516,7 @@ export namespace Prisma {
   export type SmartphoneMinAggregateInputType = {
     id?: true
     name?: true
+    slug?: true
     price?: true
     description?: true
     rating?: true
@@ -2527,6 +2531,7 @@ export namespace Prisma {
   export type SmartphoneMaxAggregateInputType = {
     id?: true
     name?: true
+    slug?: true
     price?: true
     description?: true
     rating?: true
@@ -2541,6 +2546,7 @@ export namespace Prisma {
   export type SmartphoneCountAggregateInputType = {
     id?: true
     name?: true
+    slug?: true
     price?: true
     image?: true
     description?: true
@@ -2643,6 +2649,7 @@ export namespace Prisma {
   export type SmartphoneGroupByOutputType = {
     id: string
     name: string
+    slug: string | null
     price: number
     image: string[]
     description: string | null
@@ -2677,6 +2684,7 @@ export namespace Prisma {
   export type SmartphoneSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    slug?: boolean
     price?: boolean
     image?: boolean
     description?: boolean
@@ -2692,6 +2700,7 @@ export namespace Prisma {
   export type SmartphoneSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    slug?: boolean
     price?: boolean
     image?: boolean
     description?: boolean
@@ -2707,6 +2716,7 @@ export namespace Prisma {
   export type SmartphoneSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    slug?: boolean
     price?: boolean
     image?: boolean
     description?: boolean
@@ -2722,6 +2732,7 @@ export namespace Prisma {
   export type SmartphoneSelectScalar = {
     id?: boolean
     name?: boolean
+    slug?: boolean
     price?: boolean
     image?: boolean
     description?: boolean
@@ -2734,7 +2745,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type SmartphoneOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "price" | "image" | "description" | "rating" | "reviews" | "storage" | "condition" | "brand" | "createdAt" | "updatedAt", ExtArgs["result"]["smartphone"]>
+  export type SmartphoneOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "price" | "image" | "description" | "rating" | "reviews" | "storage" | "condition" | "brand" | "createdAt" | "updatedAt", ExtArgs["result"]["smartphone"]>
 
   export type $SmartphonePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Smartphone"
@@ -2742,6 +2753,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      slug: string | null
       price: number
       image: string[]
       description: string | null
@@ -3177,6 +3189,7 @@ export namespace Prisma {
   interface SmartphoneFieldRefs {
     readonly id: FieldRef<"Smartphone", 'String'>
     readonly name: FieldRef<"Smartphone", 'String'>
+    readonly slug: FieldRef<"Smartphone", 'String'>
     readonly price: FieldRef<"Smartphone", 'Int'>
     readonly image: FieldRef<"Smartphone", 'String[]'>
     readonly description: FieldRef<"Smartphone", 'String'>
@@ -3585,6 +3598,7 @@ export namespace Prisma {
   export type SpeakerMinAggregateOutputType = {
     id: string | null
     name: string | null
+    slug: string | null
     price: number | null
     description: string | null
     rating: number | null
@@ -3599,6 +3613,7 @@ export namespace Prisma {
   export type SpeakerMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    slug: string | null
     price: number | null
     description: string | null
     rating: number | null
@@ -3613,6 +3628,7 @@ export namespace Prisma {
   export type SpeakerCountAggregateOutputType = {
     id: number
     name: number
+    slug: number
     price: number
     image: number
     description: number
@@ -3642,6 +3658,7 @@ export namespace Prisma {
   export type SpeakerMinAggregateInputType = {
     id?: true
     name?: true
+    slug?: true
     price?: true
     description?: true
     rating?: true
@@ -3656,6 +3673,7 @@ export namespace Prisma {
   export type SpeakerMaxAggregateInputType = {
     id?: true
     name?: true
+    slug?: true
     price?: true
     description?: true
     rating?: true
@@ -3670,6 +3688,7 @@ export namespace Prisma {
   export type SpeakerCountAggregateInputType = {
     id?: true
     name?: true
+    slug?: true
     price?: true
     image?: true
     description?: true
@@ -3772,6 +3791,7 @@ export namespace Prisma {
   export type SpeakerGroupByOutputType = {
     id: string
     name: string
+    slug: string | null
     price: number
     image: string[]
     description: string | null
@@ -3806,6 +3826,7 @@ export namespace Prisma {
   export type SpeakerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    slug?: boolean
     price?: boolean
     image?: boolean
     description?: boolean
@@ -3821,6 +3842,7 @@ export namespace Prisma {
   export type SpeakerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    slug?: boolean
     price?: boolean
     image?: boolean
     description?: boolean
@@ -3836,6 +3858,7 @@ export namespace Prisma {
   export type SpeakerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    slug?: boolean
     price?: boolean
     image?: boolean
     description?: boolean
@@ -3851,6 +3874,7 @@ export namespace Prisma {
   export type SpeakerSelectScalar = {
     id?: boolean
     name?: boolean
+    slug?: boolean
     price?: boolean
     image?: boolean
     description?: boolean
@@ -3863,7 +3887,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type SpeakerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "price" | "image" | "description" | "rating" | "reviews" | "condition" | "brand" | "batteryLife" | "createdAt" | "updatedAt", ExtArgs["result"]["speaker"]>
+  export type SpeakerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "price" | "image" | "description" | "rating" | "reviews" | "condition" | "brand" | "batteryLife" | "createdAt" | "updatedAt", ExtArgs["result"]["speaker"]>
 
   export type $SpeakerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Speaker"
@@ -3871,6 +3895,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      slug: string | null
       price: number
       image: string[]
       description: string | null
@@ -4306,6 +4331,7 @@ export namespace Prisma {
   interface SpeakerFieldRefs {
     readonly id: FieldRef<"Speaker", 'String'>
     readonly name: FieldRef<"Speaker", 'String'>
+    readonly slug: FieldRef<"Speaker", 'String'>
     readonly price: FieldRef<"Speaker", 'Int'>
     readonly image: FieldRef<"Speaker", 'String[]'>
     readonly description: FieldRef<"Speaker", 'String'>
@@ -4714,6 +4740,7 @@ export namespace Prisma {
   export type AccessoryMinAggregateOutputType = {
     id: string | null
     name: string | null
+    slug: string | null
     price: number | null
     description: string | null
     rating: number | null
@@ -4728,6 +4755,7 @@ export namespace Prisma {
   export type AccessoryMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    slug: string | null
     price: number | null
     description: string | null
     rating: number | null
@@ -4742,6 +4770,7 @@ export namespace Prisma {
   export type AccessoryCountAggregateOutputType = {
     id: number
     name: number
+    slug: number
     price: number
     image: number
     description: number
@@ -4771,6 +4800,7 @@ export namespace Prisma {
   export type AccessoryMinAggregateInputType = {
     id?: true
     name?: true
+    slug?: true
     price?: true
     description?: true
     rating?: true
@@ -4785,6 +4815,7 @@ export namespace Prisma {
   export type AccessoryMaxAggregateInputType = {
     id?: true
     name?: true
+    slug?: true
     price?: true
     description?: true
     rating?: true
@@ -4799,6 +4830,7 @@ export namespace Prisma {
   export type AccessoryCountAggregateInputType = {
     id?: true
     name?: true
+    slug?: true
     price?: true
     image?: true
     description?: true
@@ -4901,6 +4933,7 @@ export namespace Prisma {
   export type AccessoryGroupByOutputType = {
     id: string
     name: string
+    slug: string | null
     price: number
     image: string[]
     description: string | null
@@ -4935,6 +4968,7 @@ export namespace Prisma {
   export type AccessorySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    slug?: boolean
     price?: boolean
     image?: boolean
     description?: boolean
@@ -4950,6 +4984,7 @@ export namespace Prisma {
   export type AccessorySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    slug?: boolean
     price?: boolean
     image?: boolean
     description?: boolean
@@ -4965,6 +5000,7 @@ export namespace Prisma {
   export type AccessorySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    slug?: boolean
     price?: boolean
     image?: boolean
     description?: boolean
@@ -4980,6 +5016,7 @@ export namespace Prisma {
   export type AccessorySelectScalar = {
     id?: boolean
     name?: boolean
+    slug?: boolean
     price?: boolean
     image?: boolean
     description?: boolean
@@ -4992,7 +5029,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type AccessoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "price" | "image" | "description" | "rating" | "reviews" | "condition" | "brand" | "type" | "createdAt" | "updatedAt", ExtArgs["result"]["accessory"]>
+  export type AccessoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "price" | "image" | "description" | "rating" | "reviews" | "condition" | "brand" | "type" | "createdAt" | "updatedAt", ExtArgs["result"]["accessory"]>
 
   export type $AccessoryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Accessory"
@@ -5000,6 +5037,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      slug: string | null
       price: number
       image: string[]
       description: string | null
@@ -5435,6 +5473,7 @@ export namespace Prisma {
   interface AccessoryFieldRefs {
     readonly id: FieldRef<"Accessory", 'String'>
     readonly name: FieldRef<"Accessory", 'String'>
+    readonly slug: FieldRef<"Accessory", 'String'>
     readonly price: FieldRef<"Accessory", 'Int'>
     readonly image: FieldRef<"Accessory", 'String[]'>
     readonly description: FieldRef<"Accessory", 'String'>
@@ -7889,6 +7928,7 @@ export namespace Prisma {
   export const SmartphoneScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    slug: 'slug',
     price: 'price',
     image: 'image',
     description: 'description',
@@ -7907,6 +7947,7 @@ export namespace Prisma {
   export const SpeakerScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    slug: 'slug',
     price: 'price',
     image: 'image',
     description: 'description',
@@ -7925,6 +7966,7 @@ export namespace Prisma {
   export const AccessoryScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    slug: 'slug',
     price: 'price',
     image: 'image',
     description: 'description',
@@ -8176,6 +8218,7 @@ export namespace Prisma {
     NOT?: SmartphoneWhereInput | SmartphoneWhereInput[]
     id?: StringFilter<"Smartphone"> | string
     name?: StringFilter<"Smartphone"> | string
+    slug?: StringNullableFilter<"Smartphone"> | string | null
     price?: IntFilter<"Smartphone"> | number
     image?: StringNullableListFilter<"Smartphone">
     description?: StringNullableFilter<"Smartphone"> | string | null
@@ -8191,6 +8234,7 @@ export namespace Prisma {
   export type SmartphoneOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    slug?: SortOrderInput | SortOrder
     price?: SortOrder
     image?: SortOrder
     description?: SortOrderInput | SortOrder
@@ -8205,6 +8249,7 @@ export namespace Prisma {
 
   export type SmartphoneWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    slug?: string
     AND?: SmartphoneWhereInput | SmartphoneWhereInput[]
     OR?: SmartphoneWhereInput[]
     NOT?: SmartphoneWhereInput | SmartphoneWhereInput[]
@@ -8219,11 +8264,12 @@ export namespace Prisma {
     brand?: StringFilter<"Smartphone"> | string
     createdAt?: DateTimeFilter<"Smartphone"> | Date | string
     updatedAt?: DateTimeFilter<"Smartphone"> | Date | string
-  }, "id">
+  }, "id" | "slug">
 
   export type SmartphoneOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    slug?: SortOrderInput | SortOrder
     price?: SortOrder
     image?: SortOrder
     description?: SortOrderInput | SortOrder
@@ -8247,6 +8293,7 @@ export namespace Prisma {
     NOT?: SmartphoneScalarWhereWithAggregatesInput | SmartphoneScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Smartphone"> | string
     name?: StringWithAggregatesFilter<"Smartphone"> | string
+    slug?: StringNullableWithAggregatesFilter<"Smartphone"> | string | null
     price?: IntWithAggregatesFilter<"Smartphone"> | number
     image?: StringNullableListFilter<"Smartphone">
     description?: StringNullableWithAggregatesFilter<"Smartphone"> | string | null
@@ -8265,6 +8312,7 @@ export namespace Prisma {
     NOT?: SpeakerWhereInput | SpeakerWhereInput[]
     id?: StringFilter<"Speaker"> | string
     name?: StringFilter<"Speaker"> | string
+    slug?: StringNullableFilter<"Speaker"> | string | null
     price?: IntFilter<"Speaker"> | number
     image?: StringNullableListFilter<"Speaker">
     description?: StringNullableFilter<"Speaker"> | string | null
@@ -8280,6 +8328,7 @@ export namespace Prisma {
   export type SpeakerOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    slug?: SortOrderInput | SortOrder
     price?: SortOrder
     image?: SortOrder
     description?: SortOrderInput | SortOrder
@@ -8294,6 +8343,7 @@ export namespace Prisma {
 
   export type SpeakerWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    slug?: string
     AND?: SpeakerWhereInput | SpeakerWhereInput[]
     OR?: SpeakerWhereInput[]
     NOT?: SpeakerWhereInput | SpeakerWhereInput[]
@@ -8308,11 +8358,12 @@ export namespace Prisma {
     batteryLife?: StringNullableFilter<"Speaker"> | string | null
     createdAt?: DateTimeFilter<"Speaker"> | Date | string
     updatedAt?: DateTimeFilter<"Speaker"> | Date | string
-  }, "id">
+  }, "id" | "slug">
 
   export type SpeakerOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    slug?: SortOrderInput | SortOrder
     price?: SortOrder
     image?: SortOrder
     description?: SortOrderInput | SortOrder
@@ -8336,6 +8387,7 @@ export namespace Prisma {
     NOT?: SpeakerScalarWhereWithAggregatesInput | SpeakerScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Speaker"> | string
     name?: StringWithAggregatesFilter<"Speaker"> | string
+    slug?: StringNullableWithAggregatesFilter<"Speaker"> | string | null
     price?: IntWithAggregatesFilter<"Speaker"> | number
     image?: StringNullableListFilter<"Speaker">
     description?: StringNullableWithAggregatesFilter<"Speaker"> | string | null
@@ -8354,6 +8406,7 @@ export namespace Prisma {
     NOT?: AccessoryWhereInput | AccessoryWhereInput[]
     id?: StringFilter<"Accessory"> | string
     name?: StringFilter<"Accessory"> | string
+    slug?: StringNullableFilter<"Accessory"> | string | null
     price?: IntFilter<"Accessory"> | number
     image?: StringNullableListFilter<"Accessory">
     description?: StringNullableFilter<"Accessory"> | string | null
@@ -8369,6 +8422,7 @@ export namespace Prisma {
   export type AccessoryOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    slug?: SortOrderInput | SortOrder
     price?: SortOrder
     image?: SortOrder
     description?: SortOrderInput | SortOrder
@@ -8383,6 +8437,7 @@ export namespace Prisma {
 
   export type AccessoryWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    slug?: string
     AND?: AccessoryWhereInput | AccessoryWhereInput[]
     OR?: AccessoryWhereInput[]
     NOT?: AccessoryWhereInput | AccessoryWhereInput[]
@@ -8397,11 +8452,12 @@ export namespace Prisma {
     type?: StringNullableFilter<"Accessory"> | string | null
     createdAt?: DateTimeFilter<"Accessory"> | Date | string
     updatedAt?: DateTimeFilter<"Accessory"> | Date | string
-  }, "id">
+  }, "id" | "slug">
 
   export type AccessoryOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    slug?: SortOrderInput | SortOrder
     price?: SortOrder
     image?: SortOrder
     description?: SortOrderInput | SortOrder
@@ -8425,6 +8481,7 @@ export namespace Prisma {
     NOT?: AccessoryScalarWhereWithAggregatesInput | AccessoryScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Accessory"> | string
     name?: StringWithAggregatesFilter<"Accessory"> | string
+    slug?: StringNullableWithAggregatesFilter<"Accessory"> | string | null
     price?: IntWithAggregatesFilter<"Accessory"> | number
     image?: StringNullableListFilter<"Accessory">
     description?: StringNullableWithAggregatesFilter<"Accessory"> | string | null
@@ -8657,6 +8714,7 @@ export namespace Prisma {
   export type SmartphoneCreateInput = {
     id?: string
     name: string
+    slug?: string | null
     price: number
     image?: SmartphoneCreateimageInput | string[]
     description?: string | null
@@ -8672,6 +8730,7 @@ export namespace Prisma {
   export type SmartphoneUncheckedCreateInput = {
     id?: string
     name: string
+    slug?: string | null
     price: number
     image?: SmartphoneCreateimageInput | string[]
     description?: string | null
@@ -8687,6 +8746,7 @@ export namespace Prisma {
   export type SmartphoneUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     image?: SmartphoneUpdateimageInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8702,6 +8762,7 @@ export namespace Prisma {
   export type SmartphoneUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     image?: SmartphoneUpdateimageInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8717,6 +8778,7 @@ export namespace Prisma {
   export type SmartphoneCreateManyInput = {
     id?: string
     name: string
+    slug?: string | null
     price: number
     image?: SmartphoneCreateimageInput | string[]
     description?: string | null
@@ -8732,6 +8794,7 @@ export namespace Prisma {
   export type SmartphoneUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     image?: SmartphoneUpdateimageInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8747,6 +8810,7 @@ export namespace Prisma {
   export type SmartphoneUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     image?: SmartphoneUpdateimageInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8762,6 +8826,7 @@ export namespace Prisma {
   export type SpeakerCreateInput = {
     id?: string
     name: string
+    slug?: string | null
     price: number
     image?: SpeakerCreateimageInput | string[]
     description?: string | null
@@ -8777,6 +8842,7 @@ export namespace Prisma {
   export type SpeakerUncheckedCreateInput = {
     id?: string
     name: string
+    slug?: string | null
     price: number
     image?: SpeakerCreateimageInput | string[]
     description?: string | null
@@ -8792,6 +8858,7 @@ export namespace Prisma {
   export type SpeakerUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     image?: SpeakerUpdateimageInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8807,6 +8874,7 @@ export namespace Prisma {
   export type SpeakerUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     image?: SpeakerUpdateimageInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8822,6 +8890,7 @@ export namespace Prisma {
   export type SpeakerCreateManyInput = {
     id?: string
     name: string
+    slug?: string | null
     price: number
     image?: SpeakerCreateimageInput | string[]
     description?: string | null
@@ -8837,6 +8906,7 @@ export namespace Prisma {
   export type SpeakerUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     image?: SpeakerUpdateimageInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8852,6 +8922,7 @@ export namespace Prisma {
   export type SpeakerUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     image?: SpeakerUpdateimageInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8867,6 +8938,7 @@ export namespace Prisma {
   export type AccessoryCreateInput = {
     id?: string
     name: string
+    slug?: string | null
     price: number
     image?: AccessoryCreateimageInput | string[]
     description?: string | null
@@ -8882,6 +8954,7 @@ export namespace Prisma {
   export type AccessoryUncheckedCreateInput = {
     id?: string
     name: string
+    slug?: string | null
     price: number
     image?: AccessoryCreateimageInput | string[]
     description?: string | null
@@ -8897,6 +8970,7 @@ export namespace Prisma {
   export type AccessoryUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     image?: AccessoryUpdateimageInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8912,6 +8986,7 @@ export namespace Prisma {
   export type AccessoryUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     image?: AccessoryUpdateimageInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8927,6 +9002,7 @@ export namespace Prisma {
   export type AccessoryCreateManyInput = {
     id?: string
     name: string
+    slug?: string | null
     price: number
     image?: AccessoryCreateimageInput | string[]
     description?: string | null
@@ -8942,6 +9018,7 @@ export namespace Prisma {
   export type AccessoryUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     image?: AccessoryUpdateimageInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8957,6 +9034,7 @@ export namespace Prisma {
   export type AccessoryUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     price?: IntFieldUpdateOperationsInput | number
     image?: AccessoryUpdateimageInput | string[]
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -9318,6 +9396,7 @@ export namespace Prisma {
   export type SmartphoneCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    slug?: SortOrder
     price?: SortOrder
     image?: SortOrder
     description?: SortOrder
@@ -9339,6 +9418,7 @@ export namespace Prisma {
   export type SmartphoneMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    slug?: SortOrder
     price?: SortOrder
     description?: SortOrder
     rating?: SortOrder
@@ -9353,6 +9433,7 @@ export namespace Prisma {
   export type SmartphoneMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    slug?: SortOrder
     price?: SortOrder
     description?: SortOrder
     rating?: SortOrder
@@ -9415,6 +9496,7 @@ export namespace Prisma {
   export type SpeakerCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    slug?: SortOrder
     price?: SortOrder
     image?: SortOrder
     description?: SortOrder
@@ -9436,6 +9518,7 @@ export namespace Prisma {
   export type SpeakerMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    slug?: SortOrder
     price?: SortOrder
     description?: SortOrder
     rating?: SortOrder
@@ -9450,6 +9533,7 @@ export namespace Prisma {
   export type SpeakerMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    slug?: SortOrder
     price?: SortOrder
     description?: SortOrder
     rating?: SortOrder
@@ -9470,6 +9554,7 @@ export namespace Prisma {
   export type AccessoryCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    slug?: SortOrder
     price?: SortOrder
     image?: SortOrder
     description?: SortOrder
@@ -9491,6 +9576,7 @@ export namespace Prisma {
   export type AccessoryMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    slug?: SortOrder
     price?: SortOrder
     description?: SortOrder
     rating?: SortOrder
@@ -9505,6 +9591,7 @@ export namespace Prisma {
   export type AccessoryMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    slug?: SortOrder
     price?: SortOrder
     description?: SortOrder
     rating?: SortOrder

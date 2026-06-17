@@ -7,7 +7,7 @@ import { Star, ShoppingCart, Heart, Eye, X } from "lucide-react";
 import type { Product } from "@/types/product";
 import { toast } from "sonner";
 import { useCart } from "@/context/CartContext";
-
+import { getProductUrl } from "@/lib/product-url";
 interface ProductCardProps {
   product: Product;
 }
@@ -65,7 +65,7 @@ const randomReviews = (
       <div className="group bg-white rounded-xl border border-gray-300 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-primary relative">
         {/* Image Gallery Wrapper */}
         <Link
-          href={`/products/${product.id}`}
+          href={getProductUrl(product.slug ?? product.id)}
           className="block aspect-[4/3] overflow-hidden bg-gray-100 relative"
           onMouseEnter={() => images.length > 1 && setCurrentImageIndex(1)}
           onMouseLeave={() => setCurrentImageIndex(0)}
@@ -123,7 +123,7 @@ const randomReviews = (
             </span>
           </div>
 
-          <Link href={`/products/${product.id}`}>
+          <Link href={getProductUrl(product.slug ?? product.id)}>
             <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 min-h-[40px]">
               {product.name}
             </h3>
@@ -251,7 +251,7 @@ const randomReviews = (
                     Add to Cart
                   </button>
                   <Link
-                    href={`/products/${product.id}`}
+                    href={getProductUrl(product.slug ?? product.id)}
                     className="flex-1 px-6 py-3 border border-gray-300 hover:bg-gray-50 text-gray-900 rounded-xl font-semibold transition-colors text-center"
                   >
                     View Details

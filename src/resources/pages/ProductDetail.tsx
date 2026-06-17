@@ -9,9 +9,11 @@ import { ProductCard } from "@/components/ProductCard";
 import type { Product } from "@/types/product";
 import { toast } from "sonner";
 import { useCart } from "@/context/CartContext";
+import { getProductAbsoluteUrl } from "@/lib/product-url";
+import { normalizeSearchText } from "@/lib/search";
 
 export function ProductDetail() {
-  const { id } = useParams();
+  const { slug } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -19,10 +21,10 @@ export function ProductDetail() {
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    if (id) {
+    if (slug) {
       fetchProduct();
     }
-  }, [id]);
+  }, [slug]);
 
   useEffect(() => {
     if (product) {
@@ -38,7 +40,7 @@ export function ProductDetail() {
 
   const fetchProduct = async () => {
     try {
-      const response = await fetch(`/api/products/${id}`);
+      const response = await fetch(`/api/products/${slug}`);
       const data = await response.json();
       setProduct(data?.success ? data.data : data);
     } catch (error) {
@@ -52,19 +54,92 @@ export function ProductDetail() {
     try {
       if (!product) return;
       const params = new URLSearchParams();
-      params.set("limit", "4");
+      params.set("limit", "12");
       if (product.category) params.set("category", product.category);
       if (product.brand) params.set("brand", product.brand);
-      
+
+      const modelQuery = buildRelatedProductSearchQuery(product.name);
+      if (modelQuery) params.set("search", modelQuery);
+
       const response = await fetch(`/api/products?${params.toString()}`);
       const data = await response.json();
-      setRelatedProducts(((data?.data || []) as Product[]).filter((p: Product) => p.id !== product.id));
+      setRelatedProducts(
+        sortRelatedProducts(
+          ((data?.data || []) as Product[]).filter((p: Product) => p.id !== product.id),
+          product
+        ).slice(0, 4)
+      );
     } catch (error) {
       console.error("Failed to fetch related products:", error);
     }
   };
 
   const { addToCart } = useCart();
+
+  function buildRelatedProductSearchQuery(name: string) {
+    const normalized = normalizeSearchText(name);
+    const modelMatch = normalized.match(/\b(iphone|galaxy|samsung|tecno|infinix|xiaomi|oneplus|oppo|realme|huawei|nokia)\s*(\d+)\b/);
+    if (!modelMatch) {
+      return normalized;
+    }
+
+    const brand = modelMatch[1];
+    const number = modelMatch[2];
+    const suffixMatch = normalized.match(/\b(pro|max|plus|ultra|neo|lite|mini)\b/);
+    return [brand, number, suffixMatch?.[1]].filter(Boolean).join(" ");
+  }
+
+  function sortRelatedProducts(candidates: Product[], currentProduct: Product) {
+    const currentInfo = parseProductModelInfo(currentProduct.name);
+
+    return candidates
+      .map((candidate) => ({
+        candidate,
+        score: computeModelDistance(parseProductModelInfo(candidate.name), currentInfo),
+      }))
+      .sort((a, b) => a.score - b.score)
+      .map((item) => item.candidate);
+  }
+
+  function parseProductModelInfo(name: string) {
+    const normalized = normalizeSearchText(name);
+    const brandMatch = normalized.match(/\b(iphone|galaxy|samsung|tecno|infinix|xiaomi|oneplus|oppo|realme|huawei|nokia)\b/);
+    const numberMatch = normalized.match(/\b(\d{2,3})\b/);
+    const suffixMatch = normalized.match(/\b(pro|max|plus|ultra|neo|lite|mini)\b/);
+
+    return {
+      normalized,
+      brand: brandMatch?.[1] ?? "",
+      modelNumber: numberMatch ? Number(numberMatch[1]) : null,
+      suffix: suffixMatch?.[1] ?? "",
+    };
+  }
+
+  function computeModelDistance(a: ReturnType<typeof parseProductModelInfo>, b: ReturnType<typeof parseProductModelInfo>) {
+    let score = 0;
+
+    if (a.brand !== b.brand) {
+      score += 1000;
+    }
+
+    if (a.modelNumber !== null && b.modelNumber !== null) {
+      score += Math.abs(a.modelNumber - b.modelNumber) * 10;
+    } else if (a.modelNumber !== null || b.modelNumber !== null) {
+      score += 200;
+    } else {
+      score += a.normalized === b.normalized ? 0 : 100;
+    }
+
+    if (a.suffix && a.suffix === b.suffix) {
+      score -= 5;
+    }
+
+    if (a.normalized === b.normalized) {
+      score -= 10;
+    }
+
+    return score;
+  }
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -76,7 +151,7 @@ export function ProductDetail() {
   const handleShare = async () => {
     if (!product) return;
 
-    const shareUrl = `${window.location.origin}/products/${product.id}`;
+    const shareUrl = getProductAbsoluteUrl(product.slug ?? product.id);
     const shareText = `${product.name} at Rujama Phones Shop - ${formatPrice(product.price)}. ${product.description?.trim() || "Tap to view details, photos, and availability."}`;
 
     if (navigator.share && product) {

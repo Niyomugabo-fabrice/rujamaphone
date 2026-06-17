@@ -3,9 +3,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Search, X, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { getProductUrl } from "@/lib/product-url";
 
 interface Suggestion {
   id: string;
+  slug?: string;
   title: string;
   brand?: string | null;
   image?: string | null;
@@ -106,7 +108,7 @@ export default function AutocompleteSearch() {
     if (event.key === "Enter") {
       event.preventDefault();
       if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
-        window.location.href = `/products/${suggestions[selectedIndex].id}`;
+        window.location.href = getProductUrl(suggestions[selectedIndex].slug ?? suggestions[selectedIndex].id);
       }
       return;
     }
@@ -186,7 +188,7 @@ export default function AutocompleteSearch() {
           {suggestions.map((suggestion, index) => (
             <Link
               key={suggestion.id}
-              href={`/products/${suggestion.id}`}
+              href={getProductUrl(suggestion.slug ?? suggestion.id)}
               className={`flex items-center gap-3 px-3 py-3 transition ${
                 index === selectedIndex ? "bg-slate-100" : "hover:bg-slate-50"
               }`}

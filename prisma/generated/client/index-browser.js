@@ -137,6 +137,7 @@ exports.Prisma.UserScalarFieldEnum = {
 exports.Prisma.SmartphoneScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  slug: 'slug',
   price: 'price',
   image: 'image',
   description: 'description',
@@ -152,6 +153,7 @@ exports.Prisma.SmartphoneScalarFieldEnum = {
 exports.Prisma.SpeakerScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  slug: 'slug',
   price: 'price',
   image: 'image',
   description: 'description',
@@ -167,6 +169,7 @@ exports.Prisma.SpeakerScalarFieldEnum = {
 exports.Prisma.AccessoryScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  slug: 'slug',
   price: 'price',
   image: 'image',
   description: 'description',

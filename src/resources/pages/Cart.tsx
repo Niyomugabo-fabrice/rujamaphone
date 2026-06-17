@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useState } from 'react';
+import { getProductUrl } from '@/lib/product-url';
 
 export function Cart() {
   const { cart, removeFromCart, updateQuantity, totalPrice } = useCart();
@@ -89,7 +90,7 @@ Total: ${formatPrice(totalPrice)}
                 />
                 <div className="flex-1 w-full min-w-0">
                   <Link
-                    href={`/products/${item.id}`}
+                    href={getProductUrl(item.slug ?? item.id)}
                     className="font-semibold text-accent hover:text-primary transition-colors text-sm sm:text-base"
                   >
                     {item.name}

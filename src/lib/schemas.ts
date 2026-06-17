@@ -3,6 +3,14 @@ export const idSchema = z.object({
   id: z.string().uuid("Invalid id"),
 });
 
+export const slugSchema = z.object({
+  slug: z
+    .string()
+    .trim()
+    .min(1, "Slug is required")
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Invalid slug"),
+});
+
 export const conditionSchema = z.enum(["NEW", "USED"]);
 export const brandSchema = z.string().trim().min(1, "Brand is required").max(50, "Brand name too long");
 export const storageSchema = z.string().trim().min(1, "Storage is required").max(20, "Storage value too long");

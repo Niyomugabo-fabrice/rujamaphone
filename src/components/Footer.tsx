@@ -41,16 +41,32 @@ export function Footer() {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    toast.success('Message sent successfully!');
+  const whatsappNumber = "250788773754";
 
-    setFormData({
-      name: '',
-      email: '',
-      message: '',
-    });
-  };
+  const message = `Hello,
+
+My Name: ${formData.name}
+Email: ${formData.email}
+
+Message:
+${formData.message}`;
+
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+    message
+  )}`;
+
+  window.open(whatsappUrl, "_blank");
+
+  setFormData({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  toast.success("Redirecting to WhatsApp...");
+};
 
   return (
     <>

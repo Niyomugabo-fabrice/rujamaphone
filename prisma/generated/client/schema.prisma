@@ -53,6 +53,7 @@ model User {
 model Smartphone {
   id          String   @id @default(uuid())
   name        String
+  slug        String?  @unique
   price       Int // Value mapped in RWF
   image       String[] // Native array of image strings
   description String?
@@ -76,6 +77,7 @@ model Smartphone {
 model Speaker {
   id          String   @id @default(uuid())
   name        String
+  slug        String?  @unique
   price       Int // Value mapped in RWF
   image       String[]
   description String?
@@ -99,6 +101,7 @@ model Speaker {
 model Accessory {
   id          String   @id @default(uuid())
   name        String
+  slug        String?  @unique
   price       Int // Value mapped in RWF
   image       String[]
   description String?

@@ -9,6 +9,7 @@ const productCacheHeaders = {
 
 const baseProductSelect = {
   id: true,
+  slug: true,
   name: true,
   price: true,
   image: true,

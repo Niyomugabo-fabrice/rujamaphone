@@ -1,6 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import prisma from "@/lib/prisma";
 import { deleteByIdQuerySchema, speakerFormSchema, speakerQuerySchema } from "@/lib/schemas";
+import { generateProductSlug } from "@/lib/slug";
 import { fail, handleApiError, ok, parseSearchParams, requireAdminAuth } from "@/lib/api";
 
 const speakerSelect = {
@@ -114,7 +115,7 @@ export async function POST(request: Request) {
     if (image.length === 0) return fail("At least one image is required", 400);
 
     const newSpeaker = await prisma.speaker.create({
-      data: { ...validated, image },
+      data: { ...validated, slug: generateProductSlug(validated.name), image },
       select: speakerSelect,
     });
 

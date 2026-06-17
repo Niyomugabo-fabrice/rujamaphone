@@ -6,7 +6,7 @@ import { ProductDetail } from '@/resources/pages/ProductDetail';
 import prisma from '@/lib/prisma';
 
 type ProductDetailPageProps = {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 };
 
 const siteUrl = (() => {
@@ -51,19 +51,31 @@ function buildDescription(product: {
   return (product.description?.trim() || fallback).slice(0, 180);
 }
 
-async function getProductForMetadata(id: string) {
+function isUuid(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+}
+
+function buildWhereClause(identifier: string) {
+  if (isUuid(identifier)) {
+    return { id: identifier };
+  }
+  return { slug: identifier };
+}
+
+async function getProductForMetadata(identifier: string) {
+  const where = buildWhereClause(identifier);
   const [smartphone, speaker, accessory] = await Promise.all([
-    prisma.smartphone.findUnique({ where: { id }, select: metadataProductSelect }),
-    prisma.speaker.findUnique({ where: { id }, select: metadataProductSelect }),
-    prisma.accessory.findUnique({ where: { id }, select: metadataProductSelect }),
+    prisma.smartphone.findUnique({ where, select: metadataProductSelect }),
+    prisma.speaker.findUnique({ where, select: metadataProductSelect }),
+    prisma.accessory.findUnique({ where, select: metadataProductSelect }),
   ]);
 
   return smartphone || speaker || accessory;
 }
 
 export async function generateMetadata({ params }: ProductDetailPageProps): Promise<Metadata> {
-  const { id } = await params;
-  const product = await getProductForMetadata(id);
+  const { slug } = await params;
+  const product = await getProductForMetadata(slug);
 
   if (!product) {
     return {
@@ -74,7 +86,7 @@ export async function generateMetadata({ params }: ProductDetailPageProps): Prom
 
   const title = `${product.name} | Rujama Phones Shop`;
   const description = buildDescription(product);
-  const productUrl = `${baseUrl}/products/${id}`;
+  const productUrl = `${baseUrl}/products/${slug}`;
   const firstImage = Array.isArray(product.image) ? product.image[0] : product.image;
   const imageUrl = absoluteUrl(firstImage);
 

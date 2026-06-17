@@ -1,18 +1,19 @@
 import type { MetadataRoute } from 'next';
 import prisma from '@/lib/prisma';
+import { getProductAbsoluteUrl } from '@/lib/product-url';
 
 const baseUrl = 'https://www.rujamaphonesshop.com';
 
 async function getProductRoutes() {
   try {
     const [smartphones, speakers, accessories] = await Promise.all([
-      prisma.smartphone.findMany({ select: { id: true, updatedAt: true } }),
-      prisma.speaker.findMany({ select: { id: true, updatedAt: true } }),
-      prisma.accessory.findMany({ select: { id: true, updatedAt: true } }),
+      prisma.smartphone.findMany({ select: { id: true, slug: true, updatedAt: true } }),
+      prisma.speaker.findMany({ select: { id: true, slug: true, updatedAt: true } }),
+      prisma.accessory.findMany({ select: { id: true, slug: true, updatedAt: true } }),
     ]);
 
     return [...smartphones, ...speakers, ...accessories].map((product) => ({
-      url: `${baseUrl}/products/${product.id}`,
+      url: getProductAbsoluteUrl(product.slug ?? product.id),
       lastModified: product.updatedAt,
       changeFrequency: 'weekly' as const,
       priority: 0.65,

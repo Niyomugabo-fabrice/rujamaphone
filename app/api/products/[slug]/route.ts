@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import type { Product } from "@/types/product";
-import { fail, handleApiError, ok, parseRouteParams } from "@/lib/api";
-import { idSchema } from "@/lib/schemas";
+import { fail, handleApiError, ok } from "@/lib/api";
 
 const detailCacheHeaders = {
   "Cache-Control": "public, s-maxage=120, stale-while-revalidate=600",
@@ -10,6 +9,7 @@ const detailCacheHeaders = {
 
 const baseDetailSelect = {
   id: true,
+  slug: true,
   name: true,
   price: true,
   image: true,
@@ -20,32 +20,43 @@ const baseDetailSelect = {
   brand: true,
 };
 
+function isUuid(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+}
+
+function buildWhereClause(identifier: string) {
+  if (isUuid(identifier)) {
+    return { id: identifier };
+  }
+  return { slug: identifier };
+}
+
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { id } = await params;
-    idSchema.parse({ id });
+    const { slug } = await params;
+    const identifier = String(slug).trim();
+    const where = buildWhereClause(identifier);
 
-    // Try to find the product in all three models
     const [smartphone, speaker, accessory] = await Promise.all([
       prisma.smartphone.findUnique({
-        where: { id },
+        where,
         select: {
           ...baseDetailSelect,
           storage: true,
         },
       }),
       prisma.speaker.findUnique({
-        where: { id },
+        where,
         select: {
           ...baseDetailSelect,
           batteryLife: true,
         },
       }),
       prisma.accessory.findUnique({
-        where: { id },
+        where,
         select: {
           ...baseDetailSelect,
           type: true,
@@ -58,6 +69,7 @@ export async function GET(
     if (smartphone) {
       product = {
         id: smartphone.id,
+        slug: smartphone.slug ?? undefined,
         name: smartphone.name,
         price: smartphone.price,
         image: smartphone.image,
@@ -72,6 +84,7 @@ export async function GET(
     } else if (speaker) {
       product = {
         id: speaker.id,
+        slug: speaker.slug ?? undefined,
         name: speaker.name,
         price: speaker.price,
         image: speaker.image,
@@ -86,6 +99,7 @@ export async function GET(
     } else if (accessory) {
       product = {
         id: accessory.id,
+        slug: accessory.slug ?? undefined,
         name: accessory.name,
         price: accessory.price,
         image: accessory.image,
@@ -105,6 +119,6 @@ export async function GET(
 
     return ok(product, 200, { headers: detailCacheHeaders });
   } catch (error) {
-    return handleApiError("products.id.GET", error);
+    return handleApiError("products.slug.GET", error);
   }
 }

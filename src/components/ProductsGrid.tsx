@@ -474,7 +474,7 @@ const formatPrice = (price: number) => {
                                 params.set("category", section.category);
                                 router.push(`${pathname}?${params.toString()}`);
                               }}
-                              className="text-sm text-primary hover:underline"
+                              className="inline-flex items-center gap-2 rounded-full border border-red-600 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 shadow-sm transition hover:border-red-700 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                             >
                               View all
                             </button>

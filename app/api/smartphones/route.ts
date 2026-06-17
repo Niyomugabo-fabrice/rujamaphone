@@ -1,6 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import prisma from "@/lib/prisma";
 import { ZodError } from "zod";
+import { generateProductSlug } from "@/lib/slug";
 
 // 
 import {
@@ -130,6 +131,7 @@ export async function POST(request: Request) {
     const newSmartphone = await prisma.smartphone.create({
       data: {
         ...validated,
+        slug: generateProductSlug(validated.name),
         image,
       },
       select: smartphoneSelect,
