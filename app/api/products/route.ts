@@ -99,38 +99,44 @@ export async function GET(request: Request) {
     // FETCH DATA
     // ===============================
     const [smartphones, speakers, accessories] = await Promise.all([
-      prisma.smartphone.findMany({
-        where: smartphoneWhere ?? undefined,
-        select: {
-          ...baseProductSelect,
-          storage: true,
-        },
-        orderBy: getOrderBy(sort),
-        take: candidateTake,
-        skip: 0,
-      }),
+      smartphoneWhere === null
+        ? Promise.resolve([])
+        : prisma.smartphone.findMany({
+            where: smartphoneWhere,
+            select: {
+              ...baseProductSelect,
+              storage: true,
+            },
+            orderBy: getOrderBy(sort),
+            take: candidateTake,
+            skip: 0,
+          }),
 
-      prisma.speaker.findMany({
-        where: speakerWhere ?? undefined,
-        select: {
-          ...baseProductSelect,
-          batteryLife: true,
-        },
-        orderBy: getOrderBy(sort),
-        take: candidateTake,
-        skip: 0,
-      }),
+      speakerWhere === null
+        ? Promise.resolve([])
+        : prisma.speaker.findMany({
+            where: speakerWhere,
+            select: {
+              ...baseProductSelect,
+              batteryLife: true,
+            },
+            orderBy: getOrderBy(sort),
+            take: candidateTake,
+            skip: 0,
+          }),
 
-      prisma.accessory.findMany({
-        where: accessoryWhere ?? undefined,
-        select: {
-          ...baseProductSelect,
-          type: true,
-        },
-        orderBy: getOrderBy(sort),
-        take: candidateTake,
-        skip: 0,
-      }),
+      accessoryWhere === null
+        ? Promise.resolve([])
+        : prisma.accessory.findMany({
+            where: accessoryWhere,
+            select: {
+              ...baseProductSelect,
+              type: true,
+            },
+            orderBy: getOrderBy(sort),
+            take: candidateTake,
+            skip: 0,
+          }),
     ]);
 
     // ===============================

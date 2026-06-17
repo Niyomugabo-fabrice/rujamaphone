@@ -23,19 +23,19 @@ export default function ProductsGrid({ initialCategory }: ProductsGridProps) {
   const [limit, setLimit] = useState(defaultLimit);
   const [total, setTotal] = useState(0);
   const [hasMore, setHasMore] = useState(false);
-  const [filters, setFilters] = useState<ProductFilters>({
-    category: initialCategory,
-  });
+  const categoryParam = searchParams.get("category") as ProductCategory | undefined;
+  const initialFilters: ProductFilters = {
+    category: initialCategory ?? categoryParam,
+  };
 
-  const [tempFilters, setTempFilters] = useState<ProductFilters>({
-    category: initialCategory,
-  });
+  const [filters, setFilters] = useState<ProductFilters>(initialFilters);
+
+  const [tempFilters, setTempFilters] = useState<ProductFilters>(initialFilters);
 
   const handleMobileFiltersChange = useCallback((nextFilters: ProductFilters) => {
     setTempFilters(nextFilters);
   }, []);
 
-  const [searchQuery, setSearchQuery] = useState("");
   const [ignoreUrlSearch, setIgnoreUrlSearch] = useState(false);
   const [sortBy, setSortBy] = useState("createdAt-desc");
   const router = useRouter();
@@ -43,16 +43,72 @@ export default function ProductsGrid({ initialCategory }: ProductsGridProps) {
   const searchParamValue = searchParams.get("search") || "";
   const effectiveSearch = ignoreUrlSearch ? "" : searchParamValue;
   const isDefaultGroupedView =
-    !effectiveSearch && !filters.category && !filters.minPrice && !filters.maxPrice;
+    !effectiveSearch &&
+    !filters.category &&
+    !filters.minPrice &&
+    !filters.maxPrice &&
+    !filters.brand &&
+    !filters.condition &&
+    !filters.storage &&
+    !filters.batteryLife &&
+    !filters.type;
+
+  const categories: ProductCategory[] = ["SMARTPHONE", "SPEAKER", "ACCESSORY"];
+
+  const syncFiltersToUrl = useCallback((nextFilters: ProductFilters) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (nextFilters.search) {
+      params.set("search", String(nextFilters.search));
+    } else {
+      params.delete("search");
+    }
+
+    if (nextFilters.category) {
+      params.set("category", nextFilters.category);
+    } else {
+      params.delete("category");
+    }
+
+    if (nextFilters.minPrice != null) {
+      params.set("minPrice", String(nextFilters.minPrice));
+    } else {
+      params.delete("minPrice");
+    }
+
+    if (nextFilters.maxPrice != null) {
+      params.set("maxPrice", String(nextFilters.maxPrice));
+    } else {
+      params.delete("maxPrice");
+    }
+
+    router.replace(params.toString() ? `${pathname}?${params.toString()}` : pathname, {
+      scroll: false,
+    });
+  }, [pathname, router, searchParams]);
 
   useEffect(() => {
     if (initialCategory) {
       setFilters((prev) => ({ ...prev, category: initialCategory }));
+      setTempFilters((prev) => ({ ...prev, category: initialCategory }));
+      return;
     }
-  }, [initialCategory]);
+
+    if (categoryParam && filters.category !== categoryParam) {
+      setFilters((prev) => ({ ...prev, category: categoryParam }));
+      setTempFilters((prev) => ({ ...prev, category: categoryParam }));
+      setPage(1);
+      return;
+    }
+
+    if (!categoryParam && filters.category && !initialCategory) {
+      setFilters((prev) => ({ ...prev, category: undefined }));
+      setTempFilters((prev) => ({ ...prev, category: undefined }));
+      setPage(1);
+    }
+  }, [initialCategory, categoryParam, filters.category]);
 
   useEffect(() => {
-    setSearchQuery(searchParamValue);
     if (searchParamValue) {
       setIgnoreUrlSearch(false);
     }
@@ -131,25 +187,21 @@ useEffect(() => {
 
 
  const handleFilterChange = useCallback(<K extends keyof ProductFilters,>(key: K, value: ProductFilters[K]) => {
-  clearUrlSearch();
-  setFilters((prev) => {
-    if (key === "category") {
-      return {
+  const nextFilters = key === "category"
+    ? {
+        ...filters,
         category: value as ProductCategory,
-        minPrice: prev.minPrice,
-        maxPrice: prev.maxPrice,
-        condition: prev.condition,
+      }
+    : {
+        ...filters,
+        [key]: value,
       };
-    }
 
-    return {
-      ...prev,
-      [key]: value,
-    };
-  });
+  setFilters(nextFilters);
+  syncFiltersToUrl(nextFilters);
   setLimit(defaultLimit);
   setPage(1);
-}, [clearUrlSearch]);
+}, [filters, syncFiltersToUrl]);
 
   const handleFilterRemove = useCallback((key: keyof ProductFilters) => {
     clearUrlSearch();
@@ -158,12 +210,14 @@ useEffect(() => {
     setFilters(newFilters);
     setLimit(defaultLimit);
     setPage(1);
-  }, [clearUrlSearch, filters]);
+    syncFiltersToUrl(newFilters);
+  }, [clearUrlSearch, filters, syncFiltersToUrl]);
 
  
 const handleClearAll = useCallback(() => {
-  setFilters({ category: initialCategory });
-  setTempFilters({ category: initialCategory });
+  const resetFilters = { category: initialCategory };
+  setFilters(resetFilters);
+  setTempFilters(resetFilters);
   setLimit(defaultLimit);
   setPage(1);
   router.push(pathname);
@@ -185,10 +239,38 @@ const formatPrice = (price: number) => {
         {/* Header with Search and Sort */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">All Products</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              {filters.category ? `${filters.category.toLowerCase()} products` : "All Products"}
+            </h1>
             <p className="text-gray-600">
               {total} {total === 1 ? "product" : "products"} found
             </p>
+          </div>
+          <div className="flex flex-wrap gap-2 items-center">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => {
+                  const nextFilters = {
+                    ...filters,
+                    category: filters.category === cat ? undefined : cat,
+                  };
+                  setFilters(nextFilters);
+                  setTempFilters(nextFilters);
+                  setLimit(defaultLimit);
+                  setPage(1);
+                  syncFiltersToUrl(nextFilters);
+                }}
+                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                  filters.category === cat
+                    ? "bg-primary text-white shadow-lg"
+                    : "bg-white text-gray-700 border border-gray-200 hover:border-primary hover:text-primary"
+                }`}
+              >
+                {cat.toLowerCase()}
+              </button>
+            ))}
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
             {/* Search Bar */}
@@ -393,17 +475,19 @@ const formatPrice = (price: number) => {
       </div>
 
       {/* Mobile Filter Drawer */}
-     <FilterDrawer
+      <FilterDrawer
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
         filters={tempFilters}
         onFiltersChange={handleMobileFiltersChange}
         category={tempFilters.category}
         onApply={(nextFilters) => {
-          clearUrlSearch();
           setFilters(nextFilters);
           setTempFilters(nextFilters);
           setLimit(defaultLimit);
+          setPage(1);
+          syncFiltersToUrl(nextFilters);
+          setIsFilterOpen(false);
         }}
       />
     </div>

@@ -101,13 +101,6 @@ const onSubmit = async (data: LoginFormValues) => {
       <Button type="submit" className="w-full h-10 sm:h-10" disabled={isLoading}>
         {isLoading ? "Signing in..." : "Sign in"}
       </Button>
-
-      {/* <p className="text-center text-xs sm:text-sm text-muted-foreground">
-        Don't have an account?{" "}
-        <Link href="/signup" className="text-primary hover:underline">
-          Sign up
-        </Link>
-      </p> */}
     </form>
   );
 }
