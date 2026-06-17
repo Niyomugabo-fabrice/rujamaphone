@@ -44,7 +44,7 @@ export function Contact() {
                 </a>
 
                 <a
-                  href="https://wa.me/250788773758"
+                  href="https://wa.me/250788773754"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 rounded-3xl border border-border/80 bg-secondary p-5 transition hover:border-emerald-500 hover:bg-emerald-50"
@@ -127,7 +127,7 @@ export function Contact() {
                   <TikTokIcon className="w-7 h-7" />
                 </a>
                 <a
-                  href="https://wa.me/250788773758"
+                  href="https://wa.me/250788773754"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex h-16 items-center justify-center rounded-3xl bg-green-600 text-white transition hover:bg-green-700"
