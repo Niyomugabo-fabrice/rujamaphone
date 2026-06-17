@@ -2,6 +2,7 @@ import crypto from "crypto";
 import prisma from "@/lib/prisma";
 import { forgotPasswordSchema } from "@/lib/schemas";
 import { handleApiError, ok, parseJson } from "@/lib/api";
+import { sendPasswordResetEmail } from "@/lib/mail";
 
 const resetResponse = {
   message: "If an account with this email exists, a password reset link has been sent.",
@@ -29,6 +30,8 @@ export async function POST(request: Request) {
       },
       select: { id: true },
     });
+
+    await sendPasswordResetEmail(validatedData.email, resetToken);
 
     return ok(resetResponse);
   } catch (error) {
