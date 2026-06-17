@@ -30,7 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: '/products', priority: 0.95 },
     { path: '/services', priority: 0.85 },
     { path: '/upgrade', priority: 0.8 },
-    { path: '/installment', priority: 0.8 },
+    { path: '/pay-in-parts', priority: 0.8 },
     { path: '/about', priority: 0.7 },
     { path: '/contact', priority: 0.7 },
   ];

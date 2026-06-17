@@ -35,11 +35,11 @@ const services = [
     ],
   },
   {
-    title: "Pay in Installments",
-    href: "/installment",
+    title: "Pay in Parts",
+    href: "/pay-in-parts",
     image: "/image/parts.jpeg",
    
-    action: "View Installment Plans",
+    action: "View Pay in Parts",
     highlights: [
       { icon: CalendarDays, label: "Flexible payment terms" },
       { icon: CreditCard, label: "Clear first payment" },
@@ -93,10 +93,10 @@ export default function ServicesPage() {
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
-                href="/installment"
+                href="/pay-in-parts"
                 className="inline-flex items-center gap-2 rounded-xl border border-red-200 bg-white px-6 py-3 font-semibold text-[#820210] transition hover:bg-red-50"
               >
-                Installment plans
+                Pay in Parts
                 <CalendarDays className="h-4 w-4" />
               </Link>
             </div>

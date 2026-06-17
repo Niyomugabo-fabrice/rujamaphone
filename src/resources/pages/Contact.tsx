@@ -30,7 +30,7 @@ export function Contact() {
                 <input
                   type="text"
                   className="w-full px-4 py-2 bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                  placeholder="John Doe"
+                  placeholder=""
                 />
               </div>
               <div>
@@ -50,7 +50,7 @@ export function Contact() {
                 <input
                   type="email"
                   className="w-full px-4 py-2 bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                  placeholder="john@example.com"
+                  
                 />
               </div>
               <div>
@@ -77,7 +77,7 @@ export function Contact() {
               <h2 className="text-2xl font-bold text-accent mb-6">Contact Information</h2>
               <div className="space-y-4">
                 <a
-                  href="tel:078877375"
+                  href="tel:0788773754"
                   className="flex items-start space-x-4 p-4 hover:bg-secondary rounded-lg transition-colors"
                 >
                   <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -85,7 +85,7 @@ export function Contact() {
                   </div>
                   <div>
                     <div className="font-semibold text-accent mb-1">Phone</div>
-                    <div className="text-muted-foreground">078 877 375</div>
+                    <div className="text-muted-foreground">0788773754</div>
                   </div>
                 </a>
 

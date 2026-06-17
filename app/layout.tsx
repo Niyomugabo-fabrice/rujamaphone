@@ -37,10 +37,10 @@ export const metadata: Metadata = {
     siteName: 'Rujama Phones Shop',
     title: 'Rujama Phones Shop | Phones, Accessories & Gadgets in Kigali',
     description:
-      'Shop smartphones, speakers, accessories, phone upgrade services, and installment plans from Rujama Phones Shop in Kigali, Rwanda.',
+      'Shop smartphones, speakers, accessories, phone upgrade services, and pay-in-parts plans from Rujama Phones Shop in Kigali, Rwanda.',
     images: [
       {
-        url: '/image/rujamashop.jpeg',
+        url: 'https://www.rujamaphonesshop.com/image/rujamashop.jpeg',
         width: 1200,
         height: 630,
         alt: 'Rujama Phones Shop in Kigali, Rwanda',
@@ -51,8 +51,8 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Rujama Phones Shop | Phones, Accessories & Gadgets in Kigali',
     description:
-      'Trusted phone shop in Kigali for smartphones, accessories, upgrades, and installment plans.',
-    images: ['/image/rujamashop.jpeg'],
+      'Trusted phone shop in Kigali for smartphones, accessories, upgrades, and pay-in-parts plans.',
+    images: ['https://www.rujamaphonesshop.com/image/rujamashop.jpeg'],
   },
   category: 'technology retail',
   icons: {
