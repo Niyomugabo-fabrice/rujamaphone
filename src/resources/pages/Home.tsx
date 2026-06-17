@@ -263,9 +263,7 @@ useEffect(() => {
             {featuredProducts.length > 0 && (
               <section className="rounded-3xl bg-white p-8 shadow-sm">
                 <div className="mb-8 text-center">
-                  <span className="inline-flex rounded-full bg-primary/10 px-4 py-1 text-sm font-semibold text-primary">
-                    Smartphone Collection
-                  </span>
+                  
                   <h2 className="mt-4 text-3xl font-bold text-accent">
                     Latest smartphone deals in Kigali
                   </h2>
@@ -289,9 +287,7 @@ useEffect(() => {
             {speakerProducts.length > 0 && (
               <section className="rounded-3xl bg-white p-8 shadow-sm">
                 <div className="mb-8 text-center">
-                  <span className="inline-flex rounded-full bg-primary/10 px-4 py-1 text-sm font-semibold text-primary">
-                    Speaker Collection
-                  </span>
+                  
                   <h2 className="mt-4 text-3xl font-bold text-accent">
                     Top speaker picks for your home and car
                   </h2>
@@ -315,9 +311,7 @@ useEffect(() => {
             {accessoryProducts.length > 0 && (
               <section className="rounded-3xl bg-white p-8 shadow-sm">
                 <div className="mb-8 text-center">
-                  <span className="inline-flex rounded-full bg-primary/10 px-4 py-1 text-sm font-semibold text-primary">
-                    Accessories Collection
-                  </span>
+                  
                   <h2 className="mt-4 text-3xl font-bold text-accent">
                     Essential accessories for your device
                   </h2>
