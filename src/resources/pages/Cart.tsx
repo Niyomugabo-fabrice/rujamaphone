@@ -192,17 +192,17 @@ Total: ${formatPrice(totalPrice)}
                     <label className="block text-xs sm:text-sm font-medium text-foreground mb-1.5 sm:mb-2">
                       Location
                     </label>
-                    <select
+                    <input
+                      type="text"
                       required
                       value={formData.location}
                       onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                       className="w-full px-3 sm:px-4 py-2 bg-secondary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm"
-                    >
-                      <option value="">Select District</option>
-                      <option value="Gasabo">Gasabo</option>
-                      <option value="Kicukiro">Kicukiro</option>
-                      <option value="Nyarugenge">Nyarugenge</option>
-                    </select>
+                      placeholder="District, Sector, and street or landmark"
+                    />
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      Please include District and Sector in your location.
+                    </p>
                   </div>
                   <button
                     type="submit"
