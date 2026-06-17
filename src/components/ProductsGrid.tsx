@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useState, useEffect } from "react";
-import { SlidersHorizontal, ChevronDown, X } from "lucide-react";
+import Image from "next/image";
+import { SlidersHorizontal, ChevronDown, X, Smartphone, Speaker, Headphones } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
 import FilterDrawer from "@/components/FilterDrawer";
 import FilterChips from "@/components/FilterChips";
@@ -53,7 +54,11 @@ export default function ProductsGrid({ initialCategory }: ProductsGridProps) {
     !filters.batteryLife &&
     !filters.type;
 
-  const categories: ProductCategory[] = ["SMARTPHONE", "SPEAKER", "ACCESSORY"];
+  const categories: Array<{ key: ProductCategory; label: string; icon: typeof Smartphone }> = [
+    { key: "SMARTPHONE", label: "Smartphones", icon: Smartphone },
+    { key: "SPEAKER", label: "Speakers", icon: Speaker },
+    { key: "ACCESSORY", label: "Accessories", icon: Headphones },
+  ];
 
   const syncFiltersToUrl = useCallback((nextFilters: ProductFilters) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -247,30 +252,35 @@ const formatPrice = (price: number) => {
             </p>
           </div>
           <div className="flex flex-wrap gap-2 items-center">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => {
-                  const nextFilters = {
-                    ...filters,
-                    category: filters.category === cat ? undefined : cat,
-                  };
-                  setFilters(nextFilters);
-                  setTempFilters(nextFilters);
-                  setLimit(defaultLimit);
-                  setPage(1);
-                  syncFiltersToUrl(nextFilters);
-                }}
-                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                  filters.category === cat
-                    ? "bg-primary text-white shadow-lg"
-                    : "bg-white text-gray-700 border border-gray-200 hover:border-primary hover:text-primary"
-                }`}
-              >
-                {cat.toLowerCase()}
-              </button>
-            ))}
+            {categories.map((category) => {
+              const Icon = category.icon;
+              const isActive = filters.category === category.key;
+              return (
+                <button
+                  key={category.key}
+                  type="button"
+                  onClick={() => {
+                    const nextFilters = {
+                      ...filters,
+                      category: filters.category === category.key ? undefined : category.key,
+                    };
+                    setFilters(nextFilters);
+                    setTempFilters(nextFilters);
+                    setLimit(defaultLimit);
+                    setPage(1);
+                    syncFiltersToUrl(nextFilters);
+                  }}
+                  className={`rounded-full px-4 py-2 flex items-center gap-2 text-sm font-semibold transition ${
+                    isActive
+                      ? "bg-primary text-white shadow-lg"
+                      : "bg-white text-gray-700 border border-gray-200 hover:border-primary hover:text-primary"
+                  }`}
+                >
+                  <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-gray-500"}`} />
+                  <span>{category.label}</span>
+                </button>
+              );
+            })}
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
             {/* Search Bar */}
@@ -377,21 +387,51 @@ const formatPrice = (price: number) => {
           {/* Products Grid */}
           <div className="lg:col-span-3">
             {isLoading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[...Array(12)].map((_, i) => (
-                  <div key={i} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                    <div className="aspect-square bg-gray-200 animate-pulse" />
-                    <div className="p-4 space-y-3">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse" />
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4" />
-                      <div className="h-6 bg-gray-200 rounded animate-pulse w-1/2" />
+              <div>
+                <div className="mb-6 rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <div className="h-14 w-14 rounded-full bg-[#820210]/10 p-2 shadow-sm flex items-center justify-center">
+                        <Image
+                          src="/image/logo.jpeg"
+                          alt="Rujama Phones Shop logo"
+                          width={40}
+                          height={40}
+                          className="rounded-full object-cover"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="h-4 w-36 rounded-full bg-gray-200 animate-pulse" />
+                        <div className="h-3 w-24 rounded-full bg-gray-200 animate-pulse" />
+                      </div>
                     </div>
+                    <div className="h-10 w-28 rounded-full bg-gray-200 animate-pulse" />
                   </div>
-                ))}
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {[...Array(12)].map((_, i) => (
+                    <div key={i} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                      <div className="aspect-square bg-gray-200 animate-pulse" />
+                      <div className="p-4 space-y-3">
+                        <div className="h-4 bg-gray-200 rounded animate-pulse" />
+                        <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4" />
+                        <div className="h-6 bg-gray-200 rounded animate-pulse w-1/2" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             ) : products.length === 0 ? (
-              <div className="p-16 text-center bg-white rounded-xl border border-gray-200">
-                <div className="text-6xl mb-4">📱</div>
+              <div className="p-16 text-center bg-white rounded-xl border border-gray-200 shadow-sm">
+                <div className="mx-auto mb-4 h-20 w-20 rounded-full bg-[#820210] p-4 shadow-inner">
+                  <Image
+                    src="/image/logo.jpeg"
+                    alt="Rujama Phones Shop logo"
+                    width={64}
+                    height={64}
+                    className="rounded-full object-cover"
+                  />
+                </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">No products found</h3>
                 <p className="text-gray-600 mb-6">Try adjusting your filters or search query</p>
                 <button
